@@ -32,7 +32,7 @@ body {
 ::-webkit-scrollbar-thumb { background: linear-gradient(var(--cyan), var(--magenta)); border-radius: 9px; }
 
 /* ===== BACKDROP ===== */
-#nebula { position: fixed; inset: 0; z-index: -3; }
+#scene { position: fixed; inset: 0; z-index: -3; }
 
 .grid-overlay {
   position: fixed; inset: 0; z-index: -2;
@@ -708,4 +708,57 @@ footer .warn {
   font-family: var(--mono); font-size: 0.5rem; letter-spacing: 1px;
   color: var(--cyan); vertical-align: super; margin-left: 6px;
   border: 1px solid rgba(245, 196, 81, 0.4); border-radius: 4px; padding: 1px 5px;
+}
+
+/* ================= V2.4 — VUES / ROUTER / CARDES BUTS ================= */
+main.view { display: none; }
+main.view.active { display: block; animation: view-in 0.5s ease; }
+@keyframes view-in { from { opacity: 0; transform: translateY(16px); } }
+
+a.logo { text-decoration: none; }
+.nav-links a.active { color: var(--cyan); }
+.nav-links a.active::after { width: 100%; }
+.mobile-menu a.active { color: var(--cyan); background: rgba(245, 196, 81, 0.07); }
+
+.parlay-section { padding-top: 0; }
+
+/* cartes BUTS */
+.g-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 16px 0 12px; }
+.g-market {
+  display: flex; flex-direction: column; gap: 6px; padding: 12px 8px;
+  background: rgba(255, 255, 255, 0.028);
+  border: 1px solid rgba(245, 196, 81, 0.12); border-radius: 8px; text-align: center;
+}
+.g-market small { font-family: var(--mono); font-size: 0.54rem; letter-spacing: 1.4px; color: var(--muted); }
+.g-market b {
+  font-family: var(--disp); font-size: 1.5rem; font-weight: 900;
+  background: linear-gradient(90deg, var(--cyan), var(--magenta));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.g-track { height: 6px; background: rgba(255, 255, 255, 0.07); border-radius: 99px; overflow: hidden; }
+.g-fill { display: block; height: 100%; width: 0; border-radius: 99px; }
+.g-fill.g1 { background: linear-gradient(90deg, #f5c451, #ffe19a); box-shadow: 0 0 10px rgba(245, 196, 81, 0.5); }
+.g-fill.g2 { background: linear-gradient(90deg, #2effa0, #a8ffd4); box-shadow: 0 0 10px rgba(46, 255, 160, 0.5); }
+.g-fill.g3 { background: linear-gradient(90deg, #8b5cf6, #b79cff); box-shadow: 0 0 10px rgba(139, 92, 246, 0.5); }
+
+.g-best {
+  padding: 11px 14px; margin-bottom: 12px;
+  border: 1px dashed rgba(245, 196, 81, 0.45); border-radius: 6px;
+  background: rgba(245, 196, 81, 0.06);
+  font-size: 0.82rem; color: var(--text);
+}
+.g-best b { color: var(--cyan); font-weight: 700; }
+
+.g-foot { display: flex; justify-content: space-between; align-items: center; }
+.g-foot .tier { position: static; transform: none; }
+.g-score { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); letter-spacing: 1px; }
+.g-score b { color: var(--cyan); font-size: 0.9rem; }
+
+@media (max-width: 720px) {
+  .g-grid { gap: 6px; }
+  .g-market { padding: 9px 5px; }
+  .g-market b { font-size: 1.15rem; }
+  .g-market small { font-size: 0.48rem; letter-spacing: 0.6px; }
+  .g-best { font-size: 0.76rem; padding: 9px 11px; }
+  .parlay-section .parlay-banner { margin-top: 0; }
 }

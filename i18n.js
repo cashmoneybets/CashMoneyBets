@@ -1,10 +1,10 @@
 /* ============ CASHMONEY·BETS — i18n ============ */
 const I18N = {
   fr: {
-    nav_live: "LIVE", nav_safe: "SAFE BETS", nav_stats: "STATS", nav_method: "MÉTHODE",
+    nav_home: "ACCUEIL", nav_live: "LIVE", nav_buts: "BUTS", nav_method: "MÉTHODE",
     badge: "SYSTÈME EN LIGNE",
     hero_sub: "Terminal de paris nouvelle génération : <b>scores LIVE</b> rafraîchis en continu, <b>alerte BUT</b> en temps réel, <b>stats animées</b> et <b>Safe Score /100</b> calculé sur les probabilités du marché.",
-    btn_live: "📡 Voir le LIVE", btn_safe: "🎯 Safe Bets du jour",
+    btn_live: "📡 Voir le LIVE", btn_buts: "⚽ Paris BUTS",
     stat_matches: "Matchs scannés", stat_score: "Safe Score moyen", stat_elite: "Bets ÉLITE", stat_live: "Matchs LIVE maintenant",
     live_title: "// SCORES <span class='accent'>LIVE</span>",
     live_connecting: "Connexion au flux temps réel…",
@@ -14,7 +14,11 @@ const I18N = {
     live_finished: "TERMINÉ", live_upcoming: "À VENIR",
     s_poss: "POSSESSION", s_shots: "TIRS", s_sot: "CADRÉS", s_corners: "CORNERS",
     season: "Saison", kickoff_at: "Coup d'envoi",
-    safe_title: "// SAFE <span class='accent'>BETS</span> DU JOUR",
+    picks_title: "// TOP <span class='accent'>PICKS</span> DU JOUR",
+    picks_sub: "Les 3 paris les plus sûrs du vendredi, sélectionnés par le moteur. Chaque carte affiche le pari recommandé, les probabilités de victoire et les marchés buts.",
+    buts_title: "// MARCHÉS <span class='accent'>BUTS</span>",
+    buts_sub: "Probabilités de buts estimées par le moteur (modèle de Poisson calibré sur les cotes) : plus de 1.5 buts, plus de 2.5 buts, les deux équipes marquent. Classé par la meilleure opportunité.",
+    g_best: "MEILLEUR PARI BUT", safe_score_lbl: "Safe Score",
     safe_sub: "Vendredi 13 novembre 2026 · qualifs CAN, Nations League, amicaux. Chaque pari est noté par le moteur : proba implicite du marché + forme + contexte.",
     f_all: "TOUS", f_elite: "🔥 ÉLITE 85+", f_solid: "SOLIDE", f_value: "VALUE", f_can: "CAN", f_nl: "NATIONS LEAGUE",
     sort_score: "SCORE", sort_odds: "COTE", sort_time: "HEURE",
@@ -27,7 +31,7 @@ const I18N = {
     parlay_sub: "Maroc (1.04) × Nigeria (1.14) × Gabon (1.20). Les trois favoris les plus écrasants du vendredi, combinés en un ticket à cote douce et haute fiabilité.",
     parlay_lbl: "COTE COMBINÉE",
     stats_title: "// ANALYSE <span class='accent'>STATISTIQUE</span>",
-    chart_bars: "DISTRIBUTION DES SAFE SCORES", chart_donut: "RÉPARTITION PAR TIER",
+   
     tier_elite: "ÉLITE 85+", tier_solid: "SOLIDE 78-84", tier_value: "VALUE <78",
     method_title: "// LA <span class='accent'>MÉTHODE</span>",
     m1: "Proba implicite : 100 ÷ cote du marché", m2: "Forme récente des deux équipes",
@@ -38,10 +42,10 @@ const I18N = {
     footer_brand: "CASHMONEY·BETS — Safe Score Engine v2.2 · Besoin d'aide ? <b>Joueurs Info Service : 09 74 75 13 13</b>",
   },
   en: {
-    nav_live: "LIVE", nav_safe: "SAFE BETS", nav_stats: "STATS", nav_method: "METHOD",
+    nav_home: "HOME", nav_live: "LIVE", nav_buts: "GOALS", nav_method: "METHOD",
     badge: "SYSTEM ONLINE",
     hero_sub: "Next-gen betting terminal: <b>LIVE scores</b> refreshed continuously, real-time <b>GOAL alerts</b>, <b>animated stats</b> and a <b>Safe Score /100</b> computed from market probabilities.",
-    btn_live: "📡 Watch LIVE", btn_safe: "🎯 Today's Safe Bets",
+    btn_live: "📡 Watch LIVE", btn_buts: "⚽ Goals bets",
     stat_matches: "Matches scanned", stat_score: "Average Safe Score", stat_elite: "ELITE bets", stat_live: "Matches LIVE now",
     live_title: "// <span class='accent'>LIVE</span> SCORES",
     live_connecting: "Connecting to real-time feed…",
@@ -51,7 +55,11 @@ const I18N = {
     live_finished: "FINISHED", live_upcoming: "UPCOMING",
     s_poss: "POSSESSION", s_shots: "SHOTS", s_sot: "ON TARGET", s_corners: "CORNERS",
     season: "Season", kickoff_at: "Kick-off",
-    safe_title: "// TODAY'S SAFE <span class='accent'>BETS</span>",
+    picks_title: "// TODAY'S TOP <span class='accent'>PICKS</span>",
+    picks_sub: "Friday's 3 safest bets, selected by the engine. Each card shows the recommended bet, win probabilities and goals markets.",
+    buts_title: "// <span class='accent'>GOALS</span> MARKETS",
+    buts_sub: "Goals probabilities estimated by the engine (Poisson model calibrated on odds): over 1.5 goals, over 2.5 goals, both teams to score. Ranked by best opportunity.",
+    g_best: "BEST GOALS BET", safe_score_lbl: "Safe Score",
     safe_sub: "Friday, November 13, 2026 · AFCON qualifiers, Nations League, friendlies. Every bet is rated by the engine: implied market probability + form + context.",
     f_all: "ALL", f_elite: "🔥 ELITE 85+", f_solid: "SOLID", f_value: "VALUE", f_can: "AFCON", f_nl: "NATIONS LEAGUE",
     sort_score: "SCORE", sort_odds: "ODDS", sort_time: "TIME",
@@ -64,7 +72,7 @@ const I18N = {
     parlay_sub: "Morocco (1.04) × Nigeria (1.14) × Gabon (1.20). Friday's three most overwhelming favorites, combined into a soft-odds, high-reliability ticket.",
     parlay_lbl: "COMBINED ODDS",
     stats_title: "// STATISTICAL <span class='accent'>ANALYSIS</span>",
-    chart_bars: "SAFE SCORE DISTRIBUTION", chart_donut: "TIER BREAKDOWN",
+   
     tier_elite: "ELITE 85+", tier_solid: "SOLID 78-84", tier_value: "VALUE <78",
     method_title: "// THE <span class='accent'>METHOD</span>",
     m1: "Implied probability: 100 ÷ market odds", m2: "Recent form of both teams",
@@ -75,10 +83,10 @@ const I18N = {
     footer_brand: "CASHMONEY·BETS — Safe Score Engine v2.2 · Need help? <b>Be gamble aware</b>",
   },
   de: {
-    nav_live: "LIVE", nav_safe: "SAFE BETS", nav_stats: "STATS", nav_method: "METHODE",
+    nav_home: "START", nav_live: "LIVE", nav_buts: "TORE", nav_method: "METHODE",
     badge: "SYSTEM ONLINE",
     hero_sub: "Betting-Terminal der neuen Generation: <b>LIVE-Scores</b> in Echtzeit, <b>TOR-Alarm</b>, <b>animierte Stats</b> und ein <b>Safe Score /100</b> aus den Marktwahrscheinlichkeiten.",
-    btn_live: "📡 LIVE ansehen", btn_safe: "🎯 Heutige Safe Bets",
+    btn_live: "📡 LIVE ansehen", btn_buts: "⚽ Tor-Wetten",
     stat_matches: "Analysierte Spiele", stat_score: "Ø Safe Score", stat_elite: "ELITE-Tipps", stat_live: "Spiele jetzt LIVE",
     live_title: "// <span class='accent'>LIVE</span>-SCORES",
     live_connecting: "Verbindung zum Live-Feed…",
@@ -88,7 +96,11 @@ const I18N = {
     live_finished: "BEENDET", live_upcoming: "BEVORSTEHEND",
     s_poss: "BALLBESITZ", s_shots: "SCHÜSSE", s_sot: "AUF TOR", s_corners: "ECKEN",
     season: "Saison", kickoff_at: "Anpfiff",
-    safe_title: "// HEUTIGE SAFE <span class='accent'>BETS</span>",
+    picks_title: "// TOP-<span class='accent'>TIPPS</span> HEUTE",
+    picks_sub: "Die 3 sichersten Tipps des Freitags, vom Motor ausgewählt. Jede Karte zeigt die empfohlene Wette, Siegchancen und Tor-Märkte.",
+    buts_title: "// <span class='accent'>TOR</span>-MÄRKTE",
+    buts_sub: "Torwahrscheinlichkeiten vom Motor geschätzt (Poisson-Modell, an Quoten kalibriert): über 1.5 Tore, über 2.5 Tore, beide Teams treffen. Sortiert nach bester Gelegenheit.",
+    g_best: "BESTE TOR-WETTE", safe_score_lbl: "Safe Score",
     safe_sub: "Freitag, 13. November 2026 · Afrika-Cup-Quali, Nations League, Freundschaftsspiele. Jeder Tipp wird vom Motor bewertet: implizite Marktquote + Form + Kontext.",
     f_all: "ALLE", f_elite: "🔥 ELITE 85+", f_solid: "SOLID", f_value: "VALUE", f_can: "AFRIKA-CUP", f_nl: "NATIONS LEAGUE",
     sort_score: "SCORE", sort_odds: "QUOTE", sort_time: "ZEIT",
@@ -101,7 +113,7 @@ const I18N = {
     parlay_sub: "Marokko (1.04) × Nigeria (1.14) × Gabun (1.20). Die drei dominierenden Favoriten des Freitags, kombiniert zu einem Ticket mit sanfter Quote und hoher Sicherheit.",
     parlay_lbl: "GESAMTQUOTE",
     stats_title: "// STATISTISCHE <span class='accent'>ANALYSE</span>",
-    chart_bars: "SAFE-SCORE-VERTEILUNG", chart_donut: "TIER-VERTEILUNG",
+   
     tier_elite: "ELITE 85+", tier_solid: "SOLID 78-84", tier_value: "VALUE <78",
     method_title: "// DIE <span class='accent'>METHODE</span>",
     m1: "Implizite Wahrscheinlichkeit: 100 ÷ Marktquote", m2: "Aktuelle Form beider Teams",
@@ -154,6 +166,7 @@ function setLang(lang) {
   try { localStorage.setItem("cmb_lang", lang); } catch (e) {}
   applyI18n();
   if (typeof window.renderSafeBets === "function") window.renderSafeBets();
+  if (typeof window.renderButs === "function") window.renderButs();
   if (typeof window.buildTicker === "function") window.buildTicker();
   if (window.__lastLive && typeof window.renderLiveFromCache === "function") {
     window.renderLiveFromCache();

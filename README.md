@@ -1,7 +1,9 @@
 # 💸 CASHMONEY·BETS — Live Scores & Safe Score HUD
 
-Terminal de paris football futuriste : **scores live**, **animation de but en temps réel**,
-**stats animées** et **Safe Score /100** sur les matchs les plus sûrs à parier.
+Terminal de paris football futuriste organisé en **3 vues** : Accueil (top picks),
+**LIVE** (scores temps réel) et **BUTS** (probabilités de buts). Fond animé :
+scène de football interactive qui réagit au scroll (pelouse en perspective,
+projecteurs, ballon).
 
 ## ✨ Features
 

@@ -1,109 +1,24 @@
-/* ============ NEBULA BACKGROUND ============ */
-const canvas = document.getElementById("nebula");
-const ctx = canvas.getContext("2d");
-let W, H, stars = [], clouds = [], shooting = [], mouse = { x: 0.5, y: 0.5 };
-
-const CLOUD_COLORS = [
-  [245, 196, 81, 0.10],
-  [139, 92, 246, 0.12],
-  [46, 255, 160, 0.07],
-  [255, 210, 74, 0.04],
-];
-
-function resize() {
-  W = canvas.width = innerWidth * devicePixelRatio;
-  H = canvas.height = innerHeight * devicePixelRatio;
-  canvas.style.width = innerWidth + "px";
-  canvas.style.height = innerHeight + "px";
-  buildStars();
-}
-
-function buildStars() {
-  stars = [];
-  const n = Math.min(340, Math.floor((innerWidth * innerHeight) / 4000));
-  for (let i = 0; i < n; i++) {
-    stars.push({
-      x: Math.random() * W, y: Math.random() * H,
-      r: (Math.random() * 1.4 + 0.3) * devicePixelRatio,
-      tw: Math.random() * Math.PI * 2,
-      ts: 0.008 + Math.random() * 0.02,
-      depth: Math.random() * 0.8 + 0.2,
-      hue: Math.random() < 0.12 ? (Math.random() < 0.5 ? "245,196,81" : "46,255,160") : "255,255,255",
-    });
-  }
-}
-
-function buildClouds() {
-  clouds = [];
-  for (let i = 0; i < 7; i++) {
-    clouds.push({
-      x: Math.random(), y: Math.random(),
-      r: 0.28 + Math.random() * 0.4,
-      c: CLOUD_COLORS[i % CLOUD_COLORS.length],
-      vx: (Math.random() - 0.5) * 0.00016,
-      vy: (Math.random() - 0.5) * 0.0001,
-      ph: Math.random() * Math.PI * 2,
-    });
-  }
-}
-
-function drawNebula() {
-  ctx.clearRect(0, 0, W, H);
-  for (const c of clouds) {
-    c.x += c.vx; c.y += c.vy; c.ph += 0.004;
-    if (c.x < -0.3) c.x = 1.3; if (c.x > 1.3) c.x = -0.3;
-    if (c.y < -0.3) c.y = 1.3; if (c.y > 1.3) c.y = -0.3;
-    const px = (c.x + (mouse.x - 0.5) * 0.05) * W;
-    const py = (c.y + (mouse.y - 0.5) * 0.05) * H;
-    const r = c.r * Math.max(W, H) * (1 + Math.sin(c.ph) * 0.12);
-    const g = ctx.createRadialGradient(px, py, 0, px, py, r);
-    const [cr, cg, cb, ca] = c.c;
-    g.addColorStop(0, `rgba(${cr},${cg},${cb},${ca})`);
-    g.addColorStop(0.55, `rgba(${cr},${cg},${cb},${ca * 0.4})`);
-    g.addColorStop(1, "rgba(0,0,0,0)");
-    ctx.fillStyle = g;
-    ctx.beginPath(); ctx.arc(px, py, r, 0, Math.PI * 2); ctx.fill();
-  }
-  for (const s of stars) {
-    s.tw += s.ts;
-    const a = 0.35 + Math.abs(Math.sin(s.tw)) * 0.65;
-    const px = s.x + (mouse.x - 0.5) * 24 * s.depth * devicePixelRatio;
-    const py = s.y + (mouse.y - 0.5) * 24 * s.depth * devicePixelRatio;
-    ctx.fillStyle = `rgba(${s.hue},${a * 0.9})`;
-    ctx.beginPath(); ctx.arc(px, py, s.r, 0, Math.PI * 2); ctx.fill();
-  }
-  if (Math.random() < 0.006 && shooting.length < 2) {
-    shooting.push({
-      x: Math.random() * W * 0.8, y: Math.random() * H * 0.35,
-      vx: (6 + Math.random() * 6) * devicePixelRatio,
-      vy: (2.5 + Math.random() * 3) * devicePixelRatio,
-      life: 1,
-    });
-  }
-  for (let i = shooting.length - 1; i >= 0; i--) {
-    const s = shooting[i];
-    s.x += s.vx; s.y += s.vy; s.life -= 0.02;
-    if (s.life <= 0) { shooting.splice(i, 1); continue; }
-    const grad = ctx.createLinearGradient(s.x, s.y, s.x - s.vx * 8, s.y - s.vy * 8);
-    grad.addColorStop(0, `rgba(255,255,255,${s.life})`);
-    grad.addColorStop(1, "rgba(255,255,255,0)");
-    ctx.strokeStyle = grad;
-    ctx.lineWidth = 1.6 * devicePixelRatio;
-    ctx.beginPath(); ctx.moveTo(s.x, s.y);
-    ctx.lineTo(s.x - s.vx * 8, s.y - s.vy * 8); ctx.stroke();
-  }
-  requestAnimationFrame(drawNebula);
-}
-
-addEventListener("mousemove", e => { mouse.x = e.clientX / innerWidth; mouse.y = e.clientY / innerHeight; });
-addEventListener("resize", resize);
-resize(); buildClouds(); drawNebula();
-
 /* ============ HUD CLOCK ============ */
 setInterval(() => {
   const el = document.getElementById("hud-clock");
   if (el) el.textContent = new Date().toISOString().slice(11, 19) + " UTC";
 }, 1000);
+
+/* ============ VIEW ROUTER (Accueil / LIVE / BUTS) ============ */
+const VIEWS = ["home", "live", "buts"];
+function showView(name) {
+  document.querySelectorAll(".view").forEach(v =>
+    v.classList.toggle("active", v.id === "view-" + name));
+  document.querySelectorAll("[data-view]").forEach(a =>
+    a.classList.toggle("active", a.dataset.view === name));
+  window.scrollTo(0, 0);
+  observeReveals();
+}
+function routeFromHash() {
+  const h = location.hash.replace("#", "");
+  showView(VIEWS.includes(h) ? h : "home");
+}
+addEventListener("hashchange", routeFromHash);
 
 /* ============ TICKER ============ */
 function buildTicker() {
@@ -119,11 +34,27 @@ function buildTicker() {
 }
 window.buildTicker = buildTicker;
 
-/* ============ SAFE BET CARDS ============ */
-const grid = document.getElementById("grid");
+/* ============ CARTES DE PARIS (accueil + buts) ============ */
+const topGrid = document.getElementById("top-grid");
+const butsGrid = document.getElementById("buts-grid");
 
 function formChips(form) {
   return form.map(r => `<span class="chip chip-${r}">${r === "W" ? "V" : r === "D" ? "N" : "D"}</span>`).join("");
+}
+
+function teamsRow(m) {
+  return `
+    <div class="teams">
+      <div class="team home">
+        <span class="name">${m.home}</span>
+        <span class="form">${formChips(m.formHome)}</span>
+      </div>
+      <div class="vs">VS</div>
+      <div class="team away">
+        <span class="name">${m.away}</span>
+        <span class="form">${formChips(m.formAway)}</span>
+      </div>
+    </div>`;
 }
 
 function matchCard(m) {
@@ -153,17 +84,7 @@ function matchCard(m) {
       <span class="comp">${m.flag} ${compLbl}</span>
       <span class="kick">🕗 ${m.kickoff} CET</span>
     </header>
-    <div class="teams">
-      <div class="team home">
-        <span class="name">${m.home}</span>
-        <span class="form">${formChips(m.formHome)}</span>
-      </div>
-      <div class="vs">VS</div>
-      <div class="team away">
-        <span class="name">${m.away}</span>
-        <span class="form">${formChips(m.formAway)}</span>
-      </div>
-    </div>
+    ${teamsRow(m)}
     <div class="pick-box tier-${tier.cls}">
       <div class="pick-left">
         <small>🎯 ${t("mkt_pick")}</small>
@@ -200,45 +121,61 @@ function matchCard(m) {
   </article>`;
 }
 
-function render(filter = "all", sort = "score") {
-  let list = [...MATCHES];
-  if (filter === "elite") list = list.filter(m => safeScore(m) >= 85);
-  if (filter === "solid") list = list.filter(m => safeScore(m) >= 78 && safeScore(m) < 85);
-  if (filter === "value") list = list.filter(m => safeScore(m) < 78);
-  if (filter === "can") list = list.filter(m => m.comp.includes("CAN"));
-  if (filter === "nl") list = list.filter(m => m.comp.includes("Nations"));
-  if (sort === "score") list.sort((a, b) => safeScore(b) - safeScore(a));
-  if (sort === "odds") list.sort((a, b) => a.odds[a.pick] - b.odds[b.pick]);
-  if (sort === "time") list.sort((a, b) => a.kickoff.localeCompare(b.kickoff));
-  grid.innerHTML = list.map(matchCard).join("");
+function renderTopPicks() {
+  const list = [...MATCHES].sort((a, b) => safeScore(b) - safeScore(a)).slice(0, 3);
+  topGrid.innerHTML = list.map(matchCard).join("");
   bindCards();
   requestAnimationFrame(animateRings);
   requestAnimationFrame(animateBars);
   observeReveals();
 }
+window.renderSafeBets = renderTopPicks;
 
-function animateBars() {
-  document.querySelectorAll(".prob-fill").forEach(fill => {
-    fill.style.width = "0%";
-    fill.style.transition = "width 1.2s cubic-bezier(.22,1,.36,1)";
-    requestAnimationFrame(() => fill.style.width = fill.dataset.p + "%");
-  });
+/* ============ VUE BUTS — propositions over avec % ============ */
+function goalsCard(m) {
+  const mk = marketsOf(m);
+  const compLbl = tr(COMP_I18N[m.comp]) || m.comp;
+  const score = safeScore(m);
+  const tier = tierOf(score);
+  const tierLbl = (TIER_I18N[tier.label] || {})[LANG] || tier.label;
+  const best = mk.over25 >= 55
+    ? { key: "mkt_over25", pct: mk.over25 }
+    : { key: "mkt_over15", pct: mk.over15 };
+  const gbar = (label, pct, cls) => `
+    <div class="g-market">
+      <small>${label}</small>
+      <b>${pct}%</b>
+      <div class="g-track"><div class="g-fill ${cls}" data-p="${pct}"></div></div>
+    </div>`;
+  return `
+  <article class="card g-card tilt" data-id="${m.id}">
+    <header class="card-head">
+      <span class="comp">${m.flag} ${compLbl}</span>
+      <span class="kick">🕗 ${m.kickoff} CET</span>
+    </header>
+    ${teamsRow(m)}
+    <div class="g-grid">
+      ${gbar(t("mkt_over15"), mk.over15, "g1")}
+      ${gbar(t("mkt_over25"), mk.over25, "g2")}
+      ${gbar(t("mkt_btts"), mk.btts, "g3")}
+    </div>
+    <div class="g-best">🎯 ${t("g_best")} : <b>${t(best.key)} · ${best.pct}%</b></div>
+    <p class="note">${tr(m.note)}</p>
+    <div class="g-foot">
+      <span class="tier tier-${tier.cls}">${tierLbl}</span>
+      <span class="g-score">${t("safe_score_lbl")} <b>${score}</b>/100</span>
+    </div>
+  </article>`;
 }
 
-document.querySelectorAll(".filters button").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".filters button").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    render(btn.dataset.filter, document.querySelector(".sorts button.active")?.dataset.sort || "score");
-  });
-});
-document.querySelectorAll(".sorts button").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".sorts button").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    render(document.querySelector(".filters button.active")?.dataset.filter || "all", btn.dataset.sort);
-  });
-});
+function renderButs() {
+  const list = [...MATCHES].sort((a, b) => marketsOf(b).over25 - marketsOf(a).over25);
+  butsGrid.innerHTML = list.map(goalsCard).join("");
+  bindCards();
+  requestAnimationFrame(animateBars);
+  observeReveals();
+}
+window.renderButs = renderButs;
 
 function bindCards() {
   document.querySelectorAll(".tilt").forEach(card => {
@@ -259,6 +196,14 @@ function animateRings() {
     const CIRC = 2 * Math.PI * 34;
     ring.style.transition = "stroke-dashoffset 1.4s cubic-bezier(.22,1,.36,1)";
     requestAnimationFrame(() => ring.style.strokeDashoffset = CIRC * (1 - score / 100));
+  });
+}
+
+function animateBars() {
+  document.querySelectorAll(".prob-fill, .g-fill").forEach(fill => {
+    fill.style.width = "0%";
+    fill.style.transition = "width 1.2s cubic-bezier(.22,1,.36,1)";
+    requestAnimationFrame(() => fill.style.width = fill.dataset.p + "%");
   });
 }
 
@@ -286,114 +231,6 @@ const counterObserver = new IntersectionObserver(entries => {
 }, { threshold: 0.5 });
 document.querySelectorAll(".stat b[id]").forEach(el => counterObserver.observe(el));
 
-/* ============ CHARTS ============ */
-const chartColors = { elite: "#f5c451", solid: "#8b5cf6", value: "#ff7847" };
-
-function drawBars() {
-  const cv = document.getElementById("chart-bars");
-  const c = cv.getContext("2d");
-  const dpr = devicePixelRatio || 1;
-  const w = cv.width = cv.clientWidth * dpr;
-  const h = cv.height = 300 * dpr;
-  const sorted = [...MATCHES].sort((a, b) => safeScore(b) - safeScore(a));
-  const pad = 30 * dpr, bw = (w - pad * 2) / sorted.length;
-  let t = 0;
-  function frame() {
-    t = Math.min(1, t + 0.03);
-    const ease = 1 - Math.pow(1 - t, 3);
-    c.clearRect(0, 0, w, h);
-    sorted.forEach((m, i) => {
-      const s = safeScore(m);
-      const tier = tierOf(s);
-      const bh = ((h - pad * 2.2) * (s / 100)) * ease;
-      const x = pad + i * bw + bw * 0.15;
-      const y = h - pad - bh;
-      c.fillStyle = chartColors[tier.cls] + "cc";
-      c.shadowColor = chartColors[tier.cls];
-      c.shadowBlur = 10 * dpr;
-      c.fillRect(x, y, bw * 0.7, bh);
-      c.shadowBlur = 0;
-      if (t === 1) {
-        c.fillStyle = "#7d8bb0";
-        c.font = `${9 * dpr}px "Share Tech Mono"`;
-        c.textAlign = "center";
-        c.save();
-        c.translate(x + bw * 0.35, h - pad + 14 * dpr);
-        c.rotate(-Math.PI / 4);
-        c.fillText(m.home.slice(0, 8).toUpperCase(), 0, 0);
-        c.restore();
-        c.fillStyle = "#eaf6ff";
-        c.fillText(String(s), x + bw * 0.35, y - 6 * dpr);
-      }
-    });
-    if (t < 1) requestAnimationFrame(frame);
-  }
-  frame();
-}
-
-function drawDonut() {
-  const cv = document.getElementById("chart-donut");
-  const c = cv.getContext("2d");
-  const dpr = devicePixelRatio || 1;
-  const w = cv.width = cv.clientWidth * dpr;
-  const h = cv.height = 300 * dpr;
-  const tiers = ["elite", "solid", "value"];
-  const labels = { elite: t("tier_elite"), solid: t("tier_solid"), value: t("tier_value") };
-  const counts = tiers.map(t => MATCHES.filter(m => tierOf(safeScore(m)).cls === t).length);
-  const total = counts.reduce((a, b) => a + b, 0);
-  const cx = w / 2, cy = h / 2, R = Math.min(w, h) * 0.32;
-  let t = 0;
-  function frame() {
-    t = Math.min(1, t + 0.03);
-    const ease = 1 - Math.pow(1 - t, 3);
-    c.clearRect(0, 0, w, h);
-    let angle = -Math.PI / 2;
-    tiers.forEach((tier, i) => {
-      const frac = (counts[i] / total) * ease;
-      const a2 = angle + frac * Math.PI * 2;
-      c.beginPath();
-      c.arc(cx, cy, R, angle, a2);
-      c.strokeStyle = chartColors[tier];
-      c.lineWidth = 34 * dpr;
-      c.shadowColor = chartColors[tier];
-      c.shadowBlur = 14 * dpr;
-      c.stroke();
-      c.shadowBlur = 0;
-      if (t === 1 && frac > 0.02) {
-        const mid = (angle + a2) / 2;
-        c.fillStyle = "#eaf6ff";
-        c.font = `700 ${13 * dpr}px Orbitron`;
-        c.textAlign = "center"; c.textBaseline = "middle";
-        c.fillText(counts[i], cx + Math.cos(mid) * R, cy + Math.sin(mid) * R);
-      }
-      angle = a2;
-    });
-    c.fillStyle = "#eaf6ff";
-    c.font = `900 ${26 * dpr}px Orbitron`;
-    c.textAlign = "center"; c.textBaseline = "middle";
-    c.fillText(total, cx, cy);
-    c.fillStyle = "#7d8bb0";
-    c.font = `${9 * dpr}px "Share Tech Mono"`;
-    c.fillText("MATCHS", cx, cy + 20 * dpr);
-    if (t < 1) requestAnimationFrame(frame);
-  }
-  frame();
-  document.getElementById("donut-legend").innerHTML = tiers
-    .map(t2 => `<span><i style="background:${chartColors[t2]}"></i>${labels[t2]} : ${MATCHES.filter(m => tierOf(safeScore(m)).cls === t2).length}</span>`)
-    .join("");
-}
-
-const chartsDone = new Set();
-const chartObserver = new IntersectionObserver(entries => {
-  entries.forEach(en => {
-    if (!en.isIntersecting || chartsDone.has(en.target.id)) return;
-    chartsDone.add(en.target.id);
-    if (en.target.id === "chart-bars") drawBars();
-    if (en.target.id === "chart-donut") drawDonut();
-  });
-}, { threshold: 0.3 });
-["chart-bars", "chart-donut"].forEach(id => chartObserver.observe(document.getElementById(id)));
-
 /* ============ REVEAL ON SCROLL ============ */
 const revealObserver = new IntersectionObserver(entries => {
   entries.forEach(en => {
@@ -405,16 +242,10 @@ const revealObserver = new IntersectionObserver(entries => {
 }, { threshold: 0.1 });
 
 function observeReveals() {
-  document.querySelectorAll(".card, .live-card, .section-title, .stat, .chart-panel").forEach(el => {
+  document.querySelectorAll(".card, .live-card, .section-title, .stat, .parlay-banner").forEach(el => {
     if (!el.classList.contains("visible")) revealObserver.observe(el);
   });
 }
-
-document.querySelectorAll('a[href^="#"]').forEach(a =>
-  a.addEventListener("click", e => {
-    e.preventDefault();
-    document.querySelector(a.getAttribute("href"))?.scrollIntoView({ behavior: "smooth" });
-  }));
 
 /* ============ LIVE COUNT HOOK ============ */
 window.onLiveCount = function (n) {
@@ -423,9 +254,10 @@ window.onLiveCount = function (n) {
 };
 
 /* ============ INIT ============ */
-window.renderSafeBets = render;
-render();
+renderTopPicks();
+renderButs();
 observeReveals();
+routeFromHash();
 
 document.querySelectorAll(".lang-btn").forEach(btn =>
   btn.addEventListener("click", () => setLang(btn.dataset.lang)));
@@ -441,15 +273,6 @@ mobileMenu.querySelectorAll("a").forEach(a =>
     burger.classList.remove("open");
     mobileMenu.classList.remove("open");
   }));
-
-let resizeTimer;
-addEventListener("resize", () => {
-  clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(() => {
-    if (chartsDone.has("chart-bars")) drawBars();
-    if (chartsDone.has("chart-donut")) drawDonut();
-  }, 250);
-});
 
 document.querySelectorAll(".btn-hud").forEach(btn => {
   btn.addEventListener("mousemove", e => {
