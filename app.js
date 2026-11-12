@@ -4,10 +4,10 @@ const ctx = canvas.getContext("2d");
 let W, H, stars = [], clouds = [], shooting = [], mouse = { x: 0.5, y: 0.5 };
 
 const CLOUD_COLORS = [
-  [0, 240, 255, 0.10],
+  [245, 196, 81, 0.10],
   [139, 92, 246, 0.12],
-  [255, 45, 149, 0.08],
-  [182, 255, 46, 0.04],
+  [46, 255, 160, 0.07],
+  [255, 210, 74, 0.04],
 ];
 
 function resize() {
@@ -28,7 +28,7 @@ function buildStars() {
       tw: Math.random() * Math.PI * 2,
       ts: 0.008 + Math.random() * 0.02,
       depth: Math.random() * 0.8 + 0.2,
-      hue: Math.random() < 0.12 ? (Math.random() < 0.5 ? "0,240,255" : "255,45,149") : "255,255,255",
+      hue: Math.random() < 0.12 ? (Math.random() < 0.5 ? "245,196,81" : "46,255,160") : "255,255,255",
     });
   }
 }
@@ -287,7 +287,7 @@ const counterObserver = new IntersectionObserver(entries => {
 document.querySelectorAll(".stat b[id]").forEach(el => counterObserver.observe(el));
 
 /* ============ CHARTS ============ */
-const chartColors = { elite: "#00f0ff", solid: "#8b5cf6", value: "#ffb020" };
+const chartColors = { elite: "#f5c451", solid: "#8b5cf6", value: "#ff7847" };
 
 function drawBars() {
   const cv = document.getElementById("chart-bars");
