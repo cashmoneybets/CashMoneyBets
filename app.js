@@ -124,12 +124,6 @@ drawNebula();
 
 /* ============ RENDER MATCHES ============ */
 const grid = document.getElementById("grid");
-const slip = [];
-const slipList = document.getElementById("slip-list");
-const slipOdds = document.getElementById("slip-odds");
-const slipCount = document.getElementById("slip-count");
-const stakeInput = document.getElementById("stake");
-const slipReturn = document.getElementById("slip-return");
 
 function formChips(form) {
   return form.map(r => `<span class="chip chip-${r}">${r === "W" ? "V" : r === "D" ? "N" : "D"}</span>`).join("");
@@ -138,10 +132,9 @@ function formChips(form) {
 function matchCard(m) {
   const score = safeScore(m);
   const tier = tierOf(score);
-  const inSlip = slip.includes(m.id);
   const R = 34, CIRC = 2 * Math.PI * R;
   return `
-  <article class="card tilt ${inSlip ? "selected" : ""}" data-id="${m.id}">
+  <article class="card tilt" data-id="${m.id}">
     <div class="card-glow"></div>
     <header class="card-head">
       <span class="comp">${m.flag} ${m.comp}</span>
@@ -175,9 +168,6 @@ function matchCard(m) {
         <small>Cote du pari</small>
         <strong>${m.odds[m.pick].toFixed(2)}</strong>
       </div>
-      <button class="add-btn ${inSlip ? "added" : ""}" data-id="${m.id}">
-        ${inSlip ? "✓ Dans le combiné" : "+ Combiné"}
-      </button>
     </div>
   </article>`;
 }
@@ -213,73 +203,6 @@ document.querySelectorAll(".sorts button").forEach(btn => {
     render(document.querySelector(".filters button.active")?.dataset.filter || "all", btn.dataset.sort);
   });
 });
-
-/* ============ BET SLIP ============ */
-function bindCards() {
-  document.querySelectorAll(".add-btn").forEach(btn => {
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      toggleSlip(btn.dataset.id);
-    });
-  });
-  document.querySelectorAll(".tilt").forEach(card => {
-    card.addEventListener("mousemove", (e) => {
-      const r = card.getBoundingClientRect();
-      const rx = ((e.clientY - r.top) / r.height - 0.5) * -8;
-      const ry = ((e.clientX - r.left) / r.width - 0.5) * 8;
-      card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
-    });
-    card.addEventListener("mouseleave", () => { card.style.transform = ""; });
-  });
-}
-
-function toggleSlip(id) {
-  const i = slip.indexOf(id);
-  if (i >= 0) slip.splice(i, 1); else slip.push(id);
-  updateSlip();
-  render(document.querySelector(".filters button.active")?.dataset.filter || "all",
-         document.querySelector(".sorts button.active")?.dataset.sort || "score");
-}
-
-function combinedOdds() {
-  return slip.reduce((acc, id) => {
-    const m = MATCHES.find(x => x.id === id);
-    return acc * m.odds[m.pick];
-  }, 1);
-}
-
-function updateSlip() {
-  slipCount.textContent = slip.length;
-  slipList.innerHTML = slip.length === 0
-    ? `<p class="empty">Clique sur « + Combiné » pour construire ton ticket.<br>Le moteur recommande le pari du jour ci-dessous ⚡</p>`
-    : slip.map(id => {
-        const m = MATCHES.find(x => x.id === id);
-        const pickLabel = m.pick === "1" ? m.home : m.away;
-        return `<div class="slip-item">
-          <span>${pickLabel} <em>(${m.odds[m.pick].toFixed(2)})</em></span>
-          <button data-id="${id}" class="rm">✕</button>
-        </div>`;
-      }).join("");
-  slipList.querySelectorAll(".rm").forEach(b =>
-    b.addEventListener("click", () => toggleSlip(b.dataset.id)));
-
-  const odds = combinedOdds();
-  slipOdds.textContent = slip.length ? odds.toFixed(2) : "—";
-  const stake = parseFloat(stakeInput.value) || 0;
-  slipReturn.textContent = slip.length ? (stake * odds).toFixed(2) + " €" : "—";
-  document.getElementById("slip-badge").classList.toggle("pulse", slip.length > 0);
-}
-
-stakeInput.addEventListener("input", updateSlip);
-
-["load-parlay", "load-parlay-2"].forEach(id =>
-  document.getElementById(id).addEventListener("click", () => {
-    slip.length = 0;
-    PARLAY_OF_THE_DAY.forEach(pid => slip.push(pid));
-    updateSlip();
-    render("all", "score");
-    document.getElementById("slip-panel").scrollIntoView({ behavior: "smooth", block: "end" });
-  }));
 
 /* ============ RINGS ANIMATION ============ */
 function animateRings() {
@@ -345,4 +268,3 @@ document.querySelectorAll('a[href^="#"]').forEach(a =>
 
 /* ============ INIT ============ */
 render();
-updateSlip();
