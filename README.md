@@ -18,8 +18,11 @@ Terminal de paris football futuriste : **scores live**, **animation de but en te
 - Stats par match : possession, tirs, cadrés, corners (barres animées)
 - Matchs triés : LIVE → à venir → terminés
 
-### 🎯 SAFE BETS (v2.0)
+### 🎯 SAFE BETS (v2.2)
 - **Safe Score /100** = probabilité implicite du marché (100 ÷ cote) + forme + contexte
+- **Pari recommandé** mis en avant sur chaque carte (ex : « Maroc gagne · 1.04 »)
+- **Probabilités de victoire 1X2** en barres animées (domicile / nul / extérieur)
+- **Marchés buts estimés** (modèle de Poisson calibré sur les cotes) : +1.5 buts, +2.5 buts, les 2 équipes marquent
 - Tiers : 🔥 ÉLITE (85+) · SOLIDE (78-84) · VALUE (<78)
 - Anneaux SVG animés, filtres et tris
 

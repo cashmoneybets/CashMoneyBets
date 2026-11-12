@@ -131,24 +131,58 @@ function matchCard(m) {
   const tier = tierOf(score);
   const tierLbl = (TIER_I18N[tier.label] || {})[LANG] || tier.label;
   const compLbl = tr(COMP_I18N[m.comp]) || m.comp;
+  const mk = marketsOf(m);
+  const pickTeam = m.pick === "1" ? m.home : m.away;
+  const pickLbl = t("mkt_pick_win").replace("{team}", pickTeam);
   const R = 34, CIRC = 2 * Math.PI * R;
+  const bar = (label, pct, cls) => `
+    <div class="prob-row">
+      <span class="prob-name">${label}</span>
+      <div class="prob-track"><div class="prob-fill ${cls}" data-p="${pct}"></div></div>
+      <b class="prob-val">${pct}%</b>
+    </div>`;
+  const mkt = (label, pct) => `
+    <div class="mkt">
+      <small>${label}</small>
+      <b>${pct}%</b>
+      <div class="mkt-bar"><i style="width:${pct}%"></i></div>
+    </div>`;
   return `
   <article class="card tilt" data-id="${m.id}">
     <header class="card-head">
       <span class="comp">${m.flag} ${compLbl}</span>
-      <span class="kick">🕐 ${m.kickoff} CET</span>
+      <span class="kick">🕗 ${m.kickoff} CET</span>
     </header>
     <div class="teams">
       <div class="team home">
-        <span class="pick-tag ${m.pick === "1" ? "on" : ""}">1</span>
         <span class="name">${m.home}</span>
         <span class="form">${formChips(m.formHome)}</span>
       </div>
       <div class="vs">VS</div>
       <div class="team away">
-        <span class="pick-tag ${m.pick === "2" ? "on" : ""}">2</span>
         <span class="name">${m.away}</span>
         <span class="form">${formChips(m.formAway)}</span>
+      </div>
+    </div>
+    <div class="pick-box tier-${tier.cls}">
+      <div class="pick-left">
+        <small>🎯 ${t("mkt_pick")}</small>
+        <strong>${pickLbl}</strong>
+      </div>
+      <div class="pick-odds">${m.odds[m.pick].toFixed(2)}</div>
+    </div>
+    <div class="probs">
+      <small class="probs-title">${t("mkt_1x2")}</small>
+      ${bar(m.home, mk.pH, "c-home")}
+      ${bar(t("mkt_draw"), mk.pD, "c-draw")}
+      ${bar(m.away, mk.pA, "c-away")}
+    </div>
+    <div class="mkts-wrap">
+      <small class="probs-title">${t("mkt_goals")}</small>
+      <div class="mkts">
+        ${mkt(t("mkt_over15"), mk.over15)}
+        ${mkt(t("mkt_over25"), mk.over25)}
+        ${mkt(t("mkt_btts"), mk.btts)}
       </div>
     </div>
     <p class="note">${tr(m.note)}</p>
@@ -161,10 +195,6 @@ function matchCard(m) {
         </svg>
         <div class="score-num"><b>${score}</b><small>/100</small></div>
         <span class="tier tier-${tier.cls}">${tierLbl}</span>
-      </div>
-      <div class="odds-box">
-        <small>${t("bet_odds")}</small>
-        <strong>${m.odds[m.pick].toFixed(2)}</strong>
       </div>
     </div>
   </article>`;
@@ -183,7 +213,16 @@ function render(filter = "all", sort = "score") {
   grid.innerHTML = list.map(matchCard).join("");
   bindCards();
   requestAnimationFrame(animateRings);
+  requestAnimationFrame(animateBars);
   observeReveals();
+}
+
+function animateBars() {
+  document.querySelectorAll(".prob-fill").forEach(fill => {
+    fill.style.width = "0%";
+    fill.style.transition = "width 1.2s cubic-bezier(.22,1,.36,1)";
+    requestAnimationFrame(() => fill.style.width = fill.dataset.p + "%");
+  });
 }
 
 document.querySelectorAll(".filters button").forEach(btn => {

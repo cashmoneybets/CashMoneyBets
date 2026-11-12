@@ -135,3 +135,23 @@ function tierOf(score) {
 function safeScore(m) {
   return Math.round((100 / m.odds[m.pick]) * 10) / 10;
 }
+
+/* Modèle de buts : cotes 1X2 -> probabilités normalisées -> buts attendus (Poisson).
+   Le nul trahit un match fermé (peu de buts), l'écart de niveau ouvre le match. */
+function marketsOf(m) {
+  const raw = [1 / m.odds["1"], 1 / m.odds["X"], 1 / m.odds["2"]];
+  const s = raw[0] + raw[1] + raw[2];
+  const pH = raw[0] / s, pD = raw[1] / s, pA = raw[2] / s;
+  const gap = Math.abs(pH - pA);
+  const mu = Math.max(1.5, Math.min(3.6, 3.05 - 6.5 * pD + gap * 0.55));
+  const share = pH / (pH + pA);
+  const lh = mu * (0.5 + (share - 0.5) * 0.9);
+  const la = mu - lh;
+  const pk = k => { let f = 1; for (let i = 2; i <= k; i++) f *= i; return Math.exp(-mu) * Math.pow(mu, k) / f; };
+  const over15 = (1 - pk(0) - pk(1)) * 100;
+  const over25 = (1 - pk(0) - pk(1) - pk(2)) * 100;
+  const btts = (1 - Math.exp(-lh)) * (1 - Math.exp(-la)) * 100;
+  const r = x => Math.round(x);
+  const pHr = r(pH * 100), pDr = r(pD * 100);
+  return { pH: pHr, pD: pDr, pA: 100 - pHr - pDr, over15: r(over15), over25: r(over25), btts: r(btts) };
+}

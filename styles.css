@@ -109,7 +109,7 @@ nav {
   font-family: var(--mono); font-size: 0.78rem; letter-spacing: 1px;
   height: 32px; display: flex; align-items: center;
 }
-.ticker-track { display: inline-flex; gap: 42px; padding-left: 100%; animation: ticker 40s linear infinite; }
+.ticker-track { display: inline-flex; gap: 42px; padding-left: 100%; animation: ticker 95s linear infinite; }
 .ticker:hover .ticker-track { animation-play-state: paused; }
 @keyframes ticker { to { transform: translateX(-100%); } }
 .ticker .up { color: var(--lime); }
@@ -628,4 +628,78 @@ footer .warn {
     transition-duration: 0.01ms !important;
   }
   .ticker-track { animation: none; }
+}
+
+/* ================= V2.2 — BET CARDS : PICK + PROBAS + MARCHÉS BUTS ================= */
+.pick-box {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  margin: 16px 0 14px; padding: 13px 16px;
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.10), rgba(139, 92, 246, 0.08));
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  position: relative; overflow: hidden;
+}
+.pick-box::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,0.09) 50%, transparent 70%);
+  transform: translateX(-100%); animation: pick-sheen 4.5s ease-in-out infinite;
+}
+@keyframes pick-sheen { 0%, 60% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+.pick-left { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.pick-left small {
+  font-family: var(--mono); font-size: 0.58rem; letter-spacing: 2.5px;
+  color: var(--cyan); text-transform: uppercase;
+}
+.pick-left strong { font-size: 1.06rem; font-weight: 700; color: #fff; letter-spacing: 0.3px; }
+.pick-odds {
+  font-family: var(--disp); font-weight: 900; font-size: 1.55rem; flex-shrink: 0;
+  color: var(--lime); text-shadow: 0 0 18px rgba(182, 255, 46, 0.5);
+}
+.pick-box.tier-elite { border-color: rgba(0, 240, 255, 0.55); box-shadow: 0 0 24px rgba(0, 240, 255, 0.12) inset; }
+.pick-box.tier-solid { border-color: rgba(139, 92, 246, 0.5); background: linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(0, 240, 255, 0.06)); }
+.pick-box.tier-value { border-color: rgba(255, 176, 32, 0.45); background: linear-gradient(135deg, rgba(255, 176, 32, 0.10), rgba(139, 92, 246, 0.06)); }
+
+.probs, .mkts-wrap { margin-bottom: 14px; }
+.probs-title {
+  display: block; font-family: var(--mono); font-size: 0.56rem; letter-spacing: 2.5px;
+  color: var(--muted); text-transform: uppercase; margin-bottom: 9px;
+}
+.prob-row { display: grid; grid-template-columns: minmax(64px, 38%) 1fr 44px; align-items: center; gap: 10px; padding: 4px 0; }
+.prob-name {
+  font-size: 0.78rem; font-weight: 600; color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.prob-track { height: 7px; background: rgba(255, 255, 255, 0.06); border-radius: 99px; overflow: hidden; }
+.prob-fill { height: 100%; width: 0; border-radius: 99px; }
+.prob-fill.c-home { background: linear-gradient(90deg, #00f0ff, #00a8ff); box-shadow: 0 0 10px rgba(0, 240, 255, 0.55); }
+.prob-fill.c-draw { background: linear-gradient(90deg, #8b5cf6, #b06cf9); box-shadow: 0 0 10px rgba(139, 92, 246, 0.55); }
+.prob-fill.c-away { background: linear-gradient(90deg, #ff2d95, #ff5c5c); box-shadow: 0 0 10px rgba(255, 45, 149, 0.55); }
+.prob-val { font-family: var(--mono); font-size: 0.78rem; color: #eaf6ff; text-align: right; }
+
+.mkts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.mkt {
+  display: flex; flex-direction: column; gap: 5px; padding: 10px 8px;
+  background: rgba(255, 255, 255, 0.028);
+  border: 1px solid rgba(0, 240, 255, 0.10); border-radius: 6px; text-align: center;
+}
+.mkt small { font-family: var(--mono); font-size: 0.52rem; letter-spacing: 1.2px; color: var(--muted); }
+.mkt b { font-family: var(--disp); font-size: 1.02rem; color: var(--cyan); text-shadow: 0 0 12px rgba(0, 240, 255, 0.4); }
+.mkt-bar { height: 3px; background: rgba(255, 255, 255, 0.07); border-radius: 99px; overflow: hidden; }
+.mkt-bar i { display: block; height: 100%; background: linear-gradient(90deg, #00f0ff, #8b5cf6); border-radius: 99px; }
+
+/* mobile : cartes de paris plus lisibles */
+@media (max-width: 720px) {
+  .ticker-track { animation-duration: 120s; }
+  .card { padding: 16px 14px; }
+  .team .name { font-size: 0.94rem; }
+  .pick-box { padding: 12px 13px; gap: 10px; }
+  .pick-left strong { font-size: 1rem; }
+  .pick-odds { font-size: 1.35rem; }
+  .prob-row { grid-template-columns: minmax(56px, 40%) 1fr 40px; gap: 7px; }
+  .prob-name { font-size: 0.74rem; }
+  .prob-val { font-size: 0.72rem; }
+  .mkt { padding: 9px 5px; }
+  .mkt b { font-size: 0.95rem; }
+  .mkt small { font-size: 0.48rem; letter-spacing: 0.6px; }
+  .note { font-size: 0.78rem; margin: 12px 0 12px; }
 }
