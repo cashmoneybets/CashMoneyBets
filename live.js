@@ -70,16 +70,16 @@ async function fetchLeague(lg) {
 function extractStats(home, away) {
   const get = (c, key) => c.statistics?.find(s => s.name === key)?.displayValue || "–";
   return [
-    { label: "POSSESSION", h: get(home, "possessionPct"), a: get(away, "possessionPct"), bar: true },
-    { label: "TIRS", h: get(home, "totalShots"), a: get(away, "totalShots"), bar: true },
-    { label: "CADRÉS", h: get(home, "shotsOnTarget"), a: get(away, "shotsOnTarget"), bar: true },
-    { label: "CORNERS", h: get(home, "wonCorners"), a: get(away, "wonCorners"), bar: true },
+    { label: t("s_poss"), h: get(home, "possessionPct"), a: get(away, "possessionPct"), bar: true },
+    { label: t("s_shots"), h: get(home, "totalShots"), a: get(away, "totalShots"), bar: true },
+    { label: t("s_sot"), h: get(home, "shotsOnTarget"), a: get(away, "shotsOnTarget"), bar: true },
+    { label: t("s_corners"), h: get(home, "wonCorners"), a: get(away, "wonCorners"), bar: true },
   ];
 }
 
 function liveCard(m) {
   const st = m.state === "in" ? "in" : m.state === "post" ? "post" : "pre";
-  const label = m.state === "in" ? "● LIVE" : m.state === "post" ? "TERMINÉ" : "À VENIR";
+  const label = m.state === "in" ? "● LIVE" : m.state === "post" ? t("live_finished") : t("live_upcoming");
   const statsHtml = m.state === "pre" ? "" : `
     <div class="live-stats">
       ${m.stats.map(s => {
@@ -113,7 +113,7 @@ function liveCard(m) {
     ${m.state === "pre" ? `<div class="live-note">🏟️ ${m.venue} · ${m.clock}</div>` : statsHtml}
     <div class="live-clock">
       <span>${m.state === "in" ? `<span class="min">${m.displayClock}</span>` : m.league}</span>
-      <span>${m.home.record ? `Saison ${m.home.record}` : ""}</span>
+      <span>${m.home.record ? `${t("season")} ${m.home.record}` : ""}</span>
     </div>
   </article>`;
 }
@@ -123,7 +123,7 @@ function renderLive(matches) {
   matches.sort((a, b) => order[a.state] - order[b.state] || a.id.localeCompare(b.id));
   const shown = matches.slice(0, 15);
   if (shown.length === 0) {
-    liveGrid.innerHTML = `<div class="live-loading">AUCUN MATCH DANS LE FLUX POUR LE MOMENT — NOUVELLE VÉRIFICATION DANS ${POLL_MS / 1000}s</div>`;
+    liveGrid.innerHTML = `<div class="live-loading">${t("live_none")}</div>`;
   } else {
     liveGrid.innerHTML = shown.map(liveCard).join("");
     requestAnimationFrame(() =>
@@ -132,8 +132,8 @@ function renderLive(matches) {
   const liveCount = matches.filter(m => m.state === "in").length;
   statLive.textContent = liveCount;
   liveStatus.textContent = liveCount > 0
-    ? `${liveCount} match${liveCount > 1 ? "s" : ""} en direct`
-    : "Flux connecté — aucun match en direct";
+    ? `${liveCount} ${t("live_matches")}`
+    : t("live_ok");
   refreshInfo.textContent = `· maj ${new Date().toLocaleTimeString("fr-FR")}`;
 }
 
@@ -159,6 +159,7 @@ function detectGoals(matches) {
 
 function showGoalAnimation({ m, side }) {
   const team = m[side];
+  document.getElementById("goal-text").textContent = t("goal_text");
   document.getElementById("goal-team").textContent = team.name.toUpperCase();
   document.getElementById("goal-team").style.color = team.color === "#000000" ? "#ffffff" : team.color;
   document.getElementById("goal-scorer").textContent =
@@ -176,6 +177,7 @@ function showGoalAnimation({ m, side }) {
 async function pollLive() {
   const results = await Promise.all(LEAGUES.map(fetchLeague));
   const matches = results.flat();
+  window.__lastLive = matches;
   const goals = detectGoals(matches);
   renderLive(matches);
   if (goals.length > 0) showGoalAnimation(goals[0]);
@@ -184,3 +186,7 @@ async function pollLive() {
 
 pollLive();
 setInterval(pollLive, POLL_MS);
+
+window.renderLiveFromCache = function () {
+  if (window.__lastLive) renderLive(window.__lastLive);
+};

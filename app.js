@@ -106,7 +106,7 @@ setInterval(() => {
 }, 1000);
 
 /* ============ TICKER ============ */
-(function buildTicker() {
+function buildTicker() {
   const items = [...MATCHES]
     .sort((a, b) => safeScore(b) - safeScore(a))
     .map(m => {
@@ -116,7 +116,8 @@ setInterval(() => {
     }).join("");
   document.getElementById("ticker").innerHTML =
     `<div class="ticker-track">${items}${items}</div>`;
-})();
+}
+window.buildTicker = buildTicker;
 
 /* ============ SAFE BET CARDS ============ */
 const grid = document.getElementById("grid");
@@ -128,11 +129,13 @@ function formChips(form) {
 function matchCard(m) {
   const score = safeScore(m);
   const tier = tierOf(score);
+  const tierLbl = (TIER_I18N[tier.label] || {})[LANG] || tier.label;
+  const compLbl = tr(COMP_I18N[m.comp]) || m.comp;
   const R = 34, CIRC = 2 * Math.PI * R;
   return `
   <article class="card tilt" data-id="${m.id}">
     <header class="card-head">
-      <span class="comp">${m.flag} ${m.comp}</span>
+      <span class="comp">${m.flag} ${compLbl}</span>
       <span class="kick">🕐 ${m.kickoff} CET</span>
     </header>
     <div class="teams">
@@ -148,7 +151,7 @@ function matchCard(m) {
         <span class="form">${formChips(m.formAway)}</span>
       </div>
     </div>
-    <p class="note">${m.note}</p>
+    <p class="note">${tr(m.note)}</p>
     <div class="card-foot">
       <div class="score-ring" data-score="${score}">
         <svg viewBox="0 0 80 80">
@@ -157,10 +160,10 @@ function matchCard(m) {
             stroke-dasharray="${CIRC}" stroke-dashoffset="${CIRC}"/>
         </svg>
         <div class="score-num"><b>${score}</b><small>/100</small></div>
-        <span class="tier tier-${tier.cls}">${tier.label}</span>
+        <span class="tier tier-${tier.cls}">${tierLbl}</span>
       </div>
       <div class="odds-box">
-        <small>Cote du pari</small>
+        <small>${t("bet_odds")}</small>
         <strong>${m.odds[m.pick].toFixed(2)}</strong>
       </div>
     </div>
@@ -296,7 +299,7 @@ function drawDonut() {
   const w = cv.width = cv.clientWidth * dpr;
   const h = cv.height = 300 * dpr;
   const tiers = ["elite", "solid", "value"];
-  const labels = { elite: "ÉLITE 85+", solid: "SOLIDE 78-84", value: "VALUE <78" };
+  const labels = { elite: t("tier_elite"), solid: t("tier_solid"), value: t("tier_value") };
   const counts = tiers.map(t => MATCHES.filter(m => tierOf(safeScore(m)).cls === t).length);
   const total = counts.reduce((a, b) => a + b, 0);
   const cx = w / 2, cy = h / 2, R = Math.min(w, h) * 0.32;
@@ -381,5 +384,42 @@ window.onLiveCount = function (n) {
 };
 
 /* ============ INIT ============ */
+window.renderSafeBets = render;
 render();
 observeReveals();
+
+document.querySelectorAll(".lang-btn").forEach(btn =>
+  btn.addEventListener("click", () => setLang(btn.dataset.lang)));
+
+const burger = document.getElementById("burger");
+const mobileMenu = document.getElementById("mobile-menu");
+burger.addEventListener("click", () => {
+  burger.classList.toggle("open");
+  mobileMenu.classList.toggle("open");
+});
+mobileMenu.querySelectorAll("a").forEach(a =>
+  a.addEventListener("click", () => {
+    burger.classList.remove("open");
+    mobileMenu.classList.remove("open");
+  }));
+
+let resizeTimer;
+addEventListener("resize", () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    if (chartsDone.has("chart-bars")) drawBars();
+    if (chartsDone.has("chart-donut")) drawDonut();
+  }, 250);
+});
+
+document.querySelectorAll(".btn-hud").forEach(btn => {
+  btn.addEventListener("mousemove", e => {
+    const r = btn.getBoundingClientRect();
+    btn.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * 0.12}px, ${(e.clientY - r.top - r.height / 2) * 0.25 - 2}px)`;
+  });
+  btn.addEventListener("mouseleave", () => { btn.style.transform = ""; });
+});
+
+applyI18n();
+document.querySelectorAll(".lang-btn").forEach(b =>
+  b.classList.toggle("active", b.dataset.lang === LANG));

@@ -5,24 +5,30 @@ Terminal de paris football futuriste : **scores live**, **animation de but en te
 
 ## ✨ Features
 
-### 🔴 LIVE (nouveau v2.0)
+### 🌍 Trilingue (nouveau v2.1)
+- Sélecteur de langue avec drapeaux dans la nav : 🇫🇷 Français · 🇬🇧 English · 🇩🇪 Deutsch
+- Interface, notes d'analyse et ticker **100% traduits** (langue mémorisée en localStorage)
+- **Menu burger** mobile + layout **mobile-first** (grilles 1 colonne, cartes compactes)
+- Design v2.1 : blobs **aurora** animés + **typographie cinétique** sur le titre
+
+### 🔴 LIVE (v2.0)
 - Scores **temps réel** via le flux public ESPN (14 championnats : PL, Liga, Bundesliga, Serie A, Ligue 1, Nations League, MLS, Brasileirão…)
 - Rafraîchissement automatique toutes les **45 secondes**
 - **Alerte BUT plein écran** : shockwave, nom du buteur, score — détection automatique quand un score bouge
 - Stats par match : possession, tirs, cadrés, corners (barres animées)
 - Matchs triés : LIVE → à venir → terminés
 
-### 🎯 SAFE BETS
+### 🎯 SAFE BETS (v2.0)
 - **Safe Score /100** = probabilité implicite du marché (100 ÷ cote) + forme + contexte
 - Tiers : 🔥 ÉLITE (85+) · SOLIDE (78-84) · VALUE (<78)
 - Anneaux SVG animés, filtres et tris
 
-### 📊 STATS (nouveau v2.0)
+### 📊 STATS (v2.0)
 - Histogramme animé de la distribution des Safe Scores (canvas)
 - Donut animé de répartition par tier
 - Ticker défilant façon trading desk + horloge HUD UTC
 
-### 🌌 DESIGN HUD
+### 🌌 DESIGN HUD (v2.0)
 - Fond nébuleuse (canvas) + grille néon en dérive + scanlines
 - Panneaux à coins biseautés (clip-path), glitch, glow néon cyan/magenta
 - Tilt 3D sur les cartes, reveal on scroll, compteurs animés

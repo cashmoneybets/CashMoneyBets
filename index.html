@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>CASHMONEY·BETS — Live Scores & Safe Score HUD</title>
   <meta name="description" content="Scores live, animation de but en temps réel, stats animées et Safe Score /100 sur les matchs les plus sûrs à parier. HUD futuriste." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -12,37 +12,51 @@
 </head>
 <body>
   <canvas id="nebula"></canvas>
-  <div class="scanlines"></div>
+  <div class="aurora a1"></div>
+  <div class="aurora a2"></div>
+  <div class="aurora a3"></div>
   <div class="grid-overlay"></div>
+  <div class="scanlines"></div>
 
-  <!-- ===== NAV ===== -->
   <nav>
     <div class="logo">CASHMONEY<span class="logo-dot">·</span>BETS</div>
     <div class="nav-links">
-      <a href="#live"><span class="live-dot"></span> LIVE</a>
-      <a href="#safebets">SAFE BETS</a>
-      <a href="#stats">STATS</a>
-      <a href="#methode">MÉTHODE</a>
+      <a href="#live" data-i18n="nav_live"></a>
+      <a href="#safebets" data-i18n="nav_safe"></a>
+      <a href="#stats" data-i18n="nav_stats"></a>
+      <a href="#methode" data-i18n="nav_method"></a>
     </div>
-    <div class="hud-clock" id="hud-clock">--:--:-- UTC</div>
+    <div class="nav-right">
+      <div class="lang-switch">
+        <button class="lang-btn" data-lang="fr" title="Français">🇫🇷</button>
+        <button class="lang-btn" data-lang="en" title="English">🇬🇧</button>
+        <button class="lang-btn" data-lang="de" title="Deutsch">🇩🇪</button>
+      </div>
+      <div class="hud-clock" id="hud-clock">--:--:--</div>
+      <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
   </nav>
 
-  <!-- ===== TICKER ===== -->
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="#live" data-i18n="nav_live"></a>
+    <a href="#safebets" data-i18n="nav_safe"></a>
+    <a href="#stats" data-i18n="nav_stats"></a>
+    <a href="#methode" data-i18n="nav_method"></a>
+  </div>
+
   <div class="ticker" id="ticker"></div>
 
-  <!-- ===== HERO ===== -->
   <header class="hero">
     <div class="hero-hud">
-      <span class="badge glitch" data-text="SYSTÈME EN LIGNE">SYSTÈME EN LIGNE</span>
-      <h1 class="glitch" data-text="CASHMONEY·BETS">CASHMONEY·BETS</h1>
-      <p class="sub">
-        Terminal de paris nouvelle génération : <b>scores LIVE</b> rafraîchis en continu,
-        <b>alerte BUT</b> en temps réel, <b>stats animées</b> et
-        <b>Safe Score /100</b> calculé sur les probabilités du marché.
-      </p>
+      <span class="badge" data-i18n="badge"></span>
+      <h1 class="kinetic">
+        <span class="k-line"><span>CASHMONEY</span></span>
+        <span class="k-line k-accent"><span>·BETS</span></span>
+      </h1>
+      <p class="sub" id="hero-sub"></p>
       <div class="hero-actions">
-        <a class="btn-hud" href="#live"><span></span>📡 Voir le LIVE</a>
-        <a class="btn-hud ghost" href="#safebets">🎯 Safe Bets du jour</a>
+        <a class="btn-hud" href="#live" data-i18n="btn_live"></a>
+        <a class="btn-hud ghost" href="#safebets" data-i18n="btn_safe"></a>
       </div>
     </div>
     <div class="hero-ring" aria-hidden="true">
@@ -51,21 +65,19 @@
     </div>
   </header>
 
-  <!-- ===== STATS BAR ===== -->
   <div class="stats" id="statsbar">
-    <div class="stat"><b id="stat-matches">0</b><span>Matchs scannés</span></div>
-    <div class="stat"><b id="stat-score">0</b><span>Safe Score moyen</span></div>
-    <div class="stat"><b id="stat-elite">0</b><span>Bets ÉLITE</span></div>
-    <div class="stat"><b id="stat-live">0</b><span>Matchs LIVE maintenant</span></div>
+    <div class="stat"><b id="stat-matches">0</b><span data-i18n="stat_matches"></span></div>
+    <div class="stat"><b id="stat-score">0</b><span data-i18n="stat_score"></span></div>
+    <div class="stat"><b id="stat-elite">0</b><span data-i18n="stat_elite"></span></div>
+    <div class="stat"><b id="stat-live">0</b><span data-i18n="stat_live"></span></div>
   </div>
 
-  <!-- ===== LIVE ===== -->
   <section id="live" class="section">
     <div class="section-head">
-      <h2 class="section-title">// SCORES <span class="accent">LIVE</span></h2>
+      <h2 class="section-title" data-i18n-html="live_title"></h2>
       <div class="live-meta">
         <span class="pulse-dot"></span>
-        <span id="live-status">Connexion au flux temps réel…</span>
+        <span id="live-status" data-i18n="live_connecting"></span>
         <span class="refresh-info" id="refresh-info"></span>
       </div>
     </div>
@@ -74,78 +86,74 @@
     </div>
   </section>
 
-  <!-- ===== SAFE BETS ===== -->
   <section id="safebets" class="section">
     <div class="section-head">
-      <h2 class="section-title">// SAFE <span class="accent">BETS</span> DU JOUR</h2>
+      <h2 class="section-title" data-i18n-html="safe_title"></h2>
     </div>
-    <p class="section-sub">Vendredi 13 novembre 2026 · qualifs CAN, Nations League, amicaux. Chaque pari est noté par le moteur : proba implicite du marché + forme + contexte.</p>
+    <p class="section-sub" data-i18n="safe_sub"></p>
     <div class="toolbar">
       <div class="filters">
-        <button class="active" data-filter="all">TOUS</button>
-        <button data-filter="elite">🔥 ÉLITE 85+</button>
-        <button data-filter="solid">SOLIDE</button>
-        <button data-filter="value">VALUE</button>
-        <button data-filter="can">CAN</button>
-        <button data-filter="nl">NATIONS LEAGUE</button>
+        <button class="active" data-filter="all" data-i18n="f_all"></button>
+        <button data-filter="elite" data-i18n="f_elite"></button>
+        <button data-filter="solid" data-i18n="f_solid"></button>
+        <button data-filter="value" data-i18n="f_value"></button>
+        <button data-filter="can" data-i18n="f_can"></button>
+        <button data-filter="nl" data-i18n="f_nl"></button>
       </div>
       <div class="sorts">
-        <button class="active" data-sort="score">SCORE</button>
-        <button data-sort="odds">COTE</button>
-        <button data-sort="time">HEURE</button>
+        <button class="active" data-sort="score" data-i18n="sort_score"></button>
+        <button data-sort="odds" data-i18n="sort_odds"></button>
+        <button data-sort="time" data-i18n="sort_time"></button>
       </div>
     </div>
     <div class="grid" id="grid"></div>
 
     <div class="parlay-banner" id="parlay">
       <div class="parlay-left">
-        <h3>⚡ PARLAY DU JOUR — SÉLECTION DU MOTEUR</h3>
-        <p>Maroc (1.04) × Nigeria (1.14) × Gabon (1.20). Les trois favoris les plus écrasants du vendredi, combinés en un ticket à cote douce et haute fiabilité.</p>
+        <h3 data-i18n="parlay_title"></h3>
+        <p data-i18n="parlay_sub"></p>
       </div>
       <div class="parlay-right">
         <div class="parlay-odds" id="parlay-odds">1.42</div>
-        <small>COTE COMBINÉE</small>
+        <small data-i18n="parlay_lbl"></small>
       </div>
     </div>
   </section>
 
-  <!-- ===== STATS ===== -->
   <section id="stats" class="section">
     <div class="section-head">
-      <h2 class="section-title">// ANALYSE <span class="accent">STATISTIQUE</span></h2>
+      <h2 class="section-title" data-i18n-html="stats_title"></h2>
     </div>
     <div class="charts">
       <div class="chart-panel">
-        <h3>DISTRIBUTION DES SAFE SCORES</h3>
-        <canvas id="chart-bars" width="600" height="300"></canvas>
+        <h3 data-i18n="chart_bars"></h3>
+        <canvas id="chart-bars" height="300"></canvas>
       </div>
       <div class="chart-panel">
-        <h3>RÉPARTITION PAR TIER</h3>
-        <canvas id="chart-donut" width="600" height="300"></canvas>
+        <h3 data-i18n="chart_donut"></h3>
+        <canvas id="chart-donut" height="300"></canvas>
         <div class="donut-legend" id="donut-legend"></div>
       </div>
     </div>
   </section>
 
-  <!-- ===== MÉTHODE ===== -->
   <section id="methode" class="section">
     <div class="section-head">
-      <h2 class="section-title">// LA <span class="accent">MÉTHODE</span></h2>
+      <h2 class="section-title" data-i18n-html="method_title"></h2>
     </div>
     <div class="stats method-grid">
-      <div class="stat"><b class="emoji">🧮</b><span>Proba implicite : 100 ÷ cote du marché</span></div>
-      <div class="stat"><b class="emoji">📈</b><span>Forme récente des deux équipes</span></div>
-      <div class="stat"><b class="emoji">🏟️</b><span>Contexte : domicile, enjeu, écart de niveau</span></div>
-      <div class="stat"><b class="emoji">🎯</b><span>85+ ÉLITE · 78-84 SOLIDE · &lt;78 VALUE</span></div>
+      <div class="stat"><b class="emoji">🧮</b><span data-i18n="m1"></span></div>
+      <div class="stat"><b class="emoji">📈</b><span data-i18n="m2"></span></div>
+      <div class="stat"><b class="emoji">🏟️</b><span data-i18n="m3"></span></div>
+      <div class="stat"><b class="emoji">🎯</b><span data-i18n="m4"></span></div>
     </div>
   </section>
 
-  <!-- ===== GOAL OVERLAY ===== -->
   <div id="goal-overlay">
     <div class="goal-shockwave"></div>
     <div class="goal-content">
       <div class="goal-ball">⚽</div>
-      <div class="goal-text">BUUUT !</div>
+      <div class="goal-text" id="goal-text">BUUUT !</div>
       <div class="goal-team" id="goal-team"></div>
       <div class="goal-scorer" id="goal-scorer"></div>
       <div class="goal-score" id="goal-score"></div>
@@ -153,13 +161,12 @@
   </div>
 
   <footer>
-    <span class="warn">🔞 JOUEUR RESPONSABLE — 18+</span><br />
-    Les paris sportifs comportent des risques. Aucun pari n'est jamais garanti, même avec un Safe Score élevé :
-    un favori à 1.04 peut perdre. Ne mise jamais plus que ce que tu peux te permettre de perdre.
-    Cotes relevées le 12/11/2026, susceptibles d'évoluer. Scores live via ESPN.<br /><br />
-    CASHMONEY·BETS — Safe Score Engine v2.0 · Besoin d'aide ? <b>Joueurs Info Service : 09 74 75 13 13</b>
+    <span class="warn" data-i18n="warn"></span><br />
+    <span data-i18n="footer"></span><br /><br />
+    <span data-i18n-html="footer_brand"></span>
   </footer>
 
+  <script src="i18n.js"></script>
   <script src="data.js"></script>
   <script src="live.js"></script>
   <script src="app.js"></script>
