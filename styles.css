@@ -762,3 +762,56 @@ a.logo { text-decoration: none; }
   .g-best { font-size: 0.76rem; padding: 9px 11px; }
   .parlay-section .parlay-banner { margin-top: 0; }
 }
+
+/* ================= V2.5 — COMPOSANT CONFIDENCE (zone dédiée, zéro chevauchement) ================= */
+.confidence {
+  display: flex; align-items: center; gap: 16px;
+  margin-top: 4px; padding: 14px 16px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015));
+  border: 1px solid var(--line); border-radius: 12px;
+}
+.confidence.tier-elite { border-color: rgba(245, 196, 81, 0.35); background: linear-gradient(135deg, rgba(245, 196, 81, 0.08), rgba(255, 255, 255, 0.015)); }
+.confidence.tier-solid { border-color: rgba(139, 92, 246, 0.35); background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(255, 255, 255, 0.015)); }
+.confidence.tier-value { border-color: rgba(255, 120, 71, 0.3); background: linear-gradient(135deg, rgba(255, 120, 71, 0.07), rgba(255, 255, 255, 0.015)); }
+
+.conf-ring { position: relative; width: 58px; height: 58px; flex-shrink: 0; }
+.conf-ring svg { width: 58px; height: 58px; transform: rotate(-90deg); display: block; }
+.conf-ring .ring-bg { fill: none; stroke: rgba(255, 255, 255, 0.07); stroke-width: 4.5; }
+.conf-ring .ring-fg { fill: none; stroke-width: 4.5; stroke-linecap: round; }
+.conf-num {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-family: var(--disp); font-weight: 900; font-size: 0.95rem; color: #fff;
+}
+.conf-info { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.conf-info small {
+  font-family: var(--mono); font-size: 0.55rem; letter-spacing: 2.2px;
+  color: var(--muted); text-transform: uppercase;
+}
+.conf-val { font-family: var(--disp); font-weight: 900; font-size: 1.35rem; color: #fff; line-height: 1; }
+.conf-val span { font-size: 0.7rem; font-weight: 500; color: var(--muted); margin-left: 3px; }
+.conf-info .tier { position: static; transform: none; align-self: flex-start; margin-top: 2px; }
+
+/* cotes estimées sur les marchés buts */
+.g-market { position: relative; }
+.g-market em {
+  font-style: normal; font-family: var(--mono); font-size: 0.62rem;
+  color: var(--cyan); letter-spacing: 0.5px;
+}
+.g-market.safe { border-color: rgba(46, 255, 160, 0.35); }
+.g-safe {
+  position: absolute; top: 5px; right: 5px;
+  font-family: var(--mono); font-size: 0.44rem; font-weight: 700; letter-spacing: 1px;
+  color: var(--magenta); border: 1px solid rgba(46, 255, 160, 0.45);
+  border-radius: 3px; padding: 1px 4px; background: rgba(46, 255, 160, 0.08);
+}
+.g-best em { font-style: normal; font-family: var(--mono); color: var(--cyan); font-size: 0.78rem; margin-left: 6px; }
+.g-est-note { display: block; font-family: var(--mono); font-size: 0.56rem; color: var(--muted); letter-spacing: 0.5px; margin: -6px 0 10px; }
+
+@media (max-width: 720px) {
+  .confidence { padding: 12px 13px; gap: 13px; }
+  .conf-ring, .conf-ring svg { width: 52px; height: 52px; }
+  .conf-val { font-size: 1.2rem; }
+  .conf-info small { font-size: 0.52rem; letter-spacing: 1.6px; }
+  .g-market em { font-size: 0.56rem; }
+  .g-safe { font-size: 0.4rem; top: 4px; right: 4px; }
+}

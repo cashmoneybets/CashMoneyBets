@@ -57,6 +57,26 @@ function teamsRow(m) {
     </div>`;
 }
 
+function confidenceBlock(score, tier, tierLbl) {
+  const R = 27, CIRC = 2 * Math.PI * R;
+  return `
+    <div class="confidence tier-${tier.cls}" data-score="${score}">
+      <div class="conf-ring">
+        <svg viewBox="0 0 64 64">
+          <circle class="ring-bg" cx="32" cy="32" r="${R}"/>
+          <circle class="ring-fg tier-${tier.cls}" cx="32" cy="32" r="${R}"
+            stroke-dasharray="${CIRC.toFixed(1)}" stroke-dashoffset="${CIRC.toFixed(1)}"/>
+        </svg>
+        <b class="conf-num">${score}</b>
+      </div>
+      <div class="conf-info">
+        <small>${t("conf_label")}</small>
+        <div class="conf-val">${score}<span>/100</span></div>
+        <span class="tier tier-${tier.cls}">${tierLbl}</span>
+      </div>
+    </div>`;
+}
+
 function matchCard(m) {
   const score = safeScore(m);
   const tier = tierOf(score);
@@ -65,7 +85,6 @@ function matchCard(m) {
   const mk = marketsOf(m);
   const pickTeam = m.pick === "1" ? m.home : m.away;
   const pickLbl = t("mkt_pick_win").replace("{team}", pickTeam);
-  const R = 34, CIRC = 2 * Math.PI * R;
   const bar = (label, pct, cls) => `
     <div class="prob-row">
       <span class="prob-name">${label}</span>
@@ -107,17 +126,7 @@ function matchCard(m) {
       </div>
     </div>
     <p class="note">${tr(m.note)}</p>
-    <div class="card-foot">
-      <div class="score-ring" data-score="${score}">
-        <svg viewBox="0 0 80 80">
-          <circle class="ring-bg" cx="40" cy="40" r="${R}"/>
-          <circle class="ring-fg tier-${tier.cls}" cx="40" cy="40" r="${R}"
-            stroke-dasharray="${CIRC}" stroke-dashoffset="${CIRC}"/>
-        </svg>
-        <div class="score-num"><b>${score}</b><small>/100</small></div>
-        <span class="tier tier-${tier.cls}">${tierLbl}</span>
-      </div>
-    </div>
+    ${confidenceBlock(score, tier, tierLbl)}
   </article>`;
 }
 
@@ -142,10 +151,12 @@ function goalsCard(m) {
     ? { key: "mkt_over25", pct: mk.over25 }
     : { key: "mkt_over15", pct: mk.over15 };
   const gbar = (label, pct, cls) => `
-    <div class="g-market">
+    <div class="g-market${pct >= 60 ? " safe" : ""}">
+      ${pct >= 60 ? `<span class="g-safe">✓ ${t("g_safe")}</span>` : ""}
       <small>${label}</small>
       <b>${pct}%</b>
       <div class="g-track"><div class="g-fill ${cls}" data-p="${pct}"></div></div>
+      <em>@ ${(100 / pct).toFixed(2)}</em>
     </div>`;
   return `
   <article class="card g-card tilt" data-id="${m.id}">
@@ -159,12 +170,10 @@ function goalsCard(m) {
       ${gbar(t("mkt_over25"), mk.over25, "g2")}
       ${gbar(t("mkt_btts"), mk.btts, "g3")}
     </div>
-    <div class="g-best">🎯 ${t("g_best")} : <b>${t(best.key)} · ${best.pct}%</b></div>
+    <div class="g-best">🎯 ${t("g_best")} : <b>${t(best.key)} · ${best.pct}%</b> <em>@ ${(100 / best.pct).toFixed(2)}</em></div>
+    <small class="g-est-note">${t("g_est_note")}</small>
     <p class="note">${tr(m.note)}</p>
-    <div class="g-foot">
-      <span class="tier tier-${tier.cls}">${tierLbl}</span>
-      <span class="g-score">${t("safe_score_lbl")} <b>${score}</b>/100</span>
-    </div>
+    ${confidenceBlock(score, tier, tierLbl)}
   </article>`;
 }
 
@@ -191,9 +200,10 @@ function bindCards() {
 
 function animateRings() {
   document.querySelectorAll(".ring-fg").forEach(ring => {
-    const holder = ring.closest(".score-ring");
+    const holder = ring.closest("[data-score]");
+    if (!holder) return;
     const score = parseFloat(holder.dataset.score);
-    const CIRC = 2 * Math.PI * 34;
+    const CIRC = 2 * Math.PI * parseFloat(ring.getAttribute("r"));
     ring.style.transition = "stroke-dashoffset 1.4s cubic-bezier(.22,1,.36,1)";
     requestAnimationFrame(() => ring.style.strokeDashoffset = CIRC * (1 - score / 100));
   });
