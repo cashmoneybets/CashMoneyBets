@@ -1,13 +1,13 @@
 /* ============ NEBULA BACKGROUND ============ */
 const canvas = document.getElementById("nebula");
 const ctx = canvas.getContext("2d");
-let W, H, stars = [], clouds = [], mouse = { x: 0.5, y: 0.5 }, shooting = [];
+let W, H, stars = [], clouds = [], shooting = [], mouse = { x: 0.5, y: 0.5 };
 
 const CLOUD_COLORS = [
-  [124, 58, 237, 0.16],   // violet
-  [6, 182, 212, 0.13],    // cyan
-  [236, 72, 153, 0.11],   // magenta
-  [59, 130, 246, 0.12],   // blue
+  [0, 240, 255, 0.10],
+  [139, 92, 246, 0.12],
+  [255, 45, 149, 0.08],
+  [182, 255, 46, 0.04],
 ];
 
 function resize() {
@@ -20,7 +20,7 @@ function resize() {
 
 function buildStars() {
   stars = [];
-  const n = Math.min(320, Math.floor((innerWidth * innerHeight) / 4200));
+  const n = Math.min(340, Math.floor((innerWidth * innerHeight) / 4000));
   for (let i = 0; i < n; i++) {
     stars.push({
       x: Math.random() * W, y: Math.random() * H,
@@ -28,6 +28,7 @@ function buildStars() {
       tw: Math.random() * Math.PI * 2,
       ts: 0.008 + Math.random() * 0.02,
       depth: Math.random() * 0.8 + 0.2,
+      hue: Math.random() < 0.12 ? (Math.random() < 0.5 ? "0,240,255" : "255,45,149") : "255,255,255",
     });
   }
 }
@@ -46,23 +47,8 @@ function buildClouds() {
   }
 }
 
-function spawnShooting() {
-  if (Math.random() < 0.006 && shooting.length < 2) {
-    shooting.push({
-      x: Math.random() * W * 0.8, y: Math.random() * H * 0.35,
-      vx: (6 + Math.random() * 6) * devicePixelRatio,
-      vy: (2.5 + Math.random() * 3) * devicePixelRatio,
-      life: 1,
-    });
-  }
-}
-
-let t = 0;
 function drawNebula() {
-  t++;
   ctx.clearRect(0, 0, W, H);
-
-  // clouds
   for (const c of clouds) {
     c.x += c.vx; c.y += c.vy; c.ph += 0.004;
     if (c.x < -0.3) c.x = 1.3; if (c.x > 1.3) c.x = -0.3;
@@ -76,25 +62,24 @@ function drawNebula() {
     g.addColorStop(0.55, `rgba(${cr},${cg},${cb},${ca * 0.4})`);
     g.addColorStop(1, "rgba(0,0,0,0)");
     ctx.fillStyle = g;
-    ctx.beginPath();
-    ctx.arc(px, py, r, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.beginPath(); ctx.arc(px, py, r, 0, Math.PI * 2); ctx.fill();
   }
-
-  // stars
   for (const s of stars) {
     s.tw += s.ts;
     const a = 0.35 + Math.abs(Math.sin(s.tw)) * 0.65;
     const px = s.x + (mouse.x - 0.5) * 24 * s.depth * devicePixelRatio;
     const py = s.y + (mouse.y - 0.5) * 24 * s.depth * devicePixelRatio;
-    ctx.fillStyle = `rgba(255,255,255,${a * 0.9})`;
-    ctx.beginPath();
-    ctx.arc(px, py, s.r, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.fillStyle = `rgba(${s.hue},${a * 0.9})`;
+    ctx.beginPath(); ctx.arc(px, py, s.r, 0, Math.PI * 2); ctx.fill();
   }
-
-  // shooting stars
-  spawnShooting();
+  if (Math.random() < 0.006 && shooting.length < 2) {
+    shooting.push({
+      x: Math.random() * W * 0.8, y: Math.random() * H * 0.35,
+      vx: (6 + Math.random() * 6) * devicePixelRatio,
+      vy: (2.5 + Math.random() * 3) * devicePixelRatio,
+      life: 1,
+    });
+  }
   for (let i = shooting.length - 1; i >= 0; i--) {
     const s = shooting[i];
     s.x += s.vx; s.y += s.vy; s.life -= 0.02;
@@ -104,25 +89,36 @@ function drawNebula() {
     grad.addColorStop(1, "rgba(255,255,255,0)");
     ctx.strokeStyle = grad;
     ctx.lineWidth = 1.6 * devicePixelRatio;
-    ctx.beginPath();
-    ctx.moveTo(s.x, s.y);
-    ctx.lineTo(s.x - s.vx * 8, s.y - s.vy * 8);
-    ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(s.x, s.y);
+    ctx.lineTo(s.x - s.vx * 8, s.y - s.vy * 8); ctx.stroke();
   }
-
   requestAnimationFrame(drawNebula);
 }
 
-addEventListener("mousemove", (e) => {
-  mouse.x = e.clientX / innerWidth;
-  mouse.y = e.clientY / innerHeight;
-});
+addEventListener("mousemove", e => { mouse.x = e.clientX / innerWidth; mouse.y = e.clientY / innerHeight; });
 addEventListener("resize", resize);
-resize();
-buildClouds();
-drawNebula();
+resize(); buildClouds(); drawNebula();
 
-/* ============ RENDER MATCHES ============ */
+/* ============ HUD CLOCK ============ */
+setInterval(() => {
+  const el = document.getElementById("hud-clock");
+  if (el) el.textContent = new Date().toISOString().slice(11, 19) + " UTC";
+}, 1000);
+
+/* ============ TICKER ============ */
+(function buildTicker() {
+  const items = [...MATCHES]
+    .sort((a, b) => safeScore(b) - safeScore(a))
+    .map(m => {
+      const arrow = safeScore(m) >= 85 ? "▲" : safeScore(m) >= 78 ? "▶" : "▼";
+      const cls = safeScore(m) >= 85 ? "up" : safeScore(m) >= 78 ? "" : "lbl";
+      return `<span><span class="lbl">${m.flag} ${m.home.toUpperCase()}-${m.away.toUpperCase()}</span> <b class="${cls}">${m.odds[m.pick].toFixed(2)}</b> <span class="${cls}">${arrow}</span> <span class="lbl">SCORE ${safeScore(m)}</span></span>`;
+    }).join("");
+  document.getElementById("ticker").innerHTML =
+    `<div class="ticker-track">${items}${items}</div>`;
+})();
+
+/* ============ SAFE BET CARDS ============ */
 const grid = document.getElementById("grid");
 
 function formChips(form) {
@@ -135,7 +131,6 @@ function matchCard(m) {
   const R = 34, CIRC = 2 * Math.PI * R;
   return `
   <article class="card tilt" data-id="${m.id}">
-    <div class="card-glow"></div>
     <header class="card-head">
       <span class="comp">${m.flag} ${m.comp}</span>
       <span class="kick">🕐 ${m.kickoff} CET</span>
@@ -188,7 +183,6 @@ function render(filter = "all", sort = "score") {
   observeReveals();
 }
 
-/* ============ FILTERS ============ */
 document.querySelectorAll(".filters button").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".filters button").forEach(b => b.classList.remove("active"));
@@ -204,43 +198,159 @@ document.querySelectorAll(".sorts button").forEach(btn => {
   });
 });
 
-/* ============ RINGS ANIMATION ============ */
+function bindCards() {
+  document.querySelectorAll(".tilt").forEach(card => {
+    card.addEventListener("mousemove", e => {
+      const r = card.getBoundingClientRect();
+      const rx = ((e.clientY - r.top) / r.height - 0.5) * -7;
+      const ry = ((e.clientX - r.left) / r.width - 0.5) * 7;
+      card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
+    });
+    card.addEventListener("mouseleave", () => { card.style.transform = ""; });
+  });
+}
+
 function animateRings() {
   document.querySelectorAll(".ring-fg").forEach(ring => {
-    const card = ring.closest(".score-ring");
-    const score = parseFloat(card.dataset.score);
+    const holder = ring.closest(".score-ring");
+    const score = parseFloat(holder.dataset.score);
     const CIRC = 2 * Math.PI * 34;
     ring.style.transition = "stroke-dashoffset 1.4s cubic-bezier(.22,1,.36,1)";
-    requestAnimationFrame(() =>
-      ring.style.strokeDashoffset = CIRC * (1 - score / 100));
+    requestAnimationFrame(() => ring.style.strokeDashoffset = CIRC * (1 - score / 100));
   });
 }
 
 /* ============ COUNTERS ============ */
-function animateCounter(el, target, suffix, decimals = 0) {
+function animateCounter(el, target, decimals = 0) {
   const dur = 1600, start = performance.now();
   function step(now) {
     const p = Math.min(1, (now - start) / dur);
-    const eased = 1 - Math.pow(1 - p, 3);
-    el.textContent = (target * eased).toFixed(decimals) + suffix;
+    el.textContent = (target * (1 - Math.pow(1 - p, 3))).toFixed(decimals);
     if (p < 1) requestAnimationFrame(step);
   }
   requestAnimationFrame(step);
 }
 
-const avgScore = (MATCHES.reduce((a, m) => a + safeScore(m), 0) / MATCHES.length).toFixed(1);
+const avgScore = MATCHES.reduce((a, m) => a + safeScore(m), 0) / MATCHES.length;
 const countersDone = new Set();
 const counterObserver = new IntersectionObserver(entries => {
   entries.forEach(en => {
     if (!en.isIntersecting || countersDone.has(en.target.id)) return;
     countersDone.add(en.target.id);
-    if (en.target.id === "stat-matches") animateCounter(en.target, MATCHES.length, "");
-    if (en.target.id === "stat-score") animateCounter(en.target, parseFloat(avgScore), "", 1);
-    if (en.target.id === "stat-elite") animateCounter(en.target, MATCHES.filter(m => safeScore(m) >= 85).length, "");
-    if (en.target.id === "stat-odds") animateCounter(en.target, 1.42, "", 2);
+    if (en.target.id === "stat-matches") animateCounter(en.target, MATCHES.length);
+    if (en.target.id === "stat-score") animateCounter(en.target, avgScore, 1);
+    if (en.target.id === "stat-elite") animateCounter(en.target, MATCHES.filter(m => safeScore(m) >= 85).length);
   });
 }, { threshold: 0.5 });
-document.querySelectorAll(".stat b").forEach(el => counterObserver.observe(el));
+document.querySelectorAll(".stat b[id]").forEach(el => counterObserver.observe(el));
+
+/* ============ CHARTS ============ */
+const chartColors = { elite: "#00f0ff", solid: "#8b5cf6", value: "#ffb020" };
+
+function drawBars() {
+  const cv = document.getElementById("chart-bars");
+  const c = cv.getContext("2d");
+  const dpr = devicePixelRatio || 1;
+  const w = cv.width = cv.clientWidth * dpr;
+  const h = cv.height = 300 * dpr;
+  const sorted = [...MATCHES].sort((a, b) => safeScore(b) - safeScore(a));
+  const pad = 30 * dpr, bw = (w - pad * 2) / sorted.length;
+  let t = 0;
+  function frame() {
+    t = Math.min(1, t + 0.03);
+    const ease = 1 - Math.pow(1 - t, 3);
+    c.clearRect(0, 0, w, h);
+    sorted.forEach((m, i) => {
+      const s = safeScore(m);
+      const tier = tierOf(s);
+      const bh = ((h - pad * 2.2) * (s / 100)) * ease;
+      const x = pad + i * bw + bw * 0.15;
+      const y = h - pad - bh;
+      c.fillStyle = chartColors[tier.cls] + "cc";
+      c.shadowColor = chartColors[tier.cls];
+      c.shadowBlur = 10 * dpr;
+      c.fillRect(x, y, bw * 0.7, bh);
+      c.shadowBlur = 0;
+      if (t === 1) {
+        c.fillStyle = "#7d8bb0";
+        c.font = `${9 * dpr}px "Share Tech Mono"`;
+        c.textAlign = "center";
+        c.save();
+        c.translate(x + bw * 0.35, h - pad + 14 * dpr);
+        c.rotate(-Math.PI / 4);
+        c.fillText(m.home.slice(0, 8).toUpperCase(), 0, 0);
+        c.restore();
+        c.fillStyle = "#eaf6ff";
+        c.fillText(String(s), x + bw * 0.35, y - 6 * dpr);
+      }
+    });
+    if (t < 1) requestAnimationFrame(frame);
+  }
+  frame();
+}
+
+function drawDonut() {
+  const cv = document.getElementById("chart-donut");
+  const c = cv.getContext("2d");
+  const dpr = devicePixelRatio || 1;
+  const w = cv.width = cv.clientWidth * dpr;
+  const h = cv.height = 300 * dpr;
+  const tiers = ["elite", "solid", "value"];
+  const labels = { elite: "ÉLITE 85+", solid: "SOLIDE 78-84", value: "VALUE <78" };
+  const counts = tiers.map(t => MATCHES.filter(m => tierOf(safeScore(m)).cls === t).length);
+  const total = counts.reduce((a, b) => a + b, 0);
+  const cx = w / 2, cy = h / 2, R = Math.min(w, h) * 0.32;
+  let t = 0;
+  function frame() {
+    t = Math.min(1, t + 0.03);
+    const ease = 1 - Math.pow(1 - t, 3);
+    c.clearRect(0, 0, w, h);
+    let angle = -Math.PI / 2;
+    tiers.forEach((tier, i) => {
+      const frac = (counts[i] / total) * ease;
+      const a2 = angle + frac * Math.PI * 2;
+      c.beginPath();
+      c.arc(cx, cy, R, angle, a2);
+      c.strokeStyle = chartColors[tier];
+      c.lineWidth = 34 * dpr;
+      c.shadowColor = chartColors[tier];
+      c.shadowBlur = 14 * dpr;
+      c.stroke();
+      c.shadowBlur = 0;
+      if (t === 1 && frac > 0.02) {
+        const mid = (angle + a2) / 2;
+        c.fillStyle = "#eaf6ff";
+        c.font = `700 ${13 * dpr}px Orbitron`;
+        c.textAlign = "center"; c.textBaseline = "middle";
+        c.fillText(counts[i], cx + Math.cos(mid) * R, cy + Math.sin(mid) * R);
+      }
+      angle = a2;
+    });
+    c.fillStyle = "#eaf6ff";
+    c.font = `900 ${26 * dpr}px Orbitron`;
+    c.textAlign = "center"; c.textBaseline = "middle";
+    c.fillText(total, cx, cy);
+    c.fillStyle = "#7d8bb0";
+    c.font = `${9 * dpr}px "Share Tech Mono"`;
+    c.fillText("MATCHS", cx, cy + 20 * dpr);
+    if (t < 1) requestAnimationFrame(frame);
+  }
+  frame();
+  document.getElementById("donut-legend").innerHTML = tiers
+    .map(t2 => `<span><i style="background:${chartColors[t2]}"></i>${labels[t2]} : ${MATCHES.filter(m => tierOf(safeScore(m)).cls === t2).length}</span>`)
+    .join("");
+}
+
+const chartsDone = new Set();
+const chartObserver = new IntersectionObserver(entries => {
+  entries.forEach(en => {
+    if (!en.isIntersecting || chartsDone.has(en.target.id)) return;
+    chartsDone.add(en.target.id);
+    if (en.target.id === "chart-bars") drawBars();
+    if (en.target.id === "chart-donut") drawDonut();
+  });
+}, { threshold: 0.3 });
+["chart-bars", "chart-donut"].forEach(id => chartObserver.observe(document.getElementById(id)));
 
 /* ============ REVEAL ON SCROLL ============ */
 const revealObserver = new IntersectionObserver(entries => {
@@ -250,21 +360,26 @@ const revealObserver = new IntersectionObserver(entries => {
       revealObserver.unobserve(en.target);
     }
   });
-}, { threshold: 0.12 });
+}, { threshold: 0.1 });
 
 function observeReveals() {
-  document.querySelectorAll(".card, .section-title, .stat").forEach(el => {
+  document.querySelectorAll(".card, .live-card, .section-title, .stat, .chart-panel").forEach(el => {
     if (!el.classList.contains("visible")) revealObserver.observe(el);
   });
 }
 
-/* ============ SMOOTH SCROLL ============ */
 document.querySelectorAll('a[href^="#"]').forEach(a =>
   a.addEventListener("click", e => {
     e.preventDefault();
-    document.querySelector(a.getAttribute("href"))
-      .scrollIntoView({ behavior: "smooth" });
+    document.querySelector(a.getAttribute("href"))?.scrollIntoView({ behavior: "smooth" });
   }));
+
+/* ============ LIVE COUNT HOOK ============ */
+window.onLiveCount = function (n) {
+  const el = document.getElementById("stat-live");
+  if (el) el.textContent = n;
+};
 
 /* ============ INIT ============ */
 render();
+observeReveals();

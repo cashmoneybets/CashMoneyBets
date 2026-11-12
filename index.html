@@ -3,106 +3,165 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CASHMONEY·BETS — Safe Bets Football & Safe Score</title>
-  <meta name="description" content="Les paris football les plus sûrs du jour, analysés et notés par un Safe Score. Design futuriste, données réelles, combiné optimisé." />
+  <title>CASHMONEY·BETS — Live Scores & Safe Score HUD</title>
+  <meta name="description" content="Scores live, animation de but en temps réel, stats animées et Safe Score /100 sur les matchs les plus sûrs à parier. HUD futuriste." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <canvas id="nebula"></canvas>
+  <div class="scanlines"></div>
+  <div class="grid-overlay"></div>
 
+  <!-- ===== NAV ===== -->
   <nav>
-    <div class="logo">CASHMONEY<span style="color:var(--cyan)">·</span>BETS</div>
+    <div class="logo">CASHMONEY<span class="logo-dot">·</span>BETS</div>
     <div class="nav-links">
-      <a href="#matchs">Matchs</a>
-      <a href="#parlay">Parlay du jour</a>
-      <a href="#methode">Méthode</a>
+      <a href="#live"><span class="live-dot"></span> LIVE</a>
+      <a href="#safebets">SAFE BETS</a>
+      <a href="#stats">STATS</a>
+      <a href="#methode">MÉTHODE</a>
     </div>
-    <a class="cta" href="#matchs">Voir les Safe Bets</a>
+    <div class="hud-clock" id="hud-clock">--:--:-- UTC</div>
   </nav>
 
+  <!-- ===== TICKER ===== -->
+  <div class="ticker" id="ticker"></div>
+
+  <!-- ===== HERO ===== -->
   <header class="hero">
-    <span class="badge">⚡ Vendredi 13 novembre 2026 · Données réelles</span>
-    <h1>TROUVE LES<br>SAFE BETS</h1>
-    <p class="sub">
-      Le moteur <b>CashMoney</b> scanne les matchs du jour et note chaque pari avec un
-      <b>Safe Score /100</b> — basé sur la proba implicite du marché, la forme des équipes
-      et l'écart de niveau. Seuls les favoris les plus fiables passent le filtre.
-    </p>
-    <div class="hero-actions">
-      <a class="btn-primary" href="#matchs">🚀 Explorer les matchs</a>
+    <div class="hero-hud">
+      <span class="badge glitch" data-text="SYSTÈME EN LIGNE">SYSTÈME EN LIGNE</span>
+      <h1 class="glitch" data-text="CASHMONEY·BETS">CASHMONEY·BETS</h1>
+      <p class="sub">
+        Terminal de paris nouvelle génération : <b>scores LIVE</b> rafraîchis en continu,
+        <b>alerte BUT</b> en temps réel, <b>stats animées</b> et
+        <b>Safe Score /100</b> calculé sur les probabilités du marché.
+      </p>
+      <div class="hero-actions">
+        <a class="btn-hud" href="#live"><span></span>📡 Voir le LIVE</a>
+        <a class="btn-hud ghost" href="#safebets">🎯 Safe Bets du jour</a>
+      </div>
     </div>
-    <span class="scroll-hint">▼ Scroll</span>
+    <div class="hero-ring" aria-hidden="true">
+      <div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div>
+      <div class="core" id="hero-core">96.2</div>
+    </div>
   </header>
 
-  <div class="stats">
-    <div class="stat"><b id="stat-matches">0</b><span>Matchs analysés</span></div>
+  <!-- ===== STATS BAR ===== -->
+  <div class="stats" id="statsbar">
+    <div class="stat"><b id="stat-matches">0</b><span>Matchs scannés</span></div>
     <div class="stat"><b id="stat-score">0</b><span>Safe Score moyen</span></div>
-    <div class="stat"><b id="stat-elite">0</b><span>Pari(s) niveau Élite</span></div>
-    <div class="stat"><b id="stat-odds">0</b><span>Cote du parlay du jour</span></div>
+    <div class="stat"><b id="stat-elite">0</b><span>Bets ÉLITE</span></div>
+    <div class="stat"><b id="stat-live">0</b><span>Matchs LIVE maintenant</span></div>
   </div>
 
-  <section class="matches" id="matchs">
-    <h2 class="section-title">Les matchs les plus sûrs du jour</h2>
-    <p class="section-sub">
-      Chaque carte affiche le Safe Score (probabilité implicite du marché), la forme récente
-      des deux équipes et la cote du pari recommandé.
-    </p>
-
-    <div class="toolbar">
-      <div class="filters">
-        <button class="active" data-filter="all">Tous</button>
-        <button data-filter="elite">🔥 Élite 85+</button>
-        <button data-filter="solid">Solide</button>
-        <button data-filter="value">Value</button>
-        <button data-filter="can">Qualifs CAN</button>
-        <button data-filter="nl">Nations League</button>
-      </div>
-      <div class="sorts">
-        <button class="active" data-sort="score">↕ Safe Score</button>
-        <button data-sort="odds">↕ Cote</button>
-        <button data-sort="time">↕ Heure</button>
+  <!-- ===== LIVE ===== -->
+  <section id="live" class="section">
+    <div class="section-head">
+      <h2 class="section-title">// SCORES <span class="accent">LIVE</span></h2>
+      <div class="live-meta">
+        <span class="pulse-dot"></span>
+        <span id="live-status">Connexion au flux temps réel…</span>
+        <span class="refresh-info" id="refresh-info"></span>
       </div>
     </div>
+    <div class="live-grid" id="live-grid">
+      <div class="live-loading">⣿ INITIALISATION DU FLUX…</div>
+    </div>
+  </section>
 
+  <!-- ===== SAFE BETS ===== -->
+  <section id="safebets" class="section">
+    <div class="section-head">
+      <h2 class="section-title">// SAFE <span class="accent">BETS</span> DU JOUR</h2>
+    </div>
+    <p class="section-sub">Vendredi 13 novembre 2026 · qualifs CAN, Nations League, amicaux. Chaque pari est noté par le moteur : proba implicite du marché + forme + contexte.</p>
+    <div class="toolbar">
+      <div class="filters">
+        <button class="active" data-filter="all">TOUS</button>
+        <button data-filter="elite">🔥 ÉLITE 85+</button>
+        <button data-filter="solid">SOLIDE</button>
+        <button data-filter="value">VALUE</button>
+        <button data-filter="can">CAN</button>
+        <button data-filter="nl">NATIONS LEAGUE</button>
+      </div>
+      <div class="sorts">
+        <button class="active" data-sort="score">SCORE</button>
+        <button data-sort="odds">COTE</button>
+        <button data-sort="time">HEURE</button>
+      </div>
+    </div>
     <div class="grid" id="grid"></div>
 
     <div class="parlay-banner" id="parlay">
-      <div>
-        <h3>⚡ Parlay du jour — sélection du moteur</h3>
-        <p>Maroc (1.04) × Nigeria (1.14) × Gabon (1.20). Les trois favoris les plus
-        écrasants du vendredi, combinés pour une cote douce mais très fiable.</p>
+      <div class="parlay-left">
+        <h3>⚡ PARLAY DU JOUR — SÉLECTION DU MOTEUR</h3>
+        <p>Maroc (1.04) × Nigeria (1.14) × Gabon (1.20). Les trois favoris les plus écrasants du vendredi, combinés en un ticket à cote douce et haute fiabilité.</p>
       </div>
-      <div style="text-align:right">
-        <div class="parlay-odds">1.42</div>
-      </div>
-    </div>
-
-    <div id="methode" style="margin-top:90px">
-      <h2 class="section-title">La méthode Safe Score</h2>
-      <p class="section-sub">
-        Le Safe Score mesure la fiabilité d'un pari, pas son gain potentiel.
-      </p>
-      <div class="stats" style="padding:0">
-        <div class="stat"><b class="emoji">🧮</b><span>Proba implicite : 100 ÷ cote du marché</span></div>
-        <div class="stat"><b class="emoji">📈</b><span>Forme récente des deux équipes (5 derniers matchs)</span></div>
-        <div class="stat"><b class="emoji">🏟️</b><span>Contexte : domicile, enjeu, écart de niveau</span></div>
-        <div class="stat"><b class="emoji">🎯</b><span>85+ = Élite · 78-84 = Solide · &lt;78 = Value</span></div>
+      <div class="parlay-right">
+        <div class="parlay-odds" id="parlay-odds">1.42</div>
+        <small>COTE COMBINÉE</small>
       </div>
     </div>
   </section>
 
+  <!-- ===== STATS ===== -->
+  <section id="stats" class="section">
+    <div class="section-head">
+      <h2 class="section-title">// ANALYSE <span class="accent">STATISTIQUE</span></h2>
+    </div>
+    <div class="charts">
+      <div class="chart-panel">
+        <h3>DISTRIBUTION DES SAFE SCORES</h3>
+        <canvas id="chart-bars" width="600" height="300"></canvas>
+      </div>
+      <div class="chart-panel">
+        <h3>RÉPARTITION PAR TIER</h3>
+        <canvas id="chart-donut" width="600" height="300"></canvas>
+        <div class="donut-legend" id="donut-legend"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MÉTHODE ===== -->
+  <section id="methode" class="section">
+    <div class="section-head">
+      <h2 class="section-title">// LA <span class="accent">MÉTHODE</span></h2>
+    </div>
+    <div class="stats method-grid">
+      <div class="stat"><b class="emoji">🧮</b><span>Proba implicite : 100 ÷ cote du marché</span></div>
+      <div class="stat"><b class="emoji">📈</b><span>Forme récente des deux équipes</span></div>
+      <div class="stat"><b class="emoji">🏟️</b><span>Contexte : domicile, enjeu, écart de niveau</span></div>
+      <div class="stat"><b class="emoji">🎯</b><span>85+ ÉLITE · 78-84 SOLIDE · &lt;78 VALUE</span></div>
+    </div>
+  </section>
+
+  <!-- ===== GOAL OVERLAY ===== -->
+  <div id="goal-overlay">
+    <div class="goal-shockwave"></div>
+    <div class="goal-content">
+      <div class="goal-ball">⚽</div>
+      <div class="goal-text">BUUUT !</div>
+      <div class="goal-team" id="goal-team"></div>
+      <div class="goal-scorer" id="goal-scorer"></div>
+      <div class="goal-score" id="goal-score"></div>
+    </div>
+  </div>
+
   <footer>
     <span class="warn">🔞 JOUEUR RESPONSABLE — 18+</span><br />
-    Les paris sportifs comportent des risques. Aucun pari n'est jamais garanti, même avec un
-    Safe Score élevé : un favori à 1.04 peut perdre. Ne mise jamais plus que ce que tu peux
-    te permettre de perdre. Cotes relevées le 12/11/2026, susceptibles d'évoluer jusqu'au coup d'envoi.<br /><br />
-    NEBULA ENGINE × CASHMONEY·BETS — Safe Score v1.0 · Besoin d'aide ? <b>Joueurs Info Service : 09 74 75 13 13</b>
+    Les paris sportifs comportent des risques. Aucun pari n'est jamais garanti, même avec un Safe Score élevé :
+    un favori à 1.04 peut perdre. Ne mise jamais plus que ce que tu peux te permettre de perdre.
+    Cotes relevées le 12/11/2026, susceptibles d'évoluer. Scores live via ESPN.<br /><br />
+    CASHMONEY·BETS — Safe Score Engine v2.0 · Besoin d'aide ? <b>Joueurs Info Service : 09 74 75 13 13</b>
   </footer>
 
   <script src="data.js"></script>
+  <script src="live.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
