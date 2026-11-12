@@ -815,3 +815,138 @@ a.logo { text-decoration: none; }
   .g-market em { font-size: 0.56rem; }
   .g-safe { font-size: 0.4rem; top: 4px; right: 4px; }
 }
+
+/* ================= V2.6 — STADE 3D DANS LE HERO + CASES INTERACTIVES ================= */
+.hero { grid-template-columns: 1fr; padding-bottom: 40px; }
+.hero-hud { text-align: center; display: flex; flex-direction: column; align-items: center; }
+
+.stadium {
+  position: relative; width: min(920px, 92vw); height: 430px;
+  margin: 34px auto 0; perspective: 1100px;
+}
+.st-world { position: absolute; inset: 0; transform-style: preserve-3d; animation: st-sway 12s ease-in-out infinite alternate; }
+@keyframes st-sway { from { transform: rotateY(-2.5deg); } to { transform: rotateY(2.5deg); } }
+
+/* tribunes : foule en bokeh (2 couches de points lumineux qui scintillent) */
+.st-stands {
+  position: absolute; left: -7%; right: -7%; top: 6%; height: 44%;
+  border-radius: 14px 14px 0 0;
+  background:
+    radial-gradient(circle at 50% 46%, rgba(255, 244, 214, 0.55) 1px, transparent 1.7px),
+    radial-gradient(circle at 50% 50%, rgba(245, 196, 81, 0.4) 1px, transparent 1.6px),
+    linear-gradient(180deg, #0c0c16, #14142a);
+  background-size: 17px 13px, 29px 21px, 100% 100%;
+  background-position: 0 0, 9px 7px, 0 0;
+  box-shadow: inset 0 -18px 40px rgba(0, 0, 0, 0.65), inset 0 8px 24px rgba(0, 0, 0, 0.5),
+    0 0 50px rgba(139, 92, 246, 0.08);
+  animation: crowd-flicker 5.5s ease-in-out infinite alternate;
+}
+.st-stands2 {
+  top: 0; height: 30%; left: -3%; right: -3%;
+  background-size: 23px 17px, 37px 27px, 100% 100%;
+  background-position: 5px 3px, 14px 9px, 0 0;
+  opacity: 0.55; animation-delay: -2.7s;
+}
+@keyframes crowd-flicker { from { filter: brightness(0.85); } to { filter: brightness(1.25); } }
+
+/* projecteurs */
+.st-beam {
+  position: absolute; top: -2%; width: 200px; height: 78%;
+  background: linear-gradient(180deg, rgba(255, 236, 180, 0.4), rgba(255, 236, 180, 0.06) 55%, transparent 80%);
+  clip-path: polygon(44% 0, 56% 0, 100% 100%, 0 100%);
+  filter: blur(12px); opacity: 0.55; pointer-events: none;
+  animation: beam-sway 8s ease-in-out infinite alternate;
+}
+.st-beam-l { left: 4%; }
+.st-beam-r { right: 4%; animation-delay: -4s; }
+@keyframes beam-sway { from { transform: rotate(-4deg); opacity: 0.4; } to { transform: rotate(4deg); opacity: 0.7; } }
+
+/* pelouse 3D */
+.st-pitch {
+  position: absolute; left: 5%; right: 5%; bottom: 0; height: 54%;
+  transform: rotateX(56deg); transform-origin: 50% 0;
+  background: linear-gradient(180deg, #0b2413, #0e3220 60%, #11402a);
+  border: 1.5px solid rgba(245, 196, 81, 0.55); border-radius: 4px;
+  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.55), 0 0 70px rgba(46, 255, 160, 0.12),
+    inset 0 0 90px rgba(0, 0, 0, 0.45);
+}
+.st-pitch::before {
+  content: ""; position: absolute; inset: 0;
+  background: repeating-linear-gradient(90deg, transparent 0 11.5%, rgba(255, 255, 255, 0.022) 11.5% 23%);
+}
+.st-mid { position: absolute; left: 0; right: 0; top: 50%; height: 1.5px; background: rgba(245, 196, 81, 0.45); }
+.st-circle {
+  position: absolute; left: 50%; top: 50%; width: 24%; aspect-ratio: 1;
+  transform: translate(-50%, -50%) scaleY(0.4);
+  border: 1.5px solid rgba(245, 196, 81, 0.45); border-radius: 50%;
+}
+.st-box-far {
+  position: absolute; left: 30%; right: 30%; top: -1.5px; height: 16%;
+  border: 1.5px solid rgba(245, 196, 81, 0.4); border-top: none;
+}
+.st-sheen {
+  position: absolute; inset: 0; overflow: hidden; border-radius: 4px;
+}
+.st-sheen::after {
+  content: ""; position: absolute; top: 0; bottom: 0; width: 34%;
+  background: linear-gradient(100deg, transparent, rgba(255, 244, 214, 0.07), transparent);
+  animation: pitch-sheen 7s linear infinite;
+}
+@keyframes pitch-sheen { from { left: -40%; } to { left: 110%; } }
+
+/* cases stats : panneaux holographiques flottants DANS le stade */
+.st-cases {
+  position: absolute; left: 0; right: 0; bottom: 7%;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 13px; padding: 0 3%;
+  transform: rotateX(7deg); transform-style: preserve-3d; z-index: 5;
+}
+.st-case {
+  font-family: inherit; cursor: pointer; text-align: center;
+  padding: 16px 8px 12px;
+  background: rgba(10, 10, 18, 0.82); backdrop-filter: blur(14px);
+  border: 1px solid rgba(245, 196, 81, 0.28); border-radius: 12px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.5), 0 0 24px rgba(245, 196, 81, 0.07);
+  transition: transform 0.3s cubic-bezier(.22,1,.36,1), border-color 0.25s, box-shadow 0.25s;
+  animation: case-float 5s ease-in-out infinite;
+  clip-path: none;
+}
+.st-case:nth-child(2) { animation-delay: -1.2s; }
+.st-case:nth-child(3) { animation-delay: -2.4s; }
+.st-case:nth-child(4) { animation-delay: -3.6s; }
+@keyframes case-float { 50% { transform: translateY(-6px); } }
+.st-case:hover { border-color: rgba(245, 196, 81, 0.6); box-shadow: 0 18px 44px rgba(0, 0, 0, 0.6), 0 0 34px rgba(245, 196, 81, 0.18); }
+.st-case:active { transform: scale(0.96); }
+.st-case.open { border-color: var(--cyan); box-shadow: 0 18px 44px rgba(0, 0, 0, 0.6), 0 0 40px rgba(245, 196, 81, 0.25); }
+.st-case.open { animation-play-state: paused; transform: translateY(-4px); }
+.st-case b { display: block; font-size: 1.7rem; margin-bottom: 4px; }
+.st-case span { display: block; }
+
+.st-detail {
+  display: block; max-height: 0; overflow: hidden; width: 100%;
+  transition: max-height 0.45s cubic-bezier(.22,1,.36,1), margin 0.3s;
+  font-family: var(--mono); font-size: 0.62rem; text-align: left;
+}
+.st-case.open .st-detail { max-height: 150px; margin-top: 10px; border-top: 1px solid rgba(245, 196, 81, 0.2); padding-top: 8px; }
+.sd-row { display: flex; justify-content: space-between; gap: 8px; padding: 2.5px 0; color: var(--text); }
+.sd-row b { color: var(--cyan); font-size: 0.72rem; }
+.sd-link {
+  display: inline-block; margin-top: 7px; color: var(--cyan);
+  text-decoration: none; letter-spacing: 1px; border-bottom: 1px dashed rgba(245, 196, 81, 0.5);
+}
+.st-hint {
+  display: block; text-align: center; margin-top: 14px;
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 2px;
+  color: var(--muted); text-transform: uppercase;
+}
+
+@media (max-width: 720px) {
+  .stadium { height: 400px; perspective: 800px; }
+  .st-cases { grid-template-columns: repeat(2, 1fr); gap: 10px; bottom: 5%; }
+  .st-case { padding: 13px 8px 10px; }
+  .st-case b { font-size: 1.4rem; }
+  .st-case span { font-size: 0.56rem; letter-spacing: 0.8px; }
+  .st-case.open .st-detail { max-height: 130px; }
+  .st-beam { width: 120px; }
+  .st-pitch { height: 50%; }
+  .st-stands { height: 40%; }
+}

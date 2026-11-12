@@ -259,9 +259,69 @@ function observeReveals() {
 
 /* ============ LIVE COUNT HOOK ============ */
 window.onLiveCount = function (n) {
+  window.__liveCount = n;
   const el = document.getElementById("stat-live");
   if (el) el.textContent = n;
+  const d = document.getElementById("detail-live");
+  if (d && document.getElementById("case-live")?.classList.contains("open")) {
+    d.innerHTML = liveDetail();
+  }
 };
+
+/* ============ CASES STATS INTERACTIVES (dans le stade) ============ */
+function liveDetail() {
+  const n = window.__liveCount || 0;
+  return `<div class="sd-row"><span>${n} ${t("live_matches")}</span></div>
+    <a class="sd-link" href="#live">${t("btn_live")}</a>`;
+}
+
+function statDetail(id) {
+  if (id === "stat-matches") {
+    const comps = {};
+    MATCHES.forEach(m => {
+      const k = tr(COMP_I18N[m.comp]) || m.comp;
+      comps[k] = (comps[k] || 0) + 1;
+    });
+    return Object.entries(comps)
+      .map(([c, n]) => `<div class="sd-row"><span>${c}</span><b>${n}</b></div>`).join("");
+  }
+  if (id === "stat-score") {
+    return [...MATCHES].sort((a, b) => safeScore(b) - safeScore(a)).slice(0, 3)
+      .map(m => `<div class="sd-row"><span>${m.flag} ${m.home} - ${m.away}</span><b>${safeScore(m)}</b></div>`).join("");
+  }
+  if (id === "stat-elite") {
+    const e = MATCHES.filter(m => safeScore(m) >= 85);
+    return e.map(m => `<div class="sd-row"><span>${m.flag} ${m.home} - ${m.away}</span><b>${safeScore(m)}</b></div>`).join("");
+  }
+  if (id === "stat-live") return liveDetail();
+  return "";
+}
+
+function renderStatCases() {
+  [["case-matches", "stat-matches", "detail-matches"],
+   ["case-score", "stat-score", "detail-score"],
+   ["case-elite", "stat-elite", "detail-elite"],
+   ["case-live", "stat-live", "detail-live"]].forEach(([cid, sid, did]) => {
+    const box = document.getElementById(cid);
+    if (!box) return;
+    const det = document.getElementById(did);
+    if (det && box.classList.contains("open")) det.innerHTML = statDetail(sid);
+  });
+}
+window.renderStatCases = renderStatCases;
+
+document.querySelectorAll(".st-case").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const wasOpen = btn.classList.contains("open");
+    document.querySelectorAll(".st-case.open").forEach(c => c.classList.remove("open"));
+    if (!wasOpen) {
+      btn.classList.add("open");
+      const det = btn.querySelector(".st-detail");
+      const sid = btn.querySelector("b[id]")?.id;
+      if (det && sid) det.innerHTML = statDetail(sid);
+    }
+  });
+});
 
 /* ============ INIT ============ */
 renderTopPicks();

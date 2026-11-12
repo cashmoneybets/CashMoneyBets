@@ -19,7 +19,7 @@ const I18N = {
     buts_title: "// MARCHÉS <span class='accent'>BUTS</span>",
     buts_sub: "Probabilités de buts estimées par le moteur (modèle de Poisson calibré sur les cotes) : plus de 1.5 buts, plus de 2.5 buts, les deux équipes marquent. Classé par la meilleure opportunité.",
     g_best: "MEILLEUR PARI BUT", g_safe: "SAFE", g_est_note: "Cotes estimées (100 ÷ proba) — compare avec ton bookmaker.",
-    conf_label: "SCORE DE CONFIANCE", safe_score_lbl: "Safe Score",
+    conf_label: "SCORE DE CONFIANCE", safe_score_lbl: "Safe Score", case_hint: "Appuie sur une case pour voir les données",
     safe_sub: "Vendredi 13 novembre 2026 · qualifs CAN, Nations League, amicaux. Chaque pari est noté par le moteur : proba implicite du marché + forme + contexte.",
     f_all: "TOUS", f_elite: "🔥 ÉLITE 85+", f_solid: "SOLIDE", f_value: "VALUE", f_can: "CAN", f_nl: "NATIONS LEAGUE",
     sort_score: "SCORE", sort_odds: "COTE", sort_time: "HEURE",
@@ -61,7 +61,7 @@ const I18N = {
     buts_title: "// <span class='accent'>GOALS</span> MARKETS",
     buts_sub: "Goals probabilities estimated by the engine (Poisson model calibrated on odds): over 1.5 goals, over 2.5 goals, both teams to score. Ranked by best opportunity.",
     g_best: "BEST GOALS BET", g_safe: "SAFE", g_est_note: "Estimated odds (100 ÷ probability) — compare with your bookmaker.",
-    conf_label: "CONFIDENCE SCORE", safe_score_lbl: "Safe Score",
+    conf_label: "CONFIDENCE SCORE", safe_score_lbl: "Safe Score", case_hint: "Tap a panel to see the data",
     safe_sub: "Friday, November 13, 2026 · AFCON qualifiers, Nations League, friendlies. Every bet is rated by the engine: implied market probability + form + context.",
     f_all: "ALL", f_elite: "🔥 ELITE 85+", f_solid: "SOLID", f_value: "VALUE", f_can: "AFCON", f_nl: "NATIONS LEAGUE",
     sort_score: "SCORE", sort_odds: "ODDS", sort_time: "TIME",
@@ -103,7 +103,7 @@ const I18N = {
     buts_title: "// <span class='accent'>TOR</span>-MÄRKTE",
     buts_sub: "Torwahrscheinlichkeiten vom Motor geschätzt (Poisson-Modell, an Quoten kalibriert): über 1.5 Tore, über 2.5 Tore, beide Teams treffen. Sortiert nach bester Gelegenheit.",
     g_best: "BESTE TOR-WETTE", g_safe: "SICHER", g_est_note: "Geschätzte Quoten (100 ÷ Wahrscheinlichkeit) — vergleiche mit deinem Buchmacher.",
-    conf_label: "VERTRAUENSSCORE", safe_score_lbl: "Safe Score",
+    conf_label: "VERTRAUENSSCORE", safe_score_lbl: "Safe Score", case_hint: "Tippe auf ein Panel, um die Daten zu sehen",
     safe_sub: "Freitag, 13. November 2026 · Afrika-Cup-Quali, Nations League, Freundschaftsspiele. Jeder Tipp wird vom Motor bewertet: implizite Marktquote + Form + Kontext.",
     f_all: "ALLE", f_elite: "🔥 ELITE 85+", f_solid: "SOLID", f_value: "VALUE", f_can: "AFRIKA-CUP", f_nl: "NATIONS LEAGUE",
     sort_score: "SCORE", sort_odds: "QUOTE", sort_time: "ZEIT",
@@ -170,6 +170,7 @@ function setLang(lang) {
   applyI18n();
   if (typeof window.renderSafeBets === "function") window.renderSafeBets();
   if (typeof window.renderButs === "function") window.renderButs();
+  if (typeof window.renderStatCases === "function") window.renderStatCases();
   if (typeof window.buildTicker === "function") window.buildTicker();
   if (window.__lastLive && typeof window.renderLiveFromCache === "function") {
     window.renderLiveFromCache();
