@@ -1769,3 +1769,83 @@ a.logo { text-decoration: none; }
 @media (prefers-reduced-motion: reduce) {
   .card.visible .roll-ball { animation: none; opacity: 0; }
 }
+
+/* ============ v4.0 — BALLON EN BOUCLE, GLOW SANS FEU, TERRAIN PLUS LONG + CAGES + BALLON REALISTE ============ */
+
+/* ---- le ballon recommence son animation en boucle : chute, rebonds, repos lumineux, disparition ---- */
+.card.visible .roll-ball { animation: ball-drop 6.5s linear 0.9s infinite; }
+@keyframes ball-drop {
+  0% { transform: translate(var(--drop-x, 100px), -90px) translateZ(30px) rotate(0deg); opacity: 0; animation-timing-function: cubic-bezier(0.55, 0, 0.85, 0.36); }
+  4% { opacity: 1; }
+  15% { transform: translate(var(--drop-x, 100px), var(--drop-y, 200px)) translateZ(30px) rotate(150deg); animation-timing-function: cubic-bezier(0.22, 0.9, 0.35, 1); }
+  19% { transform: translate(var(--drop-x, 100px), calc(var(--drop-y, 200px) - 30px)) translateZ(30px) rotate(196deg); animation-timing-function: cubic-bezier(0.55, 0, 0.85, 0.36); }
+  23% { transform: translate(var(--drop-x, 100px), var(--drop-y, 200px)) translateZ(30px) rotate(226deg); animation-timing-function: cubic-bezier(0.22, 0.9, 0.35, 1); }
+  26% { transform: translate(var(--drop-x, 100px), calc(var(--drop-y, 200px) - 9px)) translateZ(30px) rotate(244deg); animation-timing-function: cubic-bezier(0.55, 0, 0.85, 0.36); }
+  29% { transform: translate(var(--drop-x, 100px), var(--drop-y, 200px)) translateZ(30px) rotate(254deg); }
+  88% { transform: translate(var(--drop-x, 100px), var(--drop-y, 200px)) translateZ(30px) rotate(254deg); opacity: 1; }
+  96%, 100% { transform: translate(var(--drop-x, 100px), var(--drop-y, 200px)) translateZ(30px) rotate(254deg); opacity: 0; }
+}
+
+/* ---- plus de feu : le pari recommande glow simplement ---- */
+.sp-fire { display: none !important; }
+.pick-box.on-fire {
+  background: linear-gradient(135deg, rgba(245, 196, 81, 0.16), rgba(139, 92, 246, 0.10));
+  border-color: rgba(245, 196, 81, 0.75);
+  animation: pick-glow 1.8s ease-in-out infinite;
+}
+@keyframes pick-glow {
+  0%, 100% { box-shadow: 0 0 12px rgba(245, 196, 81, 0.25), inset 0 0 14px rgba(245, 196, 81, 0.08); }
+  50% { box-shadow: 0 0 26px rgba(245, 196, 81, 0.55), inset 0 0 20px rgba(245, 196, 81, 0.16); }
+}
+
+/* ---- stade : plus de place pour un terrain plus long (cases bleues retirees) ---- */
+.stadium { height: 440px; }
+.st-stands { top: 3%; height: 36%; }
+.st-stands2 { height: 24%; }
+.crowd-canvas { top: 3%; height: 36%; }
+.st-pitch { height: 72%; }
+.st-screen { top: 6%; height: 15%; }
+
+/* ---- cages de buts ---- */
+.st-goal {
+  position: absolute; left: 50%; width: 132px; height: 54px; z-index: 1;
+  transform: translateX(-50%) rotateX(-56deg); transform-origin: 50% 100%;
+  border: 3px solid rgba(255, 255, 255, 0.92); border-bottom: none;
+  border-radius: 2px 2px 0 0;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.17) 0 1px, transparent 1px 9px),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.17) 0 1px, transparent 1px 9px),
+    rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.18), inset 0 0 18px rgba(0, 0, 0, 0.35);
+}
+.st-goal-far { bottom: 99.6%; }
+.st-goal-near { top: 99.4%; height: 40px; opacity: 0.8; transform: translateX(-50%) rotateX(-56deg); transform-origin: 50% 0; }
+
+/* ---- ballon du stade : plus grand et realiste (pentagones + ombrage sphere) ---- */
+.st-ball-fig { width: 17px; height: 17px; }
+.sb-shadow { width: 20px; height: 7px; }
+.sb-ball {
+  background: radial-gradient(circle at 33% 28%, #ffffff, #eceff2 42%, #c2cad2 74%, #8a97a5);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.55), inset -2px -3px 5px rgba(70, 85, 100, 0.55);
+}
+.sb-ball::before {
+  content: ""; position: absolute; inset: 0; border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 92%, rgba(24, 27, 33, 0.92) 0 17%, transparent 18%),
+    radial-gradient(circle at 8% 58%, rgba(24, 27, 33, 0.88) 0 14%, transparent 15%),
+    radial-gradient(circle at 92% 58%, rgba(24, 27, 33, 0.88) 0 14%, transparent 15%),
+    radial-gradient(circle at 30% 12%, rgba(24, 27, 33, 0.85) 0 12%, transparent 13%),
+    radial-gradient(circle at 70% 12%, rgba(24, 27, 33, 0.85) 0 12%, transparent 13%);
+}
+.sb-ball::after {
+  content: ""; position: absolute; left: 22%; top: 14%; width: 26%; height: 18%;
+  border-radius: 50%; transform: rotate(-18deg);
+  background: rgba(255, 255, 255, 0.85); filter: blur(1px);
+}
+
+@media (max-width: 720px) {
+  .stadium { height: 380px; }
+  .st-goal { width: 104px; height: 44px; }
+  .st-goal-near { height: 32px; }
+  .st-ball-fig { width: 14px; height: 14px; }
+}

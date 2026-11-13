@@ -50,10 +50,6 @@ function flashCls(score, tier) {
 function rollBall() {
   return `<span class="roll-ball">⚽</span>`;
 }
-function fireFx() {
-  return `<canvas class="sp-fire"></canvas>`;
-}
-
 function formChips(form) {
   return form.map(r => `<span class="chip chip-${r}">${r === "W" ? "V" : r === "D" ? "N" : "D"}</span>`).join("");
 }
@@ -116,7 +112,7 @@ function matchCard(m) {
   return `
   <article class="card tilt" data-id="${m.id}">
     <i class="card-bg"></i>
-    ${rollBall()}${score >= BEST_SCORE ? fireFx() : ""}
+    ${rollBall()}
     <header class="card-head">
       <span class="comp">${m.flag} ${compLbl}</span>
       <span class="kick">🕗 ${m.kickoff} CET</span>
@@ -181,7 +177,7 @@ function goalsCard(m) {
   return `
   <article class="card g-card tilt" data-id="${m.id}">
     <i class="card-bg"></i>
-    ${rollBall()}${score >= BEST_SCORE ? fireFx() : ""}
+    ${rollBall()}
     <header class="card-head">
       <span class="comp">${m.flag} ${compLbl}</span>
       <span class="kick">🕗 ${m.kickoff} CET</span>
@@ -309,14 +305,7 @@ function bindCards() {
   document.querySelectorAll(".tilt").forEach((card, i) => {
     card.style.animationDelay = `-${((i * 1.3) % 7).toFixed(1)}s`;
     const ball = card.querySelector(":scope > .roll-ball");
-    const fire = card.querySelector(":scope > .sp-fire");
     const pb = card.querySelector(".pick-box");
-    if (fire && pb) {
-      fire.style.left = (pb.offsetLeft - 26).toFixed(0) + "px";
-      fire.style.top = (pb.offsetTop - 48).toFixed(0) + "px";
-      fire.style.width = (pb.offsetWidth + 52).toFixed(0) + "px";
-      fire.style.height = (pb.offsetHeight + 78).toFixed(0) + "px";
-    }
     const mkts = card.querySelectorAll(".mkt, .g-market");
     mkts.forEach(el => el.classList.remove("mkt-target"));
     if (ball && mkts.length) {
@@ -352,14 +341,7 @@ function bindCards() {
 function positionFx() {
   document.querySelectorAll(".tilt").forEach(card => {
     const ball = card.querySelector(":scope > .roll-ball");
-    const fire = card.querySelector(":scope > .sp-fire");
     const pb = card.querySelector(".pick-box");
-    if (fire && pb) {
-      fire.style.left = (pb.offsetLeft - 26).toFixed(0) + "px";
-      fire.style.top = (pb.offsetTop - 48).toFixed(0) + "px";
-      fire.style.width = (pb.offsetWidth + 52).toFixed(0) + "px";
-      fire.style.height = (pb.offsetHeight + 78).toFixed(0) + "px";
-    }
     const mkts = card.querySelectorAll(".mkt, .g-market");
     mkts.forEach(el => el.classList.remove("mkt-target"));
     if (ball && mkts.length) {
