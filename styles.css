@@ -1934,3 +1934,35 @@ a.logo { text-decoration: none; }
 @media (prefers-reduced-motion: reduce) {
   .apm-arm-r, .apm-head, .apm-arm-l { animation: none; }
 }
+
+/* ============ v4.3 — JOUEURS SVG (style accumulateur) : proportions longues + vrais visages ============ */
+.sp-svg {
+  position: absolute; bottom: 0; left: 0; width: 63px; height: 105px;
+  transform: translateX(-50%) rotateX(-38deg);
+  transform-origin: 50% 100%;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.45));
+}
+.spg-leg-l { transform-origin: 38px 96px; }
+.spg-leg-r { transform-origin: 51px 96px; }
+.st-player.running .spg-leg-l { animation: leg-swing 0.34s ease-in-out infinite alternate; }
+.st-player.running .spg-leg-r { animation: leg-swing 0.34s ease-in-out infinite alternate-reverse; }
+.spg-arm-l { transform-origin: 28px 54px; }
+.spg-arm-r { transform-origin: 62px 54px; }
+.st-player.running .spg-arm-l { animation: leg-swing 0.34s ease-in-out infinite alternate-reverse; }
+.st-player.running .spg-arm-r { animation: leg-swing 0.34s ease-in-out infinite alternate; }
+.spg-eye {
+  transform-box: fill-box; transform-origin: center;
+  animation: spg-blink 4.5s ease-in-out infinite;
+}
+@keyframes spg-blink {
+  0%, 91%, 100% { transform: scaleY(1); }
+  94% { transform: scaleY(0.12); }
+}
+
+@media (max-width: 720px) {
+  .sp-svg { width: 50px; height: 84px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spg-eye { animation: none; }
+}
