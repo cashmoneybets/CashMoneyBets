@@ -573,14 +573,17 @@ footer .warn {
 
 /* ================= MOBILE-FIRST ================= */
 @media (max-width: 720px) {
-  .burger { display: flex; }
+  .burger { display: flex; padding: 8px 7px; }
   .hud-clock { display: none; }
 
+  /* nav compacte : logo + 4 drapeaux + burger tiennent sur 360px */
+  nav { gap: 8px; padding: 12px 3vw; }
+  .nav-right { gap: 6px; }
+  .logo { font-size: 0.78rem; letter-spacing: 1px; }
   .lang-switch { gap: 3px; padding: 3px; }
-  .lang-btn { padding: 3px 4px; }
-  .lang-flag { width: 22px; height: 14px; }
-  .lang-btn small { font-size: 0.46rem; }
-  .logo { font-size: 1rem; }
+  .lang-btn { padding: 2px 3px; }
+  .lang-flag { width: 20px; height: 13px; }
+  .lang-btn small { font-size: 0.44rem; letter-spacing: 1px; }
 
   .ticker { top: 67px; height: 28px; font-size: 0.68rem; }
   .mobile-menu { top: 66px; }
