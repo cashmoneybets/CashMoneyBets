@@ -14,6 +14,7 @@ function showView(name) {
   document.querySelectorAll("[data-view]").forEach(a =>
     a.classList.toggle("active", a.dataset.view === name));
   window.scrollTo(0, 0);
+  positionFx();
   observeReveals();
 }
 function routeFromHash() {
@@ -329,17 +330,8 @@ function bindCards() {
         bestMkt.classList.add("mkt-target");
         let x = 0, y = 0, n = bestMkt;
         while (n && n !== card) { x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent; }
-        const tx = x + bestMkt.offsetWidth / 2 - 26;
-        const ty = y + bestMkt.offsetHeight / 2 - 26;
-        const sx = card.clientWidth - 8;
-        const sy = ty;
-        const dist = Math.hypot(tx - sx, ty - sy);
-        const rot = -Math.round(dist / (Math.PI * 52) * 360);
-        ball.style.setProperty("--sx", sx.toFixed(0) + "px");
-        ball.style.setProperty("--sy", sy.toFixed(0) + "px");
-        ball.style.setProperty("--roll-x", tx.toFixed(0) + "px");
-        ball.style.setProperty("--roll-y", ty.toFixed(0) + "px");
-        ball.style.setProperty("--roll-rot", rot + "deg");
+        ball.style.setProperty("--drop-x", (x + bestMkt.offsetWidth / 2 - 26).toFixed(0) + "px");
+        ball.style.setProperty("--drop-y", (y + bestMkt.offsetHeight / 2 - 26).toFixed(0) + "px");
       }
     }
     card.addEventListener("mousemove", e => {
@@ -355,6 +347,37 @@ function bindCards() {
     });
   });
   if (window.initFire) window.initFire();
+}
+
+function positionFx() {
+  document.querySelectorAll(".tilt").forEach(card => {
+    const ball = card.querySelector(":scope > .roll-ball");
+    const fire = card.querySelector(":scope > .sp-fire");
+    const pb = card.querySelector(".pick-box");
+    if (fire && pb) {
+      fire.style.left = (pb.offsetLeft - 26).toFixed(0) + "px";
+      fire.style.top = (pb.offsetTop - 48).toFixed(0) + "px";
+      fire.style.width = (pb.offsetWidth + 52).toFixed(0) + "px";
+      fire.style.height = (pb.offsetHeight + 78).toFixed(0) + "px";
+    }
+    const mkts = card.querySelectorAll(".mkt, .g-market");
+    mkts.forEach(el => el.classList.remove("mkt-target"));
+    if (ball && mkts.length) {
+      let bestMkt = null, bv = -1;
+      mkts.forEach(el => {
+        const b = el.querySelector("b");
+        const v = b ? parseFloat(b.textContent) || 0 : 0;
+        if (v > bv) { bv = v; bestMkt = el; }
+      });
+      if (bestMkt) {
+        bestMkt.classList.add("mkt-target");
+        let x = 0, y = 0, n = bestMkt;
+        while (n && n !== card) { x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent; }
+        ball.style.setProperty("--drop-x", (x + bestMkt.offsetWidth / 2 - 26).toFixed(0) + "px");
+        ball.style.setProperty("--drop-y", (y + bestMkt.offsetHeight / 2 - 26).toFixed(0) + "px");
+      }
+    }
+  });
 }
 
 function animateRings() {

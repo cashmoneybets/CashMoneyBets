@@ -1741,3 +1741,31 @@ a.logo { text-decoration: none; }
   .acc-player, .ap-arm, .ap-hint { animation: none; }
   .roll-ball::after { animation: none; opacity: 0.8; }
 }
+
+/* ============ v3.9 — LE BALLON TOMBE DU HAUT ET ATTERRIT SUR LA CASE DE BUTS ============ */
+
+/* l'animation ne demarre que quand la carte est reellement visible a l'ecran */
+.roll-ball { animation: none; }
+.card.visible .roll-ball {
+  animation: ball-drop 1.5s cubic-bezier(0.4, 0.6, 0.6, 1) 0.9s forwards,
+             ball-glow 1.3s ease-in-out 2.7s infinite;
+}
+@keyframes ball-drop {
+  0% { transform: translate(var(--drop-x, 100px), -90px) translateZ(30px) rotate(0deg); opacity: 0; animation-timing-function: cubic-bezier(0.55, 0, 0.85, 0.36); }
+  6% { opacity: 1; }
+  58% { transform: translate(var(--drop-x, 100px), var(--drop-y, 200px)) translateZ(30px) rotate(150deg); animation-timing-function: cubic-bezier(0.22, 0.9, 0.35, 1); }
+  72% { transform: translate(var(--drop-x, 100px), calc(var(--drop-y, 200px) - 30px)) translateZ(30px) rotate(196deg); animation-timing-function: cubic-bezier(0.55, 0, 0.85, 0.36); }
+  84% { transform: translate(var(--drop-x, 100px), var(--drop-y, 200px)) translateZ(30px) rotate(226deg); animation-timing-function: cubic-bezier(0.22, 0.9, 0.35, 1); }
+  92% { transform: translate(var(--drop-x, 100px), calc(var(--drop-y, 200px) - 9px)) translateZ(30px) rotate(244deg); animation-timing-function: cubic-bezier(0.55, 0, 0.85, 0.36); }
+  100% { transform: translate(var(--drop-x, 100px), var(--drop-y, 200px)) translateZ(30px) rotate(254deg); opacity: 1; }
+}
+
+/* la case cible s'illumine seulement apres l'atterrissage */
+.mkt-target { animation: none; }
+.card.visible .mkt-target { animation: target-pulse 1.3s ease-in-out 2.7s infinite; }
+.card.visible .roll-ball::after { animation: rest-ring 1.3s ease-in-out 2.7s infinite; }
+.roll-ball::after { animation: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .card.visible .roll-ball { animation: none; opacity: 0; }
+}
