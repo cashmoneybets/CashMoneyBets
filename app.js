@@ -24,8 +24,11 @@ function routeFromHash() {
 }
 addEventListener("hashchange", routeFromHash);
 
-function ccB(m) { return `<span class="ccb"><i>${m.cc[0]}</i><i>${m.cc[1]}</i></span>`; }
-function ccOne(m, side) { return `<span class="ccb"><i>${m.cc[side]}</i></span>`; }
+const CC_MAP = { SC: "gb-sct" };
+function flagUrl(cc) { return "https://flagcdn.com/w80/" + (CC_MAP[cc] || cc).toLowerCase() + ".png"; }
+function flagImg(cc) { return `<img class="flag-img" src="${flagUrl(cc)}" alt="${cc}" width="24" height="16" loading="lazy">`; }
+function ccB(m) { return `<span class="ccb">${flagImg(m.cc[0])}${flagImg(m.cc[1])}</span>`; }
+function ccOne(m, side) { return `<span class="ccb">${flagImg(m.cc[side])}</span>`; }
 
 /* ============ TICKER ============ */
 function buildTicker() {
@@ -34,7 +37,7 @@ function buildTicker() {
     .map(m => {
       const arrow = safeScore(m) >= 85 ? "▲" : safeScore(m) >= 78 ? "▶" : "▼";
       const cls = safeScore(m) >= 85 ? "up" : safeScore(m) >= 78 ? "" : "lbl";
-      return `<span><span class="lbl">${ccB(m)} ${m.home.toUpperCase()}-${m.away.toUpperCase()}</span> <b class="${cls}">${m.odds[m.pick].toFixed(2)}</b> <span class="${cls}">${arrow}</span> <span class="lbl">SCORE ${safeScore(m)}</span></span>`;
+      return `<span><span class="lbl">${ccB(m)} ${tn(m.home).toUpperCase()}-${tn(m.away).toUpperCase()}</span> <b class="${cls}">${m.odds[m.pick].toFixed(2)}</b> <span class="${cls}">${arrow}</span> <span class="lbl">SCORE ${safeScore(m)}</span></span>`;
     }).join("");
   document.getElementById("ticker").innerHTML =
     `<div class="ticker-track">${items}${items}</div>`;
@@ -62,12 +65,12 @@ function teamsRow(m) {
   return `
     <div class="teams">
       <div class="team home">
-        <span class="name">${m.home}</span>
+        <span class="name">${tn(m.home)}</span>
         <span class="form">${formChips(m.formHome)}</span>
       </div>
       <div class="vs">VS</div>
       <div class="team away">
-        <span class="name">${m.away}</span>
+        <span class="name">${tn(m.away)}</span>
         <span class="form">${formChips(m.formAway)}</span>
       </div>
     </div>`;
@@ -99,7 +102,7 @@ function matchCard(m) {
   const tierLbl = (TIER_I18N[tier.label] || {})[LANG] || tier.label;
   const compLbl = tr(COMP_I18N[m.comp]) || m.comp;
   const mk = marketsOf(m);
-  const pickTeam = m.pick === "1" ? m.home : m.away;
+  const pickTeam = tn(m.pick === "1" ? m.home : m.away);
   const pickLbl = t("mkt_pick_win").replace("{team}", pickTeam);
   const bar = (label, pct, cls) => `
     <div class="prob-row">
@@ -131,9 +134,9 @@ function matchCard(m) {
     </div>
     <div class="probs">
       <small class="probs-title">${t("mkt_1x2")}</small>
-      ${bar(m.home, mk.pH, "c-home")}
+      ${bar(tn(m.home), mk.pH, "c-home")}
       ${bar(t("mkt_draw"), mk.pD, "c-draw")}
-      ${bar(m.away, mk.pA, "c-away")}
+      ${bar(tn(m.away), mk.pA, "c-away")}
     </div>
     <div class="mkts-wrap">
       <small class="probs-title">${t("mkt_goals")}</small>
@@ -168,7 +171,7 @@ function goalsCard(m) {
   const best = mk.over25 >= 55
     ? { key: "mkt_over25", pct: mk.over25 }
     : { key: "mkt_over15", pct: mk.over15 };
-  const pickTeam = m.pick === "1" ? m.home : m.away;
+  const pickTeam = tn(m.pick === "1" ? m.home : m.away);
   const pickLbl = t("mkt_pick_win").replace("{team}", pickTeam);
   const gbar = (label, pct, cls, isBest) => `
     <div class="g-market${pct >= 60 ? " safe" : ""}${isBest ? " g-star" : ""}">
@@ -268,9 +271,12 @@ function apPlayer() {
 
 function apMoneyPlayer() {
   const bx = [6, 16, 27, 38, 50, 61, 72, 83, 90, 22, 46, 68];
-  const by = [55, 40, 60, 35, 58, 38, 55, 36, 52, 72, 74, 70];
-  const bills = Array.from({ length: 12 }, (_, i) =>
-    `<i style="left:${bx[i]}%;top:${by[i]}%;animation-delay:${(i * 0.2).toFixed(2)}s;animation-duration:${(2.2 + (i % 4) * 0.35).toFixed(2)}s">💵</i>`).join("");
+  const bills = Array.from({ length: 12 }, (_, i) => {
+    const land = (74 + (i % 4) * 4.5 + (i > 7 ? 3 : 0)).toFixed(1);
+    const rrot = (-95 + (i % 5) * 8 - 4).toFixed(0);
+    const dur = (3.6 + (i % 3) * 0.6).toFixed(2);
+    return `<i style="left:${bx[i]}%;--land:${land}%;--rrot:${rrot}deg;animation-delay:${(i * 0.55).toFixed(2)}s;animation-duration:${dur}s">💵</i>`;
+  }).join("");
   return `<span class="ap-bills">${bills}</span>
   <svg class="acc-player acc-player-money" viewBox="0 0 90 150" aria-hidden="true">
     <defs>
@@ -320,7 +326,7 @@ function comboCard(nameKey, ids, best) {
   const odds = ms.reduce((a, m) => a * m.odds[m.pick], 1);
   const conf = ms.reduce((a, m) => a + safeScore(m), 0) / ms.length;
   const legs = ms.map(m => {
-    const team = m.pick === "1" ? m.home : m.away;
+    const team = tn(m.pick === "1" ? m.home : m.away);
     return `<div class="acc-leg"><span class="al-flag">${ccOne(m, m.pick === "1" ? 0 : 1)}</span><span class="al-team">${team}</span><span class="al-pick">${t("mkt_pick_win").replace("{team}", team)}</span><b class="al-odds">${m.odds[m.pick].toFixed(2)}</b></div>`;
   }).join("");
   return `
@@ -488,11 +494,11 @@ function statDetail(id) {
   }
   if (id === "stat-score") {
     return [...MATCHES].sort((a, b) => safeScore(b) - safeScore(a)).slice(0, 3)
-      .map(m => `<div class="sd-row"><span>${ccB(m)} ${m.home} - ${m.away}</span><b>${safeScore(m)}</b></div>`).join("");
+      .map(m => `<div class="sd-row"><span>${ccB(m)} ${tn(m.home)} - ${tn(m.away)}</span><b>${safeScore(m)}</b></div>`).join("");
   }
   if (id === "stat-elite") {
     const e = MATCHES.filter(m => safeScore(m) >= 85);
-    return e.map(m => `<div class="sd-row"><span>${ccB(m)} ${m.home} - ${m.away}</span><b>${safeScore(m)}</b></div>`).join("");
+    return e.map(m => `<div class="sd-row"><span>${ccB(m)} ${tn(m.home)} - ${tn(m.away)}</span><b>${safeScore(m)}</b></div>`).join("");
   }
   if (id === "stat-live") return liveDetail();
   return "";

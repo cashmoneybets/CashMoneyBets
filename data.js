@@ -155,3 +155,42 @@ function marketsOf(m) {
   const pHr = r(pH * 100), pDr = r(pD * 100);
   return { pH: pHr, pD: pDr, pA: 100 - pHr - pDr, over15: r(over15), over25: r(over25), btts: r(btts) };
 }
+
+
+/* ============ v5.1 — NOMS D'EQUIPES TRADUITS SELON LA LANGUE ============ */
+const TEAM_I18N = {
+  "Maroc": { en: "Morocco", de: "Marokko", sq: "Maroku" },
+  "Niger": { en: "Niger", de: "Niger", sq: "Nigri" },
+  "Égypte": { en: "Egypt", de: "Ägypten", sq: "Egjipti" },
+  "Malawi": { en: "Malawi", de: "Malawi", sq: "Malavi" },
+  "Nigeria": { en: "Nigeria", de: "Nigeria", sq: "Nigeria" },
+  "Tanzanie": { en: "Tanzania", de: "Tansania", sq: "Tanzania" },
+  "Écosse": { en: "Scotland", de: "Schottland", sq: "Skocia" },
+  "Macédoine du Nord": { en: "North Macedonia", de: "Nordmazedonien", sq: "Maqedonia e Veriut" },
+  "Gabon": { en: "Gabon", de: "Gabun", sq: "Gaboni" },
+  "Lesotho": { en: "Lesotho", de: "Lesotho", sq: "Lesoto" },
+  "Porto Rico": { en: "Puerto Rico", de: "Puerto Rico", sq: "Porto Riko" },
+  "Dominique": { en: "Dominica", de: "Dominica", sq: "Dominika" },
+  "Équateur": { en: "Ecuador", de: "Ecuador", sq: "Ekuadori" },
+  "Costa Rica": { en: "Costa Rica", de: "Costa Rica", sq: "Kosta Rika" },
+  "Cap-Vert": { en: "Cape Verde", de: "Kap Verde", sq: "Kabo Verde" },
+  "Liberia": { en: "Liberia", de: "Liberia", sq: "Liberia" },
+  "Afrique du Sud": { en: "South Africa", de: "Südafrika", sq: "Afrika e Jugut" },
+  "Kenya": { en: "Kenya", de: "Kenia", sq: "Kenia" },
+  "Serbie": { en: "Serbia", de: "Serbien", sq: "Serbia" },
+  "Allemagne": { en: "Germany", de: "Deutschland", sq: "Gjermania" },
+  "Liechtenstein": { en: "Liechtenstein", de: "Liechtenstein", sq: "Lihtenshtajni" },
+  "Azerbaïdjan": { en: "Azerbaijan", de: "Aserbaidschan", sq: "Azerbajxhani" },
+  "Slovaquie": { en: "Slovakia", de: "Slowakei", sq: "Sllovakia" },
+  "Îles Féroé": { en: "Faroe Islands", de: "Färöer", sq: "Ishujt Faroe" },
+  "Colombie": { en: "Colombia", de: "Kolumbien", sq: "Kolumbia" },
+  "Chili": { en: "Chile", de: "Chile", sq: "Kili" },
+  "Pays-Bas": { en: "Netherlands", de: "Niederlande", sq: "Holanda" },
+  "Grèce": { en: "Greece", de: "Griechenland", sq: "Greqia" },
+  "Argentine": { en: "Argentina", de: "Argentinien", sq: "Argjentina" },
+  "Uruguay": { en: "Uruguay", de: "Uruguay", sq: "Uruguai" }
+};
+function tn(team) {
+  const d = TEAM_I18N[team];
+  return d ? (d[LANG] || team) : team;
+}

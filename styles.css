@@ -2179,3 +2179,42 @@ nav { border-bottom: none; clip-path: none; }
 .st-world { animation: none; }
 /* plan de jeu aligne sur la pelouse de la photo (transparent) */
 .st-pitch { height: 55%; background: none; border: none; box-shadow: none; }
+
+
+/* ============ v5.1 — DRAPEAUX PHOTO + BILLETS QUI TOMBENT ET S'EMPILENT ============ */
+
+/* vraies photos de drapeaux (flagcdn) a la place des badges code */
+.flag-img {
+  width: 24px; height: 16px; object-fit: cover; display: block;
+  border-radius: 2px;
+  border: 1px solid rgba(245, 196, 81, 0.4);
+  box-shadow: 0 0 6px rgba(245, 196, 81, 0.18);
+}
+.ccb { display: inline-flex; gap: 4px; vertical-align: middle; align-items: center; }
+.al-flag .flag-img { width: 20px; height: 13px; }
+
+/* les billets tombent du haut de la carte comme de la neige et s'empilent en bas */
+.ap-bills i {
+  position: absolute; top: -12%; font-style: normal; font-size: 21px; opacity: 0;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 6px rgba(46, 255, 160, 0.35));
+  animation: bill-fall var(--dur, 3.6s) cubic-bezier(0.45, 0, 0.7, 0.5) infinite;
+}
+@keyframes bill-fall {
+  0% { top: -12%; transform: rotate(-18deg); opacity: 0; }
+  8% { opacity: 1; }
+  30% { transform: rotate(6deg) translateX(-5px); }
+  46% { transform: rotate(-8deg) translateX(6px); }
+  60% { top: calc(var(--land, 80%) - 6%); transform: rotate(var(--rrot, -95deg)); }
+  66%, 88% { top: var(--land, 80%); transform: rotate(var(--rrot, -95deg)); opacity: 1; }
+  100% { top: var(--land, 80%); transform: rotate(var(--rrot, -95deg)); opacity: 0; }
+}
+
+/* le joueur garde la liasse dans la main : plus de geste de jet, les billets pleuvent du haut */
+.apm-arm-r { animation: none; }
+.apm-head { animation: apm-nod 2.2s ease-in-out infinite; }
+
+@media (max-width: 720px) {
+  .flag-img { width: 20px; height: 13px; }
+  .al-flag .flag-img { width: 18px; height: 12px; }
+  .ap-bills i { font-size: 17px; }
+}
