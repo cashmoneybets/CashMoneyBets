@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=56" />
+  <link rel="stylesheet" href="styles.css?v=57" />
 </head>
 <body>
   <canvas id="scene"></canvas>
@@ -19,7 +19,7 @@
   <div class="scanlines"></div>
 
   <nav>
-    <a class="logo" href="#home" data-view="home">CASHMONEY<span class="logo-dot">·</span>BETS<sup class="ver">v5.2</sup></a>
+    <a class="logo" href="#home" data-view="home">CASHMONEY<span class="logo-dot">·</span>BETS<sup class="ver">v5.3</sup></a>
     <div class="nav-links">
       <a href="#live" data-view="live" data-i18n="nav_live"></a>
       <a href="#avenir" data-view="avenir" data-i18n="nav_upcoming"></a>
@@ -57,14 +57,14 @@
         </h1>
         <p class="sub" id="hero-sub"></p>
         <div class="hero-actions">
-          <a class="btn-hud" href="#live" data-i18n="btn_live"></a>
+          <a class="btn-hud" href="#live"><span class="live-badge"><i class="live-dot"></i>LIVE</span><span data-i18n="btn_live"></span></a>
           <a class="btn-hud ghost" href="#avenir" data-i18n="btn_upcoming"></a>
           <a class="btn-hud ghost" href="#acc" data-i18n="btn_acc"></a>
         </div>
       </div>
       <div class="stadium" id="stadium" aria-label="Stadium">
         <div class="st-world">
-          <img class="st-photo" src="assets/stadium-bg.jpg?v=56" alt="" aria-hidden="true" decoding="async">
+          <img class="st-photo" src="assets/stadium-bg.jpg?v=57" alt="" aria-hidden="true" decoding="async">
           <div class="st-shade"></div>
           <div class="st-stands"></div>
           <div class="st-stands st-stands2"></div>
@@ -184,7 +184,7 @@
       <div class="neural-menu">
         <a class="n-tile" href="#live" data-view="live">
           <span class="n-node nn1"></span><span class="n-node nn2"></span><span class="n-node nn3"></span><span class="n-node nn4"></span>
-          <span class="n-icon">📡</span>
+          <span class="n-icon"><span class="live-badge"><i class="live-dot"></i>LIVE</span></span>
           <b class="n-name" data-i18n="nav_live"></b>
           <small class="n-desc" data-i18n="menu_live_desc"></small>
           <span class="n-arrow">⟶</span>
@@ -254,7 +254,7 @@
       <div class="section-head">
         <h2 class="section-title" data-i18n-html="live_title"></h2>
         <div class="live-meta">
-          <span class="pulse-dot"></span>
+          <span class="live-badge"><i class="live-dot"></i>LIVE</span>
           <span id="live-status" data-i18n="live_connecting"></span>
           <span class="refresh-info" id="refresh-info"></span>
         </div>
@@ -273,7 +273,7 @@
         <h2 class="section-title" data-i18n-html="up_title"></h2>
       </div>
       <p class="section-sub" data-i18n="up_sub"></p>
-      <div class="grid" id="up-grid"></div>
+      <div id="up-grid"></div>
     </section>
   </main>
 
@@ -318,11 +318,11 @@
     <span data-i18n-html="footer_brand"></span>
   </footer>
 
-  <script src="i18n.js?v=56"></script>
-  <script src="data.js?v=56"></script>
-  <script src="scene.js?v=56"></script>
-  <script src="stadium.js?v=56"></script>
-  <script src="live.js?v=56"></script>
-  <script src="app.js?v=56"></script>
+  <script src="i18n.js?v=57"></script>
+  <script src="data.js?v=57"></script>
+  <script src="scene.js?v=57"></script>
+  <script src="stadium.js?v=57"></script>
+  <script src="live.js?v=57"></script>
+  <script src="app.js?v=57"></script>
 </body>
 </html>

@@ -223,13 +223,121 @@ function renderUpcoming() {
   const upGrid = document.getElementById("up-grid");
   if (!upGrid) return;
   const list = [...MATCHES].sort((a, b) => safeScore(b) - safeScore(a));
-  upGrid.innerHTML = list.map(matchCard).join("");
+  upGrid.innerHTML = `<div class="cf-stage" id="cf-stage"><div class="cf-dots" id="cf-dots"></div></div>`;
+  const stage = document.getElementById("cf-stage");
+  const dots = document.getElementById("cf-dots");
+  CF.items = list.map(m => {
+    const w = document.createElement("div");
+    w.className = "cf-item";
+    w.innerHTML = matchCard(m);
+    w.firstElementChild.classList.add("visible");
+    stage.insertBefore(w, dots);
+    return w;
+  });
+  cfInit(stage, dots);
   bindCards();
   requestAnimationFrame(animateRings);
   requestAnimationFrame(animateBars);
-  observeReveals();
+  requestAnimationFrame(() => { cfMeasure(); cfRender(); });
 }
 window.renderUpcoming = renderUpcoming;
+
+/* ============ V5.3 — CARROUSEL COVERFLOW 3D (glisser doigt/souris) ============ */
+const CF = { pos: 0, target: 0, items: [], spacing: 260, raf: null, dragging: false, lastIdx: -1 };
+
+function cfRender() {
+  const n = CF.items.length;
+  CF.items.forEach((el, i) => {
+    const d = i - CF.pos;
+    const ad = Math.abs(d);
+    const cl = Math.min(ad, 3.4);
+    const dd = Math.max(-1, Math.min(1, d));
+    const x = d * CF.spacing;
+    const rot = -dd * 44;
+    const z = -cl * 150;
+    const sc = 1 - cl * 0.055;
+    const op = ad > 3.4 ? 0 : 1 - cl * 0.16;
+    el.style.transform = `translate(-50%,0) translateX(${x.toFixed(1)}px) translateZ(${z.toFixed(1)}px) rotateY(${rot.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
+    el.style.opacity = op.toFixed(2);
+    el.style.zIndex = String(100 - Math.round(ad * 10));
+    el.style.pointerEvents = ad < 0.5 ? "auto" : "none";
+  });
+}
+
+function cfMeasure() {
+  if (!CF.items.length) return;
+  CF.spacing = CF.items[0].offsetWidth * 0.74;
+  const h = Math.max(...CF.items.map(el => el.offsetHeight));
+  const stage = document.getElementById("cf-stage");
+  if (stage) stage.style.height = h + "px";
+}
+
+function cfDots() {
+  const dots = document.getElementById("cf-dots");
+  if (!dots) return;
+  const idx = Math.max(0, Math.min(CF.items.length - 1, Math.round(CF.pos)));
+  if (idx === CF.lastIdx) return;
+  CF.lastIdx = idx;
+  dots.querySelectorAll("button").forEach((b, i) => b.classList.toggle("on", i === idx));
+}
+
+function cfLoop() {
+  CF.raf = requestAnimationFrame(cfLoop);
+  if (CF.dragging) { cfRender(); cfDots(); return; }
+  const diff = CF.target - CF.pos;
+  if (Math.abs(diff) < 0.0005) {
+    if (CF.pos !== CF.target) { CF.pos = CF.target; cfRender(); cfDots(); }
+    return;
+  }
+  CF.pos += diff * 0.11;
+  cfRender();
+  cfDots();
+}
+
+function cfInit(stage, dots) {
+  CF.pos = 0; CF.target = 0; CF.dragging = false; CF.lastIdx = -1;
+  dots.innerHTML = CF.items.map((_, i) => `<button data-i="${i}" aria-label="${i + 1}"></button>`).join("");
+  dots.addEventListener("click", e => {
+    const b = e.target.closest("button");
+    if (b) CF.target = Math.max(0, Math.min(CF.items.length - 1, +b.dataset.i));
+  });
+  stage.addEventListener("pointerdown", e => {
+    CF.dragging = true;
+    CF.startX = e.clientX; CF.startPos = CF.pos; CF.target = CF.pos;
+    CF.lastX = e.clientX; CF.lastT = performance.now(); CF.vel = 0; CF.moved = 0;
+    try { stage.setPointerCapture(e.pointerId); } catch (err) {}
+  });
+  stage.addEventListener("pointermove", e => {
+    if (!CF.dragging) return;
+    const dx = e.clientX - CF.startX;
+    CF.moved = Math.max(CF.moved, Math.abs(dx));
+    const n = CF.items.length;
+    CF.pos = CF.target = Math.max(-0.6, Math.min(n - 0.4, CF.startPos - dx / CF.spacing));
+    const now = performance.now(), dt = now - CF.lastT;
+    if (dt > 20) {
+      CF.vel = -(e.clientX - CF.lastX) / CF.spacing / (dt / 1000);
+      CF.lastX = e.clientX; CF.lastT = now;
+    }
+  });
+  const up = () => {
+    if (!CF.dragging) return;
+    CF.dragging = false;
+    const n = CF.items.length;
+    const t = Math.round(CF.pos + CF.vel * 0.18);
+    CF.target = Math.max(0, Math.min(n - 1, t));
+  };
+  stage.addEventListener("pointerup", up);
+  stage.addEventListener("pointercancel", up);
+  stage.addEventListener("wheel", e => {
+    if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+    e.preventDefault();
+    const n = CF.items.length;
+    CF.target = Math.max(0, Math.min(n - 1, CF.target + Math.sign(e.deltaX)));
+  }, { passive: false });
+  if (CF.raf) cancelAnimationFrame(CF.raf);
+  CF.raf = requestAnimationFrame(cfLoop);
+}
+window.addEventListener("resize", () => { cfMeasure(); cfRender(); });
 
 /* ============ VUE ACCUMULATEUR — combinés du bot ============ */
 function apPlayer() {
@@ -385,6 +493,7 @@ function bindCards() {
   document.querySelectorAll(".tilt").forEach((card, i) => {
     card.style.animationDelay = `-${((i * 1.3) % 7).toFixed(1)}s`;
     fxCard(card);
+    if (card.closest(".cf-stage")) return;
     card.addEventListener("mousemove", e => {
       card.classList.add("tilting");
       const r = card.getBoundingClientRect();
