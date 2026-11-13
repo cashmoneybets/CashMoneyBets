@@ -18,7 +18,7 @@ function botCard(m, leg) {
   return `
     <div class="bot-card">
       <div class="bc-head">
-        <span class="bc-comp">${flagImg(m.cc[0])}${flagImg(m.cc[1])} ${m.kickoff}</span>
+        <span class="bc-comp">${flagImg(m.cc[0])}${flagImg(m.cc[1])} ${m.kickoff}${m.pitch === "synthetic" ? " \u26a0\ufe0f" : ""}</span>
         <span class="bc-right">${leg ? `<span class="bc-leg">LEG ${leg}</span>` : ""}<span class="bc-odds">@ ${m.odds[m.pick].toFixed(2)}</span><span class="bc-score bc-${cls}">${score}</span></span>
       </div>
       <div class="bc-teams">${tn(m.home)} <i>vs</i> ${tn(m.away)}</div>
@@ -64,6 +64,52 @@ function botGoalsList() {
     .slice(0, 4);
 }
 
+function botVariants(team) {
+  const d = TEAM_I18N[team];
+  return [team, ...(d ? [d.en, d.de, d.sq] : [])]
+    .map(botNorm).filter(Boolean)
+    .map(v => v.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+}
+
+function botFindMatch(q) {
+  const hits = [];
+  for (const m of MATCHES) {
+    const h = botVariants(m.home).some(v => new RegExp("\\b" + v + "\\b").test(q));
+    const a = botVariants(m.away).some(v => new RegExp("\\b" + v + "\\b").test(q));
+    if (h && a) return m;
+    if (h || a) hits.push(m);
+  }
+  return hits.length === 1 ? hits[0] : null;
+}
+
+function botAnalyse(m) {
+  const score = safeScore(m);
+  const cls = score >= 85 ? "elite" : score >= 78 ? "solid" : "value";
+  const pickTeam = tn(m.pick === "1" ? m.home : m.away);
+  const mk = marketsOf(m);
+  const compLbl = tr(COMP_I18N[m.comp]) || m.comp;
+  const LTR = { fr: ["V", "N", "D"], en: ["W", "D", "L"], de: ["S", "U", "N"], sq: ["F", "B", "H"] }[LANG] || ["W", "D", "L"];
+  const h2h = m.h2h ? `${m.h2h.w}${LTR[0]} \u00b7 ${m.h2h.d}${LTR[1]} \u00b7 ${m.h2h.l}${LTR[2]}` : "\u2014";
+  const stakeKey = m.stakes === "high" ? "bot_stakes_high" : m.stakes === "mid" ? "bot_stakes_mid" : "bot_stakes_low";
+  const note = (m.note && (m.note[LANG] || m.note.fr)) || "";
+  const chans = (m.tv && (m.tv[LANG] || m.tv.fr)) || [];
+  return `
+    <p>${t("bot_analyse_intro")}</p>
+    <div class="bot-card bot-ana">
+      <div class="bc-head"><span class="bc-comp">${flagImg(m.cc[0])}${flagImg(m.cc[1])} ${compLbl} \u00b7 ${m.kickoff}</span><span class="bc-score bc-${cls}">${score}</span></div>
+      <div class="bc-teams">${tn(m.home)} <i>vs</i> ${tn(m.away)}</div>
+      <div class="bc-ctx">
+        <div>\U0001F4CD <b>${t("bot_venue")}</b> ${m.venue || "\u2014"}${m.alt ? ` \u00b7 ${t("bot_altitude")} ${m.alt}m` : ""}</div>
+        <div>\U0001F332 ${m.pitch === "synthetic" ? t("bot_pitch_s") : t("bot_pitch_g")} \u00b7 <b>${t(stakeKey)}</b></div>
+        <div>\U0001F4C6 <b>${t("bot_h2h")}</b> ${h2h}</div>
+        <div>\U0001F4C8 1: ${mk.pH}% \u00b7 X: ${mk.pD}% \u00b7 2: ${mk.pA}% \u00b7 +1.5: ${mk.over15}% \u00b7 +2.5: ${mk.over25}% \u00b7 BTTS: ${mk.btts}%</div>
+      </div>
+      <div class="bc-pick"><span>${t("mkt_pick_win").replace("{team}", pickTeam)}</span><b>${m.odds[m.pick].toFixed(2)}</b></div>
+      ${note ? `<p class="bc-note">${note}</p>` : ""}
+      ${chans.length ? `<p class="bc-note">\U0001F4FA ${t("tv_watch")} : ${chans.join(" \u00b7 ")}</p>` : ""}
+    </div>`;
+}
+
 function botAnswer(raw) {
   const q = botNorm(raw);
   const num = botNum(q);
@@ -82,6 +128,9 @@ function botAnswer(raw) {
       : "";
     return `${capped}<p>${t("bot_acc_intro").replace("{target}", target)}</p>${cards}<p class="bot-done">${done}<span class="bot-calc">${calc} = <b>${acc.prod.toFixed(2)}</b></span></p>`;
   }
+
+  const fm = botFindMatch(q);
+  if (fm) return botAnalyse(fm);
 
   if (has("safe", "sur", "sure", "sicher", "sigurt", "fiable")) {
     const top = [...MATCHES].sort((a, b) => safeScore(b) - safeScore(a)).slice(0, 3);
@@ -114,7 +163,13 @@ function botAnswer(raw) {
   }
 
   if (has("live", "direct", "en cours", "now")) {
-    return `<p>${t("bot_live_intro")}</p><p><a class="bot-link" href="#live" data-view="live">\u27f6 LIVE</a></p>`;
+    const all = window.__lastLive || [];
+    const inplay = all.filter(m => m.state === "in");
+    const link = `<p><a class="bot-link" href="#live" data-view="live">\u27f6 LIVE</a></p>`;
+    if (!inplay.length) return `<p>${t("bot_live_none")}</p>${link}`;
+    const rows = inplay.slice(0, 6).map(m =>
+      `<div class="bot-tv bot-live"><b>${m.home.name} ${m.home.score} : ${m.away.score} ${m.away.name}</b><span>${m.displayClock || m.league || ""}</span></div>`).join("");
+    return `<p>${t("bot_live_intro")}</p>${rows}${link}`;
   }
 
   if (has("salut", "bonjour", "hello", "hi ", "hey", "ciao", "pershendetje", "hallo")) {
@@ -172,7 +227,7 @@ function botAsk(raw) {
     div.innerHTML = botAnswer(raw);
     chat.scrollTop = chat.scrollHeight;
     window.__lastBot = div.innerHTML;
-  }, 1500 + Math.random() * 500);
+  }, 4800 + Math.random() * 600);
 }
 
 function botRenderStatic() {

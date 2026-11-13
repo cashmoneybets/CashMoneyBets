@@ -5,6 +5,7 @@
 const MATCHES = [
   { id: "mar-nig", home: "Maroc", away: "Niger", comp: "Qualifs CAN", cc: ["MA", "NE"],
     kickoff: "21:00", odds: { "1": 1.04, "X": 10.5, "2": 23.0 }, pick: "1", tv: {"fr": ["beIN Sports 1", "Arryadia"], "en": ["beIN Sports 1"], "de": ["DAZN"], "sq": ["SuperSport 3"]},
+    venue: "Casablanca · Stade Mohammed-V", pitch: "grass", h2h: { w: 4, d: 1, l: 0 }, stakes: "high",
     formHome: ["W", "W", "D"], formAway: ["W", "L", "L"],
     note: {
       fr: "Invaincu à domicile, écart de niveau énorme. Le pari le plus sûr du slate.",
@@ -13,6 +14,7 @@ const MATCHES = [
 
   { id: "egy-mal", home: "Égypte", away: "Malawi", comp: "Qualifs CAN", cc: ["EG", "MW"],
     kickoff: "20:00", odds: { "1": 1.10, "X": 7.5, "2": 18.0 }, pick: "1", tv: {"fr": ["beIN Sports 1"], "en": ["beIN Sports 1"], "de": ["DAZN"], "sq": ["SuperSport 3"]},
+    venue: "Le Caire · Stade International", pitch: "grass", h2h: { w: 3, d: 2, l: 0 }, stakes: "high",
     formHome: ["D", "L", "D"], formAway: ["L", "L", "D"],
     note: {
       fr: "Les Pharaons à domicile contre l'une des attaques les plus faibles du groupe.",
@@ -21,6 +23,7 @@ const MATCHES = [
 
   { id: "nga-tan", home: "Nigeria", away: "Tanzanie", comp: "Qualifs CAN", cc: ["NG", "TZ"],
     kickoff: "17:00", odds: { "1": 1.14, "X": 6.5, "2": 15.0 }, pick: "1", tv: {"fr": ["beIN Sports 2"], "en": ["SuperSport"], "de": ["DAZN"], "sq": ["SuperSport 3"]},
+    venue: "Abuja · Moshood Abiola", pitch: "grass", h2h: { w: 3, d: 1, l: 1 }, stakes: "high",
     formHome: ["D", "L", "W"], formAway: ["D", "L", "L"],
     note: {
       fr: "Super Eagles intouchables à domicile. Solide même à cote basse.",
@@ -29,6 +32,7 @@ const MATCHES = [
 
   { id: "sco-mkd", home: "Écosse", away: "Macédoine du Nord", comp: "Nations League", cc: ["SC", "MK"],
     kickoff: "20:45", odds: { "1": 1.18, "X": 6.5, "2": 13.0 }, pick: "1", tv: {"fr": ["L’Équipe Live"], "en": ["Viaplay"], "de": ["DAZN"], "sq": ["SuperSport 4"]},
+    venue: "Glasgow · Hampden Park", pitch: "grass", h2h: { w: 2, d: 1, l: 2 }, stakes: "high",
     formHome: ["D", "L", "W"], formAway: ["L", "L", "L", "L", "L"],
     note: {
       fr: "5 défaites d'affilée pour la Macédoine. Hampden Park sera bouillant.",
@@ -37,6 +41,7 @@ const MATCHES = [
 
   { id: "gab-les", home: "Gabon", away: "Lesotho", comp: "Qualifs CAN", cc: ["GA", "LS"],
     kickoff: "17:00", odds: { "1": 1.20, "X": 5.5, "2": 12.0 }, pick: "1", tv: {"fr": ["beIN Sports 2"], "en": ["SuperSport"], "de": ["DAZN"], "sq": ["SuperSport 3"]},
+    venue: "Libreville · Stade d’Angondjé", pitch: "grass", h2h: { w: 2, d: 2, l: 1 }, stakes: "high",
     formHome: ["L", "L", "L", "L", "W"], formAway: ["W", "D", "L", "L", "L"],
     note: {
       fr: "Le Gabon doit gagner pour rester en course. Pression = motivation.",
@@ -45,6 +50,7 @@ const MATCHES = [
 
   { id: "pur-dom", home: "Porto Rico", away: "Dominique", comp: "Nations League C", cc: ["PR", "DM"],
     kickoff: "20:00", odds: { "1": 1.20, "X": 6.0, "2": 9.5 }, pick: "1", tv: {"fr": ["beIN Sports 3"], "en": ["Paramount+"], "de": ["DAZN"], "sq": ["SuperSport 3"]},
+    venue: "Bayamón · Juan Ramón Loubriel", pitch: "grass", h2h: { w: 2, d: 1, l: 2 }, stakes: "mid",
     formHome: ["L", "W", "W", "W"], formAway: ["W", "D", "L", "L", "L"],
     note: {
       fr: "3 victoires de suite pour Porto Rico, Dominique en difficulté.",
@@ -53,6 +59,7 @@ const MATCHES = [
 
   { id: "ecu-crc", home: "Équateur", away: "Costa Rica", comp: "Amical", cc: ["EC", "CR"],
     kickoff: "01:00", odds: { "1": 1.25, "X": 5.75, "2": 11.0 }, pick: "1", tv: {"fr": ["beIN Sports 3"], "en": ["Paramount+"], "de": ["DAZN"], "sq": ["SuperSport 3"]},
+    venue: "Quito · Estadio Olímpico", pitch: "grass", h2h: { w: 3, d: 1, l: 1 }, stakes: "low", alt: 2850,
     formHome: ["W", "W", "D"], formAway: ["L", "D", "L"],
     note: {
       fr: "La Tri est une forteresse à Quito (altitude). Amical, mais l'écart reste net.",
@@ -61,6 +68,7 @@ const MATCHES = [
 
   { id: "cpv-lbr", home: "Cap-Vert", away: "Liberia", comp: "Qualifs CAN", cc: ["CV", "LR"],
     kickoff: "17:00", odds: { "1": 1.26, "X": 4.7, "2": 11.0 }, pick: "1", tv: {"fr": ["beIN Sports 2"], "en": ["SuperSport"], "de": ["DAZN"], "sq": ["SuperSport 3"]},
+    venue: "Praia · Estadio Nacional", pitch: "grass", h2h: { w: 2, d: 2, l: 1 }, stakes: "high",
     formHome: ["D", "D", "D", "L", "L"], formAway: ["D", "L", "W", "L", "L"],
     note: {
       fr: "Les Requins Bleus restent sur une qualification historique. Dynamique supérieure.",
@@ -69,6 +77,7 @@ const MATCHES = [
 
   { id: "rsa-ken", home: "Afrique du Sud", away: "Kenya", comp: "Qualifs CAN", cc: ["ZA", "KE"],
     kickoff: "17:00", odds: { "1": 1.26, "X": 4.8, "2": 10.5 }, pick: "1", tv: {"fr": ["beIN Sports 1"], "en": ["SuperSport"], "de": ["DAZN"], "sq": ["SuperSport 3"]},
+    venue: "Johannesburg · FNB Stadium", pitch: "grass", h2h: { w: 2, d: 3, l: 0 }, stakes: "high",
     formHome: ["W", "L", "W", "W", "W"], formAway: ["D", "W", "D", "L", "D"],
     note: {
       fr: "4 victoires sur 5 pour les Bafana Bafana. Broos a trouvé sa formule.",
@@ -77,6 +86,7 @@ const MATCHES = [
 
   { id: "srb-ger", home: "Serbie", away: "Allemagne", comp: "Nations League", cc: ["RS", "DE"],
     kickoff: "20:45", odds: { "1": 8.5, "X": 5.75, "2": 1.26 }, pick: "2", tv: {"fr": ["L’Équipe Live"], "en": ["ITV4"], "de": ["RTL", "DAZN"], "sq": ["SuperSport 4"]},
+    venue: "Belgrade · Rajko Mitić", pitch: "grass", h2h: { w: 1, d: 1, l: 3 }, stakes: "high",
     formHome: ["L", "L", "L", "L"], formAway: ["D", "L", "W", "D"],
     note: {
       fr: "4 défaites de suite pour la Serbie. La Mannschaft ne peut pas glisser ici.",
@@ -85,6 +95,7 @@ const MATCHES = [
 
   { id: "lie-aze", home: "Liechtenstein", away: "Azerbaïdjan", comp: "Nations League", cc: ["LI", "AZ"],
     kickoff: "20:45", odds: { "1": 11.0, "X": 5.0, "2": 1.26 }, pick: "2", tv: {"fr": ["beIN Sports 3"], "en": ["OneFootball"], "de": ["DAZN"], "sq": ["SuperSport 4"]},
+    venue: "Vaduz · Rheinpark Stadion", pitch: "grass", h2h: { w: 0, d: 1, l: 4 }, stakes: "mid",
     formHome: ["L", "L", "L", "D", "L"], formAway: ["W", "W", "D", "D", "W"],
     note: {
       fr: "Le Liechtenstein n'a presque jamais gagné. L'Azerbaïdjan roule sur le groupe.",
@@ -93,6 +104,7 @@ const MATCHES = [
 
   { id: "svk-fao", home: "Slovaquie", away: "Îles Féroé", comp: "Nations League", cc: ["SK", "FO"],
     kickoff: "20:45", odds: { "1": 1.36, "X": 4.6, "2": 8.0 }, pick: "1", tv: {"fr": ["L’Équipe Live"], "en": ["Viaplay"], "de": ["DAZN"], "sq": ["SuperSport 4"]},
+    venue: "Trnava · Anton Malatinský", pitch: "grass", h2h: { w: 3, d: 2, l: 0 }, stakes: "high",
     formHome: ["W", "W", "D", "W"], formAway: ["D", "D", "D", "D"],
     note: {
       fr: "Les Féroé jouent bien le nul, mais la Slovaquie à domicile reste supérieure.",
@@ -101,6 +113,7 @@ const MATCHES = [
 
   { id: "col-chi", home: "Colombie", away: "Chili", comp: "Amical", cc: ["CO", "CL"],
     kickoff: "01:00", odds: { "1": 1.43, "X": 4.5, "2": 7.0 }, pick: "1", tv: {"fr": ["beIN Sports 3"], "en": ["Paramount+"], "de": ["DAZN"], "sq": ["SuperSport 3"]},
+    venue: "Miami · Hard Rock Stadium", pitch: "grass", h2h: { w: 3, d: 1, l: 1 }, stakes: "low",
     formHome: ["D", "L", "W"], formAway: ["L", "L", "W"],
     note: {
       fr: "La Tricolor à Miami, public acquis. Le Chili reconstruit tout.",
@@ -109,6 +122,7 @@ const MATCHES = [
 
   { id: "ned-gre", home: "Pays-Bas", away: "Grèce", comp: "Nations League", cc: ["NL", "GR"],
     kickoff: "20:45", odds: { "1": 1.53, "X": 4.2, "2": 5.25 }, pick: "1", tv: {"fr": ["L’Équipe Live"], "en": ["Channel 4"], "de": ["DAZN"], "sq": ["SuperSport 4"]},
+    venue: "Amsterdam · Johan Cruijff ArenA", pitch: "grass", h2h: { w: 3, d: 1, l: 1 }, stakes: "high",
     formHome: ["D", "D", "W", "D", "W"], formAway: ["L", "W", "W", "D", "D"],
     note: {
       fr: "Invaincus sur 5. Oranje à domicile reste une valeur sûre.",
@@ -117,6 +131,7 @@ const MATCHES = [
 
   { id: "arg-uru", home: "Argentine", away: "Uruguay", comp: "Amical", cc: ["AR", "UY"],
     kickoff: "00:00", odds: { "1": 1.57, "X": 3.9, "2": 5.75 }, pick: "1", tv: {"fr": ["beIN Sports 1"], "en": ["FS1"], "de": ["DAZN"], "sq": ["SuperSport 3"]},
+    venue: "Chicago · Soldier Field", pitch: "grass", h2h: { w: 2, d: 1, l: 2 }, stakes: "low",
     formHome: ["W", "W", "W"], formAway: ["L", "W", "W"],
     note: {
       fr: "Le Clásico del Río de la Plata. L'Albiceleste reste la référence mondiale.",

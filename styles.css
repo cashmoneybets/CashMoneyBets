@@ -2718,3 +2718,31 @@ nav { border-bottom: none; clip-path: none; }
 @media (prefers-reduced-motion: reduce) {
   .core-visual .cr, .core-visual .cr-dot, .core-status { animation: none; }
 }
+
+
+/* ============ v6.5 — ANALYSE PAR MATCH (bot) ============ */
+
+.bc-ctx {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 8px 0;
+  padding: 8px 10px;
+  border: 1px solid rgba(46, 255, 160, 0.16);
+  border-radius: 8px;
+  background: rgba(46, 255, 160, 0.03);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+.bc-ctx b { color: var(--cyan); font-weight: 600; }
+
+.bc-note {
+  margin: 6px 0 0;
+  font-size: 0.72rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.bot-live b { font-size: 0.8rem; }
+.bot-live span { color: #ff3b5c; }
