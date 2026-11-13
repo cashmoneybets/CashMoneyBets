@@ -228,6 +228,43 @@ function renderUpcoming() {
 window.renderUpcoming = renderUpcoming;
 
 /* ============ VUE ACCUMULATEUR — combinés du bot ============ */
+function apPlayer() {
+  return `<svg class="acc-player" viewBox="0 0 90 150" aria-hidden="true">
+    <defs>
+      <linearGradient id="apKit" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ffe08a"/><stop offset=".5" stop-color="#f5c451"/><stop offset="1" stop-color="#b8860b"/>
+      </linearGradient>
+      <linearGradient id="apSkin" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#f4d7b0"/><stop offset="1" stop-color="#c98d5f"/>
+      </linearGradient>
+      <radialGradient id="apHead" cx=".35" cy=".3" r="1">
+        <stop offset="0" stop-color="#f7ddba"/><stop offset=".7" stop-color="#dba675"/><stop offset="1" stop-color="#b07f4f"/>
+      </radialGradient>
+    </defs>
+    <ellipse cx="45" cy="144" rx="24" ry="5" fill="rgba(0,0,0,0.45)"/>
+    <rect x="34" y="96" width="9" height="34" rx="4" fill="url(#apSkin)"/>
+    <rect x="47" y="96" width="9" height="34" rx="4" fill="url(#apSkin)"/>
+    <rect x="34" y="118" width="9" height="10" rx="3" fill="#b8860b"/>
+    <rect x="47" y="118" width="9" height="10" rx="3" fill="#b8860b"/>
+    <rect x="31" y="128" width="14" height="7" rx="3" fill="#14141a"/>
+    <rect x="46" y="128" width="14" height="7" rx="3" fill="#14141a"/>
+    <rect x="31" y="84" width="28" height="16" rx="5" fill="#1d232e"/>
+    <path d="M33 52 Q45 46 57 52 L59 88 Q45 93 31 88 Z" fill="url(#apKit)"/>
+    <text x="45" y="78" font-size="12" text-anchor="middle" fill="#14141a" font-family="Orbitron, sans-serif" font-weight="bold">9</text>
+    <rect x="25" y="54" width="8" height="30" rx="4" fill="url(#apSkin)" transform="rotate(10 29 56)"/>
+    <g class="ap-arm">
+      <rect x="57" y="52" width="9" height="36" rx="4.5" fill="url(#apSkin)" transform="rotate(-34 61 54)"/>
+      <circle cx="75" cy="86" r="5.5" fill="url(#apSkin)"/>
+      <rect x="72.5" y="88" width="4.5" height="10" rx="2.2" fill="url(#apSkin)"/>
+    </g>
+    <circle cx="45" cy="36" r="14" fill="url(#apHead)"/>
+    <path d="M31 34 Q33 19 45 19 Q57 19 59 34 Q52 25 45 26 Q38 25 31 34 Z" fill="#2a2118"/>
+    <g class="ap-hint">
+      <path d="M74 102 L67 112 L74 122" fill="none" stroke="#2effa0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+  </svg>`;
+}
+
 function comboCard(nameKey, ids, best) {
   const ms = ids.map(id => MATCHES.find(m => m.id === id)).filter(Boolean);
   const odds = ms.reduce((a, m) => a * m.odds[m.pick], 1);
@@ -240,6 +277,7 @@ function comboCard(nameKey, ids, best) {
   <article class="card acc-card${best ? " acc-best" : ""}">
     <i class="card-bg"></i>
     ${best ? `<span class="acc-best-tag">👑 ${t("acc_best")}</span>` : ""}
+    ${apPlayer()}
     <h3 class="acc-name">${t(nameKey)}</h3>
     <small class="acc-legs-lbl">${t("acc_legs")} · ${ms.length}</small>
     <div class="acc-legs">${legs}</div>
@@ -293,8 +331,8 @@ function bindCards() {
         while (n && n !== card) { x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent; }
         const tx = x + bestMkt.offsetWidth / 2 - 26;
         const ty = y + bestMkt.offsetHeight / 2 - 26;
-        const sx = card.clientWidth - 16;
-        const sy = Math.max(4, ty - 44);
+        const sx = card.clientWidth - 8;
+        const sy = ty;
         const dist = Math.hypot(tx - sx, ty - sy);
         const rot = -Math.round(dist / (Math.PI * 52) * 360);
         ball.style.setProperty("--sx", sx.toFixed(0) + "px");

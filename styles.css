@@ -1683,3 +1683,61 @@ a.logo { text-decoration: none; }
   .roll-ball { display: none; }
   .mkt-target { animation: none; }
 }
+
+/* ============ v3.8 — JOUEURS PLUS GRANDS ET REALISTES + JOUEUR POINTEUR ACCA + BALLON PARQUE ============ */
+
+/* ---- joueurs du stade : x2.2 avec ombrage 3D comme le ballon du stade ---- */
+.sp-fig { width: 26px; height: 50px; transform: translateX(-50%) rotateX(-42deg) scale(2.2); filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.45)); }
+.sp-shadow { width: 54px; height: 16px; left: 50%; transform: translateX(-50%); bottom: -5px; }
+.sp-torso { box-shadow: inset -3px 0 5px rgba(0, 0, 0, 0.45), inset 3px 1px 4px rgba(255, 255, 255, 0.28); }
+.sp-head { background: radial-gradient(circle at 35% 30%, #f7ddba, #dba675 68%, #b07f4f); box-shadow: inset -2px -1px 3px rgba(0, 0, 0, 0.28); }
+.sp-leg { box-shadow: inset -1px 0 2px rgba(0, 0, 0, 0.35), 0 3px 2px rgba(0, 0, 0, 0.4); }
+.sp-hair { box-shadow: inset 0 -2px 3px rgba(0, 0, 0, 0.4); }
+.sp-arm { box-shadow: inset -1px 0 2px rgba(0, 0, 0, 0.3); }
+
+/* ---- joueur pointeur sur les cases de l'accumulateur ---- */
+.acc-player {
+  position: absolute; top: 24px; right: 4px; width: 66px; height: 110px; z-index: 5;
+  transform-origin: 50% 100%; pointer-events: none;
+  animation: ap-bob 2.6s ease-in-out infinite;
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.5));
+}
+@keyframes ap-bob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-5px) rotate(-1.5deg); }
+}
+.ap-arm { animation: ap-point 2.6s ease-in-out infinite; transform-origin: 61px 54px; }
+@keyframes ap-point {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-7deg); }
+}
+.ap-hint { animation: ap-hint 1.3s ease-in-out infinite; }
+@keyframes ap-hint {
+  0%, 100% { opacity: 0.35; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(5px); }
+}
+.acc-legs { padding-right: 46px; }
+.acc-card .acc-name { padding-right: 60px; }
+.acc-card .acc-legs-lbl { padding-right: 60px; }
+
+/* ---- le ballon parque sur la case de buts : anneau vert au sol ---- */
+.roll-ball::after {
+  content: ""; position: absolute; left: 50%; bottom: -7px; width: 48px; height: 13px;
+  transform: translateX(-50%); border-radius: 50%;
+  border: 2px solid rgba(46, 255, 160, 0.75); opacity: 0;
+  animation: rest-ring 1.3s ease-in-out 2.8s infinite;
+}
+@keyframes rest-ring {
+  0%, 100% { opacity: 0.45; box-shadow: 0 0 8px rgba(46, 255, 160, 0.3); }
+  50% { opacity: 1; box-shadow: 0 0 18px rgba(46, 255, 160, 0.65); }
+}
+
+@media (max-width: 720px) {
+  .acc-player { width: 54px; height: 90px; top: 20px; right: 2px; }
+  .acc-legs { padding-right: 38px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .acc-player, .ap-arm, .ap-hint { animation: none; }
+  .roll-ball::after { animation: none; opacity: 0.8; }
+}
