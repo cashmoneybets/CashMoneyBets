@@ -1527,3 +1527,113 @@ a.logo { text-decoration: none; }
 @media (prefers-reduced-motion: reduce) {
   .menu-section { margin-top: 10px; }
 }
+
+/* ============ v3.6 — VRAIE 3D DES CARTES + FEU REALISTE CONTOUR + IMPACT AMELIORE ============ */
+
+/* ---- profondeur 3D reelle : le clip-path passe sur une couche de fond, les calques montent en Z ---- */
+.card { clip-path: none; backdrop-filter: none; transform-style: preserve-3d; }
+.card-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background: var(--panel); border: 1px solid var(--line);
+  clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
+  backdrop-filter: blur(10px);
+  transform: translateZ(-18px);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.55);
+  pointer-events: none;
+}
+.card > :not(.card-bg):not(.crash-ball):not(.sp-fire) { transform: translateZ(20px); }
+.card .teams { transform: translateZ(30px); }
+.card .pick-box { transform: translateZ(46px); }
+.card .confidence { transform: translateZ(34px); }
+.card > .sp-fire { transform: translateZ(60px); }
+.card > .crash-ball { transform: translateZ(70px); }
+
+@keyframes card-float3d {
+  0%, 100% { transform: perspective(1100px) rotateX(3.2deg) rotateY(-5.5deg) translateY(0); }
+  50% { transform: perspective(1100px) rotateX(-2.6deg) rotateY(5.5deg) translateY(-9px); }
+}
+
+/* ---- ballon plus gros avec rotation pendant la plongee ---- */
+.crash-ball { font-size: 104px; }
+@keyframes ball-dive {
+  0%, 55% { transform: translate(-50%, 0) translateZ(70px) rotate(-14deg) scale(1); opacity: 0; }
+  58% { transform: translate(-50%, 0) translateZ(70px) rotate(-14deg) scale(1); opacity: 0.95; }
+  80% { transform: translate(-50%, var(--dive-h, 200px)) translateZ(70px) rotate(24deg) scale(0.18); opacity: 1; }
+  84% { transform: translate(-50%, calc(var(--dive-h, 200px) + 6px)) translateZ(70px) rotate(26deg) scale(0.14); opacity: 1; }
+  88% { transform: translate(-50%, var(--dive-h, 200px)) translateZ(70px) rotate(24deg) scale(0.16); opacity: 1; }
+  95%, 100% { transform: translate(-50%, var(--dive-h, 200px)) translateZ(70px) rotate(24deg) scale(0); opacity: 0; }
+}
+
+/* ---- fissures SVG style vitre brisee ---- */
+.crack-svg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  z-index: 6; pointer-events: none; overflow: visible;
+}
+.crack-svg path {
+  fill: none; stroke: rgba(255, 255, 255, 0.92); stroke-width: 1.6;
+  stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke;
+  stroke-dasharray: 340; stroke-dashoffset: 340;
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.8));
+  animation: crack-draw 4.5s linear infinite;
+}
+.crack-svg path:nth-child(2) { animation-delay: 0.03s; }
+.crack-svg path:nth-child(3) { animation-delay: 0.06s; }
+.crack-svg path:nth-child(4) { animation-delay: 0.09s; }
+.crack-svg path:nth-child(5) { animation-delay: 0.05s; }
+.crack-svg path:nth-child(6) { animation-delay: 0.08s; }
+@keyframes crack-draw {
+  0%, 79% { stroke-dashoffset: 340; opacity: 0; }
+  80% { stroke-dashoffset: 340; opacity: 1; }
+  88% { stroke-dashoffset: 0; opacity: 1; }
+  96%, 100% { stroke-dashoffset: 0; opacity: 0; }
+}
+
+/* ---- flash blanc a l'impact ---- */
+.impact-flash {
+  position: absolute; left: 50%; top: 55%; width: 130px; height: 74px; z-index: 6;
+  border-radius: 50%; pointer-events: none; opacity: 0;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.95), rgba(255, 200, 80, 0.5) 40%, transparent 70%);
+  transform: translate(-50%, -50%) scale(0);
+  animation: flash-pop 4.5s linear infinite;
+}
+@keyframes flash-pop {
+  0%, 79% { opacity: 0; transform: translate(-50%, -50%) scale(0); }
+  81% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  90%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(1.7); }
+}
+
+/* ---- secousse plus forte ---- */
+@keyframes impact-shake {
+  0%, 79%, 87%, 100% { transform: translate(0, 0); }
+  81% { transform: translate(-4px, 2px); }
+  83% { transform: translate(4px, -2px); }
+  85% { transform: translate(-2px, 1px); }
+}
+
+/* ---- delais des 3 nouveaux eclats ---- */
+.shard.s6 { animation-delay: 0.28s; }
+.shard.s7 { animation-delay: 0.31s; }
+.shard.s8 { animation-delay: 0.34s; }
+
+/* ---- canvas de feu : tout le contour brule ---- */
+.sp-fire { position: absolute; z-index: 7; pointer-events: none; }
+.pick-box.on-fire {
+  border-color: rgba(255, 140, 30, 0.85);
+  box-shadow: 0 0 22px rgba(255, 120, 20, 0.35), inset 0 0 26px rgba(255, 90, 10, 0.18);
+}
+
+@media (max-width: 720px) {
+  @keyframes card-float3d {
+    0%, 100% { transform: perspective(900px) rotateX(2.2deg) rotateY(-3.6deg) translateY(0); }
+    50% { transform: perspective(900px) rotateX(-1.8deg) rotateY(3.6deg) translateY(-6px); }
+  }
+  .card .pick-box { transform: translateZ(30px); }
+  .card .teams { transform: translateZ(20px); }
+  .card .confidence { transform: translateZ(24px); }
+  .card-bg { transform: translateZ(-12px); }
+  .crash-ball { font-size: 84px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crack-svg, .impact-flash { display: none; }
+}

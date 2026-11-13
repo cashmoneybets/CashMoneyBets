@@ -47,15 +47,22 @@ function flashCls(score, tier) {
   return "";
 }
 function impactFx() {
-  return `<span class="crack"></span><span class="shock-ring"></span>` +
-    [[-42, 16], [38, -14], [-20, -24], [28, 22], [4, 32]]
-      .map(([dx, dy], i) => `<span class="shard s${i + 1}" style="--dx:${dx}px;--dy:${dy}px"></span>`).join("");
+  const shards = [[-46, 18], [44, -16], [-24, -28], [32, 26], [6, 36], [-52, -6], [54, 8], [0, -38]]
+    .map(([dx, dy], i) => `<span class="shard s${i + 1}" style="--dx:${dx}px;--dy:${dy}px"></span>`).join("");
+  return `<svg class="crack-svg" viewBox="0 0 260 90" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M130 47 L98 33 L66 40 L28 20"/>
+      <path d="M130 47 L170 32 L206 41 L238 22"/>
+      <path d="M130 47 L108 63 L72 71 L36 66"/>
+      <path d="M130 47 L160 61 L198 69 L228 64"/>
+      <path d="M130 47 L126 22 L114 5"/>
+      <path d="M130 47 L140 25 L154 7"/>
+    </svg><span class="impact-flash"></span><span class="shock-ring"></span>` + shards;
 }
 function crashBall() {
   return `<span class="crash-ball">⚽</span>`;
 }
 function fireFx() {
-  return `<span class="sp-fire"><i class="fl f1"></i><i class="fl f2"></i><i class="fl f3"></i><i class="fl f4"></i><i class="ember e1" style="--ex:-12px"></i><i class="ember e2" style="--ex:6px"></i><i class="ember e3" style="--ex:20px"></i><i class="ember e4" style="--ex:-24px"></i></span>`;
+  return `<canvas class="sp-fire"></canvas>`;
 }
 
 function formChips(form) {
@@ -119,6 +126,7 @@ function matchCard(m) {
     </div>`;
   return `
   <article class="card tilt" data-id="${m.id}">
+    <i class="card-bg"></i>
     ${crashBall()}${score >= BEST_SCORE ? fireFx() : ""}
     <header class="card-head">
       <span class="comp">${m.flag} ${compLbl}</span>
@@ -184,6 +192,7 @@ function goalsCard(m) {
     </div>`;
   return `
   <article class="card g-card tilt" data-id="${m.id}">
+    <i class="card-bg"></i>
     ${crashBall()}${score >= BEST_SCORE ? fireFx() : ""}
     <header class="card-head">
       <span class="comp">${m.flag} ${compLbl}</span>
@@ -243,6 +252,7 @@ function comboCard(nameKey, ids, best) {
   }).join("");
   return `
   <article class="card acc-card${best ? " acc-best" : ""}">
+    <i class="card-bg"></i>
     ${best ? `<span class="acc-best-tag">👑 ${t("acc_best")}</span>` : ""}
     <h3 class="acc-name">${t(nameKey)}</h3>
     <small class="acc-legs-lbl">${t("acc_legs")} · ${ms.length}</small>
@@ -280,20 +290,24 @@ function bindCards() {
       ball.style.setProperty("--dive-h", (pb.offsetTop + pb.offsetHeight / 2 - 40).toFixed(0) + "px");
     }
     if (fire && pb) {
-      fire.style.top = (pb.offsetTop - 24).toFixed(0) + "px";
+      fire.style.left = (pb.offsetLeft - 26).toFixed(0) + "px";
+      fire.style.top = (pb.offsetTop - 48).toFixed(0) + "px";
+      fire.style.width = (pb.offsetWidth + 52).toFixed(0) + "px";
+      fire.style.height = (pb.offsetHeight + 78).toFixed(0) + "px";
     }
     card.addEventListener("mousemove", e => {
       card.classList.add("tilting");
       const r = card.getBoundingClientRect();
-      const rx = ((e.clientY - r.top) / r.height - 0.5) * -7;
-      const ry = ((e.clientX - r.left) / r.width - 0.5) * 7;
-      card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
+      const rx = ((e.clientY - r.top) / r.height - 0.5) * -9;
+      const ry = ((e.clientX - r.left) / r.width - 0.5) * 9;
+      card.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-5px)`;
     });
     card.addEventListener("mouseleave", () => {
       card.classList.remove("tilting");
       card.style.transform = "";
     });
   });
+  if (window.initFire) window.initFire();
 }
 
 function animateRings() {
