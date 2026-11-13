@@ -262,6 +262,39 @@ function apPlayer() {
   </svg>`;
 }
 
+function apMoneyPlayer() {
+  const bills = Array.from({ length: 7 }, (_, i) =>
+    `<i style="left:${[8, 26, 44, 62, 78, 18, 52][i]}%;top:${[62, 48, 70, 52, 64, 84, 30][i]}%;animation-delay:${(i * 0.45).toFixed(2)}s;animation-duration:${(2.6 + (i % 3) * 0.7).toFixed(1)}s">💵</i>`).join("");
+  return `<span class="ap-bills">${bills}</span>
+  <svg class="acc-player acc-player-money" viewBox="0 0 90 150" aria-hidden="true">
+    <ellipse cx="45" cy="144" rx="24" ry="5" fill="rgba(0,0,0,0.45)"/>
+    <rect x="34" y="96" width="9" height="34" rx="4" fill="url(#apSkin)"/>
+    <rect x="47" y="96" width="9" height="34" rx="4" fill="url(#apSkin)"/>
+    <rect x="34" y="118" width="9" height="10" rx="3" fill="#b8860b"/>
+    <rect x="47" y="118" width="9" height="10" rx="3" fill="#b8860b"/>
+    <rect x="31" y="128" width="14" height="7" rx="3" fill="#14141a"/>
+    <rect x="46" y="128" width="14" height="7" rx="3" fill="#14141a"/>
+    <rect x="31" y="84" width="28" height="16" rx="5" fill="#1d232e"/>
+    <path d="M33 52 Q45 46 57 52 L59 88 Q45 93 31 88 Z" fill="url(#apKit)"/>
+    <text x="45" y="80" font-size="12" text-anchor="middle" fill="#14141a" font-family="Orbitron, sans-serif" font-weight="bold">10</text>
+    <g class="apm-arms">
+      <rect x="24" y="52" width="8" height="26" rx="4" fill="url(#apSkin)" transform="rotate(40 28 56)"/>
+      <rect x="58" y="52" width="8" height="26" rx="4" fill="url(#apSkin)" transform="rotate(-40 62 56)"/>
+      <circle cx="37" cy="45" r="5" fill="url(#apSkin)"/>
+      <circle cx="53" cy="45" r="5" fill="url(#apSkin)"/>
+      <g class="apm-stack">
+        <rect x="36" y="47" width="20" height="12" rx="2" fill="#2effa0" stroke="#0c6e3f" stroke-width="1.5"/>
+        <rect x="38" y="43.5" width="16" height="4" rx="1" fill="#7dffb8" stroke="#0c6e3f" stroke-width="1"/>
+        <text x="46" y="56.5" font-size="9" text-anchor="middle" fill="#0c6e3f" font-family="Orbitron, sans-serif" font-weight="bold">$</text>
+      </g>
+    </g>
+    <g class="apm-head">
+      <circle cx="45" cy="32" r="14" fill="url(#apHead)"/>
+      <path d="M31 30 Q33 15 45 15 Q57 15 59 30 Q52 21 45 22 Q38 21 31 30 Z" fill="#2a2118"/>
+    </g>
+  </svg>`;
+}
+
 function comboCard(nameKey, ids, best) {
   const ms = ids.map(id => MATCHES.find(m => m.id === id)).filter(Boolean);
   const odds = ms.reduce((a, m) => a * m.odds[m.pick], 1);
@@ -274,7 +307,7 @@ function comboCard(nameKey, ids, best) {
   <article class="card acc-card${best ? " acc-best" : ""}">
     <i class="card-bg"></i>
     ${best ? `<span class="acc-best-tag">👑 ${t("acc_best")}</span>` : ""}
-    ${apPlayer()}
+    ${best ? apMoneyPlayer() : apPlayer()}
     <h3 class="acc-name">${t(nameKey)}</h3>
     <small class="acc-legs-lbl">${t("acc_legs")} · ${ms.length}</small>
     <div class="acc-legs">${legs}</div>

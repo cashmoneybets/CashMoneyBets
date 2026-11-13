@@ -1849,3 +1849,49 @@ a.logo { text-decoration: none; }
   .st-goal-near { height: 32px; }
   .st-ball-fig { width: 14px; height: 14px; }
 }
+
+/* ============ v4.1 — TOP TICKET : JOUEUR QUI EMBRASSE L'ARGENT + BILLETS QUI S'ENVOLENT ============ */
+
+/* le joueur du top ticket leve les deux mains avec un liasse de billets qu'il embrasse */
+.acc-player-money { animation: ap-bob 2.2s ease-in-out infinite; }
+.apm-stack {
+  animation: apm-kiss 2.2s ease-in-out infinite;
+  transform-origin: 46px 52px;
+}
+@keyframes apm-kiss {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  45% { transform: translate(0, 4px) rotate(-3deg); }
+  60% { transform: translate(0, 1px) rotate(1deg); }
+}
+.apm-head {
+  animation: apm-nod 2.2s ease-in-out infinite;
+  transform-origin: 45px 40px;
+}
+@keyframes apm-nod {
+  0%, 100% { transform: rotate(0deg); }
+  45% { transform: rotate(-4deg) translateY(1px); }
+}
+
+/* pluie de billets qui s'envolent autour de la carte */
+.ap-bills { position: absolute; inset: 0; z-index: 6; pointer-events: none; overflow: visible; }
+.ap-bills i {
+  position: absolute; font-style: normal; font-size: 21px; opacity: 0;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 6px rgba(46, 255, 160, 0.35));
+  animation: bill-fly 3.2s linear infinite;
+}
+@keyframes bill-fly {
+  0% { transform: translate(0, 0) rotate(-14deg) scale(0.6); opacity: 0; }
+  12% { opacity: 1; }
+  50% { transform: translate(16px, -48px) rotate(16deg) scale(1); opacity: 1; }
+  85% { opacity: 0.85; }
+  100% { transform: translate(-10px, -100px) rotate(-24deg) scale(0.8); opacity: 0; }
+}
+
+@media (max-width: 720px) {
+  .ap-bills i { font-size: 17px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ap-bills { display: none; }
+  .apm-stack, .apm-head { animation: none; }
+}
