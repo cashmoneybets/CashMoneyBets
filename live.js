@@ -118,8 +118,11 @@ function liveCard(m) {
   </article>`;
 }
 
-function renderLive(matches) {
-  const order = { in: 0, pre: 1, post: 2 };
+function renderLive(all) {
+  /* v5.8 : on n'affiche que les matchs reellement en direct ou termines —
+     les matchs pas encore commences polluent la page Live (ils sont deja dans Matchs a venir) */
+  const matches = all.filter(m => m.state !== "pre");
+  const order = { in: 0, post: 2 };
   matches.sort((a, b) => order[a.state] - order[b.state] || a.id.localeCompare(b.id));
   const shown = matches.slice(0, 15);
   if (shown.length === 0) {
