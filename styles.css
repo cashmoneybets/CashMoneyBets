@@ -1898,3 +1898,39 @@ a.logo { text-decoration: none; }
 
 /* ============ v4.1.1 — aura ronde sous le ballon retiree ============ */
 .roll-ball::after { display: none !important; }
+
+/* ============ v4.2 — le joueur du TOP TICKET JETTE les billets en l'air ============ */
+.acc-player-money { animation: ap-bob 2.4s ease-in-out infinite; }
+.apm-arm-r {
+  transform-origin: 61px 54px;
+  animation: apm-throw 2.4s ease-in-out infinite;
+}
+@keyframes apm-throw {
+  0%, 26% { transform: rotate(28deg); animation-timing-function: cubic-bezier(0.6, 0, 0.9, 0.35); }
+  44% { transform: rotate(-100deg); }
+  56% { transform: rotate(-76deg); }
+  70% { transform: rotate(-88deg); }
+  100% { transform: rotate(28deg); }
+}
+.apm-head {
+  transform-origin: 45px 40px;
+  animation: apm-look 2.4s ease-in-out infinite;
+}
+@keyframes apm-look {
+  0%, 26% { transform: rotate(0deg); }
+  44% { transform: rotate(6deg); }
+  70% { transform: rotate(4deg); }
+  100% { transform: rotate(0deg); }
+}
+.apm-arm-l {
+  transform-origin: 29px 58px;
+  animation: apm-holdbob 2.4s ease-in-out infinite;
+}
+@keyframes apm-holdbob {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-4deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .apm-arm-r, .apm-head, .apm-arm-l { animation: none; }
+}

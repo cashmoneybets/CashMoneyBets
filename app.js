@@ -263,8 +263,10 @@ function apPlayer() {
 }
 
 function apMoneyPlayer() {
+  const bx = [55, 68, 80, 62, 74, 58, 84];
+  const by = [38, 30, 42, 50, 34, 44, 28];
   const bills = Array.from({ length: 7 }, (_, i) =>
-    `<i style="left:${[8, 26, 44, 62, 78, 18, 52][i]}%;top:${[62, 48, 70, 52, 64, 84, 30][i]}%;animation-delay:${(i * 0.45).toFixed(2)}s;animation-duration:${(2.6 + (i % 3) * 0.7).toFixed(1)}s">💵</i>`).join("");
+    `<i style="left:${bx[i]}%;top:${by[i]}%;animation-delay:${(i * 0.34).toFixed(2)}s;animation-duration:2.4s">💵</i>`).join("");
   return `<span class="ap-bills">${bills}</span>
   <svg class="acc-player acc-player-money" viewBox="0 0 90 150" aria-hidden="true">
     <ellipse cx="45" cy="144" rx="24" ry="5" fill="rgba(0,0,0,0.45)"/>
@@ -277,16 +279,19 @@ function apMoneyPlayer() {
     <rect x="31" y="84" width="28" height="16" rx="5" fill="#1d232e"/>
     <path d="M33 52 Q45 46 57 52 L59 88 Q45 93 31 88 Z" fill="url(#apKit)"/>
     <text x="45" y="80" font-size="12" text-anchor="middle" fill="#14141a" font-family="Orbitron, sans-serif" font-weight="bold">10</text>
-    <g class="apm-arms">
-      <rect x="24" y="52" width="8" height="26" rx="4" fill="url(#apSkin)" transform="rotate(40 28 56)"/>
-      <rect x="58" y="52" width="8" height="26" rx="4" fill="url(#apSkin)" transform="rotate(-40 62 56)"/>
-      <circle cx="37" cy="45" r="5" fill="url(#apSkin)"/>
-      <circle cx="53" cy="45" r="5" fill="url(#apSkin)"/>
-      <g class="apm-stack">
-        <rect x="36" y="47" width="20" height="12" rx="2" fill="#2effa0" stroke="#0c6e3f" stroke-width="1.5"/>
-        <rect x="38" y="43.5" width="16" height="4" rx="1" fill="#7dffb8" stroke="#0c6e3f" stroke-width="1"/>
-        <text x="46" y="56.5" font-size="9" text-anchor="middle" fill="#0c6e3f" font-family="Orbitron, sans-serif" font-weight="bold">$</text>
+    <g class="apm-arm-l">
+      <rect x="25" y="54" width="8" height="26" rx="4" fill="url(#apSkin)" transform="rotate(42 29 58)"/>
+      <circle cx="38" cy="46" r="5" fill="url(#apSkin)"/>
+      <g class="apm-hold">
+        <rect x="31" y="42" width="18" height="11" rx="2" fill="#2effa0" stroke="#0c6e3f" stroke-width="1.5"/>
+        <rect x="33" y="39" width="14" height="4" rx="1" fill="#7dffb8" stroke="#0c6e3f" stroke-width="1"/>
+        <text x="40" y="51" font-size="8" text-anchor="middle" fill="#0c6e3f" font-family="Orbitron, sans-serif" font-weight="bold">$</text>
       </g>
+    </g>
+    <g class="apm-arm-r">
+      <rect x="57" y="52" width="9" height="36" rx="4.5" fill="url(#apSkin)"/>
+      <circle cx="61.5" cy="90" r="5.5" fill="url(#apSkin)"/>
+      <rect x="59" y="92" width="4.5" height="9" rx="2.2" fill="url(#apSkin)"/>
     </g>
     <g class="apm-head">
       <circle cx="45" cy="32" r="14" fill="url(#apHead)"/>
