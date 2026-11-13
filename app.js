@@ -46,20 +46,8 @@ function flashCls(score, tier) {
   if (tier.cls === "value") return " neon-red";
   return "";
 }
-function impactFx() {
-  const shards = [[-46, 18], [44, -16], [-24, -28], [32, 26], [6, 36], [-52, -6], [54, 8], [0, -38]]
-    .map(([dx, dy], i) => `<span class="shard s${i + 1}" style="--dx:${dx}px;--dy:${dy}px"></span>`).join("");
-  return `<svg class="crack-svg" viewBox="0 0 260 90" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M130 47 L98 33 L66 40 L28 20"/>
-      <path d="M130 47 L170 32 L206 41 L238 22"/>
-      <path d="M130 47 L108 63 L72 71 L36 66"/>
-      <path d="M130 47 L160 61 L198 69 L228 64"/>
-      <path d="M130 47 L126 22 L114 5"/>
-      <path d="M130 47 L140 25 L154 7"/>
-    </svg><span class="impact-flash"></span><span class="shock-ring"></span>` + shards;
-}
-function crashBall() {
-  return `<span class="crash-ball">⚽</span>`;
+function rollBall() {
+  return `<span class="roll-ball">⚽</span>`;
 }
 function fireFx() {
   return `<canvas class="sp-fire"></canvas>`;
@@ -127,14 +115,13 @@ function matchCard(m) {
   return `
   <article class="card tilt" data-id="${m.id}">
     <i class="card-bg"></i>
-    ${crashBall()}${score >= BEST_SCORE ? fireFx() : ""}
+    ${rollBall()}${score >= BEST_SCORE ? fireFx() : ""}
     <header class="card-head">
       <span class="comp">${m.flag} ${compLbl}</span>
       <span class="kick">🕗 ${m.kickoff} CET</span>
     </header>
     ${teamsRow(m)}
     <div class="pick-box tier-${tier.cls}${flashCls(score, tier)}${score >= BEST_SCORE ? " on-fire" : ""}">
-      ${impactFx()}
       <div class="pick-left">
         <small>🎯 ${t("mkt_pick")}</small>
         <strong>${pickLbl}</strong>
@@ -193,14 +180,13 @@ function goalsCard(m) {
   return `
   <article class="card g-card tilt" data-id="${m.id}">
     <i class="card-bg"></i>
-    ${crashBall()}${score >= BEST_SCORE ? fireFx() : ""}
+    ${rollBall()}${score >= BEST_SCORE ? fireFx() : ""}
     <header class="card-head">
       <span class="comp">${m.flag} ${compLbl}</span>
       <span class="kick">🕗 ${m.kickoff} CET</span>
     </header>
     ${teamsRow(m)}
     <div class="pick-box tier-${tier.cls}${flashCls(score, tier)}${score >= BEST_SCORE ? " on-fire" : ""}">
-      ${impactFx()}
       <div class="pick-left">
         <small>🎯 ${t("mkt_pick")}</small>
         <strong>${pickLbl}</strong>
@@ -283,18 +269,40 @@ window.renderAcc = renderAcc;
 function bindCards() {
   document.querySelectorAll(".tilt").forEach((card, i) => {
     card.style.animationDelay = `-${((i * 1.3) % 7).toFixed(1)}s`;
-    const ball = card.querySelector(":scope > .crash-ball");
+    const ball = card.querySelector(":scope > .roll-ball");
     const fire = card.querySelector(":scope > .sp-fire");
     const pb = card.querySelector(".pick-box");
-    if (ball && pb) {
-      const half = window.innerWidth <= 720 ? 42 : 52;
-      ball.style.setProperty("--dive-h", (pb.offsetTop + pb.offsetHeight / 2 - half).toFixed(0) + "px");
-    }
     if (fire && pb) {
       fire.style.left = (pb.offsetLeft - 26).toFixed(0) + "px";
       fire.style.top = (pb.offsetTop - 48).toFixed(0) + "px";
       fire.style.width = (pb.offsetWidth + 52).toFixed(0) + "px";
       fire.style.height = (pb.offsetHeight + 78).toFixed(0) + "px";
+    }
+    const mkts = card.querySelectorAll(".mkt, .g-market");
+    mkts.forEach(el => el.classList.remove("mkt-target"));
+    if (ball && mkts.length) {
+      let bestMkt = null, bv = -1;
+      mkts.forEach(el => {
+        const b = el.querySelector("b");
+        const v = b ? parseFloat(b.textContent) || 0 : 0;
+        if (v > bv) { bv = v; bestMkt = el; }
+      });
+      if (bestMkt) {
+        bestMkt.classList.add("mkt-target");
+        let x = 0, y = 0, n = bestMkt;
+        while (n && n !== card) { x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent; }
+        const tx = x + bestMkt.offsetWidth / 2 - 26;
+        const ty = y + bestMkt.offsetHeight / 2 - 26;
+        const sx = card.clientWidth - 16;
+        const sy = Math.max(4, ty - 44);
+        const dist = Math.hypot(tx - sx, ty - sy);
+        const rot = -Math.round(dist / (Math.PI * 52) * 360);
+        ball.style.setProperty("--sx", sx.toFixed(0) + "px");
+        ball.style.setProperty("--sy", sy.toFixed(0) + "px");
+        ball.style.setProperty("--roll-x", tx.toFixed(0) + "px");
+        ball.style.setProperty("--roll-y", ty.toFixed(0) + "px");
+        ball.style.setProperty("--roll-rot", rot + "deg");
+      }
     }
     card.addEventListener("mousemove", e => {
       card.classList.add("tilting");

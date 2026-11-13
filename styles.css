@@ -1637,3 +1637,49 @@ a.logo { text-decoration: none; }
 @media (prefers-reduced-motion: reduce) {
   .crack-svg, .impact-flash { display: none; }
 }
+
+/* ============ v3.7 — BALLON ROULANT VERS LA CASE DE BUTS LA PLUS SURE ============ */
+
+/* le ballon entre par la droite, roule, s'arrete sur la case over avec le plus haut %,
+   puis y reste et clignote en vert : c'est le pari a prendre */
+.roll-ball {
+  position: absolute; left: 0; top: 0; z-index: 3;
+  font-size: 52px; line-height: 1; opacity: 0; pointer-events: none;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
+  animation: roll-in 1.6s cubic-bezier(0.3, 0.7, 0.35, 1) 1s forwards,
+             ball-glow 1.3s ease-in-out 2.8s infinite;
+  will-change: transform;
+}
+@keyframes roll-in {
+  0% { transform: translate(var(--sx, 400px), var(--sy, 200px)) translateZ(30px) rotate(0deg); opacity: 0; }
+  6% { opacity: 1; }
+  86% { transform: translate(calc(var(--roll-x, 40px) + 10px), var(--roll-y, 200px)) translateZ(30px) rotate(calc(var(--roll-rot, -540deg) - 30deg)); animation-timing-function: ease-out; }
+  93% { transform: translate(calc(var(--roll-x, 40px) - 3px), var(--roll-y, 200px)) translateZ(30px) rotate(calc(var(--roll-rot, -540deg) + 8deg)); }
+  100% { transform: translate(var(--roll-x, 40px), var(--roll-y, 200px)) translateZ(30px) rotate(var(--roll-rot, -540deg)); opacity: 1; }
+}
+@keyframes ball-glow {
+  0%, 100% { filter: drop-shadow(0 0 5px rgba(46, 255, 160, 0.55)) drop-shadow(0 3px 8px rgba(0, 0, 0, 0.5)); }
+  50% { filter: drop-shadow(0 0 16px rgba(46, 255, 160, 1)) drop-shadow(0 0 30px rgba(46, 255, 160, 0.55)) drop-shadow(0 3px 8px rgba(0, 0, 0, 0.5)); }
+}
+
+/* la case cible s'illumine en vert en meme temps que le ballon se pose */
+.mkt-target {
+  border-color: rgba(46, 255, 160, 0.65);
+  animation: target-pulse 1.3s ease-in-out 2.8s infinite;
+}
+@keyframes target-pulse {
+  0%, 100% { box-shadow: 0 0 10px rgba(46, 255, 160, 0.18), inset 0 0 10px rgba(46, 255, 160, 0.06); }
+  50% { box-shadow: 0 0 22px rgba(46, 255, 160, 0.45), inset 0 0 16px rgba(46, 255, 160, 0.14); }
+}
+
+/* la secousse d'impact n'a plus lieu d'etre : plus de crash sur la pick-box */
+.pick-box.neon-green { animation: neon-green 1.6s ease-in-out infinite; }
+
+@media (max-width: 720px) {
+  .roll-ball { font-size: 44px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .roll-ball { display: none; }
+  .mkt-target { animation: none; }
+}
