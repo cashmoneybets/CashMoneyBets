@@ -5,7 +5,7 @@ setInterval(() => {
 }, 1000);
 
 /* ============ VIEW ROUTER (Accueil / LIVE / BUTS) ============ */
-const VIEWS = ["home", "live", "buts"];
+const VIEWS = ["home", "live", "buts", "avenir", "acc"];
 function showView(name) {
   document.querySelectorAll(".view").forEach(v =>
     v.classList.toggle("active", v.id === "view-" + name));
@@ -104,7 +104,7 @@ function matchCard(m) {
       <span class="kick">🕗 ${m.kickoff} CET</span>
     </header>
     ${teamsRow(m)}
-    <div class="pick-box tier-${tier.cls}">
+    <div class="pick-box tier-${tier.cls} neon-flash">
       <div class="pick-left">
         <small>🎯 ${t("mkt_pick")}</small>
         <strong>${pickLbl}</strong>
@@ -150,8 +150,10 @@ function goalsCard(m) {
   const best = mk.over25 >= 55
     ? { key: "mkt_over25", pct: mk.over25 }
     : { key: "mkt_over15", pct: mk.over15 };
-  const gbar = (label, pct, cls) => `
-    <div class="g-market${pct >= 60 ? " safe" : ""}">
+  const pickTeam = m.pick === "1" ? m.home : m.away;
+  const pickLbl = t("mkt_pick_win").replace("{team}", pickTeam);
+  const gbar = (label, pct, cls, isBest) => `
+    <div class="g-market${pct >= 60 ? " safe" : ""}${isBest ? " g-star" : ""}">
       ${pct >= 60 ? `<span class="g-safe">✓ ${t("g_safe")}</span>` : ""}
       <small>${label}</small>
       <b>${pct}%</b>
@@ -165,12 +167,19 @@ function goalsCard(m) {
       <span class="kick">🕗 ${m.kickoff} CET</span>
     </header>
     ${teamsRow(m)}
-    <div class="g-grid">
-      ${gbar(t("mkt_over15"), mk.over15, "g1")}
-      ${gbar(t("mkt_over25"), mk.over25, "g2")}
-      ${gbar(t("mkt_btts"), mk.btts, "g3")}
+    <div class="pick-box tier-${tier.cls} neon-flash">
+      <div class="pick-left">
+        <small>🎯 ${t("mkt_pick")}</small>
+        <strong>${pickLbl}</strong>
+      </div>
+      <div class="pick-odds">${m.odds[m.pick].toFixed(2)}</div>
     </div>
-    <div class="g-best">🎯 ${t("g_best")} : <b>${t(best.key)} · ${best.pct}%</b> <em>@ ${(100 / best.pct).toFixed(2)}</em></div>
+    <div class="g-grid">
+      ${gbar(t("mkt_over15"), mk.over15, "g1", best.key === "mkt_over15")}
+      ${gbar(t("mkt_over25"), mk.over25, "g2", best.key === "mkt_over25")}
+      ${gbar(t("mkt_btts"), mk.btts, "g3", false)}
+    </div>
+    <div class="g-best neon-flash">🎯 ${t("g_best")} : <b>${t(best.key)} · ${best.pct}%</b> <em>@ ${(100 / best.pct).toFixed(2)}</em></div>
     <small class="g-est-note">${t("g_est_note")}</small>
     <p class="note">${tr(m.note)}</p>
     ${confidenceBlock(score, tier, tierLbl)}
@@ -185,6 +194,57 @@ function renderButs() {
   observeReveals();
 }
 window.renderButs = renderButs;
+
+/* ============ VUE GAMES TO COME ============ */
+function renderUpcoming() {
+  const upGrid = document.getElementById("up-grid");
+  if (!upGrid) return;
+  const list = [...MATCHES].sort((a, b) => safeScore(b) - safeScore(a));
+  upGrid.innerHTML = list.map(matchCard).join("");
+  bindCards();
+  requestAnimationFrame(animateRings);
+  requestAnimationFrame(animateBars);
+  observeReveals();
+}
+window.renderUpcoming = renderUpcoming;
+
+/* ============ VUE ACCUMULATEUR — combinés du bot ============ */
+function comboCard(nameKey, ids, best) {
+  const ms = ids.map(id => MATCHES.find(m => m.id === id)).filter(Boolean);
+  const odds = ms.reduce((a, m) => a * m.odds[m.pick], 1);
+  const conf = ms.reduce((a, m) => a + safeScore(m), 0) / ms.length;
+  const legs = ms.map(m => {
+    const team = m.pick === "1" ? m.home : m.away;
+    return `<div class="acc-leg"><span class="al-flag">${m.flag}</span><span class="al-team">${team}</span><span class="al-pick">${t("mkt_pick_win").replace("{team}", team)}</span><b class="al-odds">${m.odds[m.pick].toFixed(2)}</b></div>`;
+  }).join("");
+  return `
+  <article class="card acc-card${best ? " acc-best" : ""}">
+    ${best ? `<span class="acc-best-tag">👑 ${t("acc_best")}</span>` : ""}
+    <h3 class="acc-name">${t(nameKey)}</h3>
+    <small class="acc-legs-lbl">${t("acc_legs")} · ${ms.length}</small>
+    <div class="acc-legs">${legs}</div>
+    <div class="acc-foot">
+      <div class="acc-conf"><small>${t("acc_conf")}</small><b>${conf.toFixed(1)}</b></div>
+      <div class="acc-odds-big"><small>${t("parlay_lbl")}</small><b>${odds.toFixed(2)}</b></div>
+    </div>
+  </article>`;
+}
+
+function renderAcc() {
+  const accGrid = document.getElementById("acc-grid");
+  if (!accGrid) return;
+  const byScore = [...MATCHES].sort((a, b) => safeScore(b) - safeScore(a));
+  const byOdds = byScore.filter(m => safeScore(m) >= 78)
+    .sort((a, b) => b.odds[b.pick] - a.odds[a.pick]);
+  const combos = [
+    ["acc_safe", byScore.slice(0, 2).map(m => m.id), false],
+    ["acc_triple", byScore.slice(0, 3).map(m => m.id), true],
+    ["acc_value", byOdds.slice(0, 3).map(m => m.id), false],
+  ];
+  accGrid.innerHTML = combos.map(([k, ids, best]) => comboCard(k, ids, best)).join("");
+  observeReveals();
+}
+window.renderAcc = renderAcc;
 
 function bindCards() {
   document.querySelectorAll(".tilt").forEach(card => {
@@ -326,6 +386,8 @@ document.querySelectorAll(".st-case").forEach(btn => {
 /* ============ INIT ============ */
 renderTopPicks();
 renderButs();
+renderUpcoming();
+renderAcc();
 observeReveals();
 routeFromHash();
 

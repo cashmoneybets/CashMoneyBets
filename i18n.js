@@ -1,7 +1,7 @@
 /* ============ CASHMONEY·BETS — i18n ============ */
 const I18N = {
   fr: {
-    nav_home: "ACCUEIL", nav_live: "LIVE", nav_buts: "BUTS", nav_method: "MÉTHODE",
+    nav_home: "ACCUEIL", nav_live: "LIVE MATCH", nav_buts: "BUTS", nav_upcoming: "MATCHS À VENIR", nav_acc: "ACCUMULATEUR", nav_method: "MÉTHODE",
     badge: "SYSTÈME EN LIGNE",
     hero_sub: "Terminal de paris nouvelle génération : <b>scores LIVE</b> rafraîchis en continu, <b>alerte BUT</b> en temps réel, <b>stats animées</b> et <b>Safe Score /100</b> calculé sur les probabilités du marché.",
     btn_live: "📡 Voir le LIVE", btn_buts: "⚽ Paris BUTS",
@@ -17,6 +17,12 @@ const I18N = {
     picks_title: "// TOP <span class='accent'>PICKS</span> DU JOUR",
     picks_sub: "Les 3 paris les plus sûrs du vendredi, sélectionnés par le moteur. Chaque carte affiche le pari recommandé, les probabilités de victoire et les marchés buts.",
     buts_title: "// MARCHÉS <span class='accent'>BUTS</span>",
+    up_title: "// MATCHS <span class='accent'>À VENIR</span>",
+    up_sub: "Tous les matchs analysés par le moteur pour vendredi, classés par Safe Score. Chaque case affiche le pari recommandé (quelle équipe gagne), les probabilités, les marchés buts et le score de confiance.",
+    acc_title: "// ACCUMULATEURS <span class='accent'>DU BOT</span>",
+    acc_sub: "Le bot combine 2 à 3 des picks les plus sûrs du jour pour générer des tickets à bonne cote. Double safe pour la fiabilité, triple power pour l'équilibre, acca value pour la cote.",
+    acc_safe: "🔒 DOUBLE SAFE", acc_triple: "⚡ TRIPLE POWER", acc_value: "💎 ACCA VALUE",
+    acc_conf: "CONFIANCE MOYENNE", acc_best: "TOP TICKET DU BOT", acc_legs: "SÉLECTIONS",
     buts_sub: "Probabilités de buts estimées par le moteur (modèle de Poisson calibré sur les cotes) : plus de 1.5 buts, plus de 2.5 buts, les deux équipes marquent. Classé par la meilleure opportunité.",
     g_best: "MEILLEUR PARI BUT", g_safe: "SAFE", g_est_note: "Cotes estimées (100 ÷ proba) — compare avec ton bookmaker.",
     conf_label: "SCORE DE CONFIANCE", safe_score_lbl: "Safe Score", case_hint: "Appuie sur une case pour voir les données",
@@ -43,7 +49,7 @@ const I18N = {
     footer_brand: "CASHMONEY·BETS — Safe Score Engine v2.2 · Besoin d'aide ? <b>Joueurs Info Service : 09 74 75 13 13</b>",
   },
   en: {
-    nav_home: "HOME", nav_live: "LIVE", nav_buts: "GOALS", nav_method: "METHOD",
+    nav_home: "HOME", nav_live: "LIVE MATCH", nav_buts: "GOALS", nav_upcoming: "GAMES TO COME", nav_acc: "ACCUMULATOR", nav_method: "METHOD",
     badge: "SYSTEM ONLINE",
     hero_sub: "Next-gen betting terminal: <b>LIVE scores</b> refreshed continuously, real-time <b>GOAL alerts</b>, <b>animated stats</b> and a <b>Safe Score /100</b> computed from market probabilities.",
     btn_live: "📡 Watch LIVE", btn_buts: "⚽ Goals bets",
@@ -59,6 +65,12 @@ const I18N = {
     picks_title: "// TODAY'S TOP <span class='accent'>PICKS</span>",
     picks_sub: "Friday's 3 safest bets, selected by the engine. Each card shows the recommended bet, win probabilities and goals markets.",
     buts_title: "// <span class='accent'>GOALS</span> MARKETS",
+    up_title: "// GAMES <span class='accent'>TO COME</span>",
+    up_sub: "Every match analyzed by the engine for Friday, ranked by Safe Score. Each card shows the recommended bet (which team wins), probabilities, goals markets and the confidence score.",
+    acc_title: "// BOT <span class='accent'>ACCUMULATORS</span>",
+    acc_sub: "The bot combines 2 to 3 of Friday's safest picks into tickets with solid odds. Safe double for reliability, power triple for balance, value acca for the odds.",
+    acc_safe: "🔒 SAFE DOUBLE", acc_triple: "⚡ POWER TRIPLE", acc_value: "💎 VALUE ACCA",
+    acc_conf: "AVG CONFIDENCE", acc_best: "BOT'S TOP TICKET", acc_legs: "SELECTIONS",
     buts_sub: "Goals probabilities estimated by the engine (Poisson model calibrated on odds): over 1.5 goals, over 2.5 goals, both teams to score. Ranked by best opportunity.",
     g_best: "BEST GOALS BET", g_safe: "SAFE", g_est_note: "Estimated odds (100 ÷ probability) — compare with your bookmaker.",
     conf_label: "CONFIDENCE SCORE", safe_score_lbl: "Safe Score", case_hint: "Tap a panel to see the data",
@@ -85,7 +97,7 @@ const I18N = {
     footer_brand: "CASHMONEY·BETS — Safe Score Engine v2.2 · Need help? <b>Be gamble aware</b>",
   },
   de: {
-    nav_home: "START", nav_live: "LIVE", nav_buts: "TORE", nav_method: "METHODE",
+    nav_home: "START", nav_live: "LIVE-SPIELE", nav_buts: "TORE", nav_upcoming: "KOMMENDE SPIELE", nav_acc: "KOMBIWETTE", nav_method: "METHODE",
     badge: "SYSTEM ONLINE",
     hero_sub: "Betting-Terminal der neuen Generation: <b>LIVE-Scores</b> in Echtzeit, <b>TOR-Alarm</b>, <b>animierte Stats</b> und ein <b>Safe Score /100</b> aus den Marktwahrscheinlichkeiten.",
     btn_live: "📡 LIVE ansehen", btn_buts: "⚽ Tor-Wetten",
@@ -101,6 +113,12 @@ const I18N = {
     picks_title: "// TOP-<span class='accent'>TIPPS</span> HEUTE",
     picks_sub: "Die 3 sichersten Tipps des Freitags, vom Motor ausgewählt. Jede Karte zeigt die empfohlene Wette, Siegchancen und Tor-Märkte.",
     buts_title: "// <span class='accent'>TOR</span>-MÄRKTE",
+    up_title: "// KOMMENDE <span class='accent'>SPIELE</span>",
+    up_sub: "Alle Spiele, die der Motor für Freitag analysiert hat, sortiert nach Safe Score. Jede Karte zeigt die empfohlene Wette (welches Team gewinnt), Wahrscheinlichkeiten, Tor-Märkte und den Vertrauensscore.",
+    acc_title: "// <span class='accent'>KOMBI</span>-TICKETS DES BOTS",
+    acc_sub: "Der Bot kombiniert 2 bis 3 der sichersten Tipps des Tages zu Tickets mit guter Quote. Sicheres Double für Verlässlichkeit, Power-Triple für die Balance, Value-Kombi für die Quote.",
+    acc_safe: "🔒 SICHERES DOUBLE", acc_triple: "⚡ POWER-TRIPLE", acc_value: "💎 VALUE-KOMBI",
+    acc_conf: "Ø VERTRAUEN", acc_best: "TOP-TICKET DES BOTS", acc_legs: "AUSWAHLEN",
     buts_sub: "Torwahrscheinlichkeiten vom Motor geschätzt (Poisson-Modell, an Quoten kalibriert): über 1.5 Tore, über 2.5 Tore, beide Teams treffen. Sortiert nach bester Gelegenheit.",
     g_best: "BESTE TOR-WETTE", g_safe: "SICHER", g_est_note: "Geschätzte Quoten (100 ÷ Wahrscheinlichkeit) — vergleiche mit deinem Buchmacher.",
     conf_label: "VERTRAUENSSCORE", safe_score_lbl: "Safe Score", case_hint: "Tippe auf ein Panel, um die Daten zu sehen",
@@ -170,6 +188,8 @@ function setLang(lang) {
   applyI18n();
   if (typeof window.renderSafeBets === "function") window.renderSafeBets();
   if (typeof window.renderButs === "function") window.renderButs();
+  if (typeof window.renderUpcoming === "function") window.renderUpcoming();
+  if (typeof window.renderAcc === "function") window.renderAcc();
   if (typeof window.renderStatCases === "function") window.renderStatCases();
   if (typeof window.buildTicker === "function") window.buildTicker();
   if (window.__lastLive && typeof window.renderLiveFromCache === "function") {

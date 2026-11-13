@@ -950,3 +950,127 @@ a.logo { text-decoration: none; }
   .st-pitch { height: 50%; }
   .st-stands { height: 40%; }
 }
+
+/* ============ v2.7 — NEON / LED / ACCUMULATEURS ============ */
+@property --led-a { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+@keyframes led-spin { to { --led-a: 360deg; } }
+
+/* ---- LED ring rotatif autour des cartes au survol ---- */
+.card::before {
+  content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  padding: 1.5px;
+  background: conic-gradient(from var(--led-a),
+    transparent 0%, #f5c451 9%, rgba(245,196,81,.25) 16%, transparent 26%,
+    transparent 46%, #2effa0 54%, rgba(46,255,160,.25) 62%, transparent 72%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask-composite: exclude;
+  opacity: 0; transition: opacity 0.4s ease;
+}
+.card:hover::before { opacity: 1; animation: led-spin 3.2s linear infinite; }
+
+/* ---- balayage lumineux au survol ---- */
+.card::after {
+  content: ""; position: absolute; top: 0; bottom: 0; left: -70%; width: 45%;
+  z-index: 3; pointer-events: none; transform: skewX(-18deg); opacity: 0;
+  background: linear-gradient(105deg, transparent, rgba(245, 196, 81, 0.13), transparent);
+}
+.card:hover::after { opacity: 1; animation: card-sweep 1.1s ease forwards; }
+@keyframes card-sweep { to { left: 130%; } }
+
+@keyframes card-neon {
+  0%, 100% { border-color: rgba(245, 196, 81, 0.55); box-shadow: inset 0 0 18px rgba(245, 196, 81, 0.07); }
+  50% { border-color: #f5c451; box-shadow: inset 0 0 34px rgba(245, 196, 81, 0.15); }
+}
+.card:hover { animation: card-neon 1.8s ease-in-out infinite; }
+
+/* ---- LED ring sur les cases du stade ---- */
+.st-case::after {
+  content: ""; position: absolute; inset: -3px; border-radius: 14px; padding: 2px;
+  pointer-events: none; opacity: 0; transition: opacity 0.35s ease;
+  background: conic-gradient(from var(--led-a),
+    #f5c451, rgba(245,196,81,.15) 22%, transparent 38%,
+    #2effa0 52%, rgba(46,255,160,.15) 66%, transparent 82%, #f5c451);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask-composite: exclude;
+}
+.st-case:hover::after, .st-case.open::after { opacity: 1; animation: led-spin 2.6s linear infinite; }
+
+/* ---- le pari le plus safe clignote comme un néon ---- */
+@keyframes pick-neon {
+  0%, 100% {
+    border-color: rgba(245, 196, 81, 0.35);
+    box-shadow: inset 0 0 10px rgba(245, 196, 81, 0.05);
+  }
+  50% {
+    border-color: #f5c451;
+    box-shadow: inset 0 0 26px rgba(245, 196, 81, 0.22), 0 0 26px rgba(245, 196, 81, 0.30);
+  }
+}
+.pick-box.neon-flash { animation: pick-neon 1.6s ease-in-out infinite; }
+
+@keyframes gbest-neon {
+  0%, 100% { border-color: rgba(245, 196, 81, 0.45); box-shadow: 0 0 8px rgba(245, 196, 81, 0.10); }
+  50% { border-color: #f5c451; box-shadow: 0 0 26px rgba(245, 196, 81, 0.42); }
+}
+.g-best.neon-flash { animation: gbest-neon 1.6s ease-in-out infinite; }
+
+.g-market.g-star {
+  border-color: rgba(245, 196, 81, 0.55);
+  background: rgba(245, 196, 81, 0.05);
+  animation: pick-neon 1.6s ease-in-out infinite;
+}
+
+/* ---- page ACCUMULATEUR ---- */
+.acc-wrap { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 22px; }
+.acc-card { display: flex; flex-direction: column; gap: 14px; }
+.acc-name {
+  margin: 0; font-family: "Orbitron", sans-serif; font-size: 0.95rem;
+  letter-spacing: 0.14em; color: var(--cyan);
+}
+.acc-best-tag {
+  position: absolute; top: 14px; right: 14px; z-index: 4;
+  padding: 4px 10px; border-radius: 3px;
+  font-size: 0.58rem; font-weight: 800; letter-spacing: 0.12em; color: #060605;
+  background: linear-gradient(135deg, #f5c451, #ffd24a);
+  animation: tag-blink 1.4s ease-in-out infinite;
+}
+@keyframes tag-blink {
+  0%, 100% { box-shadow: 0 0 6px rgba(245, 196, 81, 0.4); }
+  50% { box-shadow: 0 0 22px rgba(245, 196, 81, 0.9); }
+}
+.acc-best { border-color: rgba(245, 196, 81, 0.65) !important; animation: card-neon 1.8s ease-in-out infinite; }
+.acc-legs-lbl { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.16em; color: var(--muted); }
+.acc-legs { display: flex; flex-direction: column; gap: 8px; }
+.acc-leg {
+  display: flex; align-items: center; gap: 10px; padding: 9px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--line); border-radius: 6px; font-size: 0.8rem;
+}
+.al-flag { font-size: 0.95rem; }
+.al-team { flex: 1; font-weight: 700; color: var(--text); }
+.al-pick { color: var(--magenta); font-size: 0.66rem; letter-spacing: 0.06em; text-align: right; }
+.al-odds { font-family: "Share Tech Mono", monospace; color: var(--cyan); min-width: 38px; text-align: right; }
+.acc-foot {
+  margin-top: auto; display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 12px; padding-top: 12px; border-top: 1px dashed var(--line);
+}
+.acc-conf small, .acc-odds-big small {
+  display: block; font-family: var(--mono); font-size: 0.56rem;
+  letter-spacing: 0.14em; color: var(--muted); margin-bottom: 3px;
+}
+.acc-conf b { font-family: "Share Tech Mono", monospace; font-size: 1.25rem; color: var(--magenta); }
+.acc-odds-big { text-align: right; }
+.acc-odds-big b {
+  font-family: "Orbitron", sans-serif; font-size: 2rem; color: var(--cyan);
+  text-shadow: 0 0 18px rgba(245, 196, 81, 0.45);
+}
+
+@media (max-width: 720px) {
+  .acc-odds-big b { font-size: 1.6rem; }
+  .acc-best-tag { top: 10px; right: 10px; font-size: 0.52rem; }
+  .al-pick { display: none; }
+}
