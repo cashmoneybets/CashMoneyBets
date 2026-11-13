@@ -47,12 +47,15 @@ function flashCls(score, tier) {
   return "";
 }
 function impactFx() {
-  return `<span class="crack"></span>` +
+  return `<span class="crack"></span><span class="shock-ring"></span>` +
     [[-42, 16], [38, -14], [-20, -24], [28, 22], [4, 32]]
       .map(([dx, dy], i) => `<span class="shard s${i + 1}" style="--dx:${dx}px;--dy:${dy}px"></span>`).join("");
 }
 function crashBall() {
   return `<span class="crash-ball">⚽</span>`;
+}
+function fireFx() {
+  return `<span class="sp-fire"><i class="fl f1"></i><i class="fl f2"></i><i class="fl f3"></i><i class="fl f4"></i><i class="ember e1" style="--ex:-12px"></i><i class="ember e2" style="--ex:6px"></i><i class="ember e3" style="--ex:20px"></i><i class="ember e4" style="--ex:-24px"></i></span>`;
 }
 
 function formChips(form) {
@@ -116,13 +119,13 @@ function matchCard(m) {
     </div>`;
   return `
   <article class="card tilt" data-id="${m.id}">
-    ${crashBall()}
+    ${crashBall()}${score >= BEST_SCORE ? fireFx() : ""}
     <header class="card-head">
       <span class="comp">${m.flag} ${compLbl}</span>
       <span class="kick">🕗 ${m.kickoff} CET</span>
     </header>
     ${teamsRow(m)}
-    <div class="pick-box tier-${tier.cls}${flashCls(score, tier)}">
+    <div class="pick-box tier-${tier.cls}${flashCls(score, tier)}${score >= BEST_SCORE ? " on-fire" : ""}">
       ${impactFx()}
       <div class="pick-left">
         <small>🎯 ${t("mkt_pick")}</small>
@@ -181,13 +184,13 @@ function goalsCard(m) {
     </div>`;
   return `
   <article class="card g-card tilt" data-id="${m.id}">
-    ${crashBall()}
+    ${crashBall()}${score >= BEST_SCORE ? fireFx() : ""}
     <header class="card-head">
       <span class="comp">${m.flag} ${compLbl}</span>
       <span class="kick">🕗 ${m.kickoff} CET</span>
     </header>
     ${teamsRow(m)}
-    <div class="pick-box tier-${tier.cls}${flashCls(score, tier)}">
+    <div class="pick-box tier-${tier.cls}${flashCls(score, tier)}${score >= BEST_SCORE ? " on-fire" : ""}">
       ${impactFx()}
       <div class="pick-left">
         <small>🎯 ${t("mkt_pick")}</small>
@@ -271,9 +274,13 @@ function bindCards() {
   document.querySelectorAll(".tilt").forEach((card, i) => {
     card.style.animationDelay = `-${((i * 1.3) % 7).toFixed(1)}s`;
     const ball = card.querySelector(":scope > .crash-ball");
+    const fire = card.querySelector(":scope > .sp-fire");
     const pb = card.querySelector(".pick-box");
     if (ball && pb) {
       ball.style.setProperty("--dive-h", (pb.offsetTop + pb.offsetHeight / 2 - 40).toFixed(0) + "px");
+    }
+    if (fire && pb) {
+      fire.style.top = (pb.offsetTop - 24).toFixed(0) + "px";
     }
     card.addEventListener("mousemove", e => {
       card.classList.add("tilting");
