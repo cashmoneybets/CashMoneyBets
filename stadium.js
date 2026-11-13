@@ -96,8 +96,9 @@
     const scorer = players[(Math.random() * players.length) | 0];
     const type = Math.random() < 0.5 ? "shot" : (Math.random() < 0.5 ? "header" : "bicycle");
     scenario = { phase: "steal", scorer, goalFar: Math.random() < 0.5, type, t: 0 };
+    scorer.wait = 99;
     ball.flight = {
-      k: 0, u1: ball.u, v1: ball.v, toU: scorer.u, toV: scorer.v, toPlayer: scorer, lift: 16, dur: 0.3,
+      k: 0, u1: ball.u, v1: ball.v, toU: scorer.tu, toV: scorer.tv, toPlayer: scorer, lift: 16, dur: 0.45,
       onArrive: () => { if (scenario) { scenario.phase = "run"; scenario.t = 0; } },
     };
   }
@@ -142,8 +143,8 @@
       newTarget(s.scorer);
       s.scorer.wait = 0.5;
       const p = players[(Math.random() * players.length) | 0];
-      ball.u = 0.5; ball.v = 0.5;
-      ball.flight = { k: 0, u1: 0.5, v1: 0.5, toU: p.u, toV: p.v, toPlayer: p, lift: 30, dur: 0.5 };
+      p.wait = 99;
+      ball.flight = { k: 0, u1: ball.u, v1: ball.v, toU: p.tu, toV: p.tv, toPlayer: p, lift: 30, dur: 0.55 };
       scenario = null;
       nextScenario = 7 + Math.random() * 7;
     }
