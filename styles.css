@@ -1895,3 +1895,6 @@ a.logo { text-decoration: none; }
   .ap-bills { display: none; }
   .apm-stack, .apm-head { animation: none; }
 }
+
+/* ============ v4.1.1 — aura ronde sous le ballon retiree ============ */
+.roll-ball::after { display: none !important; }
