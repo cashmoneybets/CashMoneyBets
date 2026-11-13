@@ -44,6 +44,11 @@ function flashCls(score, tier) {
   if (tier.cls === "value") return " neon-red";
   return "";
 }
+function impactFx() {
+  return `<span class="ball-impact">⚽</span><span class="crack"></span>` +
+    [["-42px", "16px"], ["38px", "-14px"], ["-20px", "-24px"], ["28px", "22px"], ["4px", "32px"]]
+      .map(([dx, dy], i) => `<span class="shard s${i + 1}" style="--dx:${dx};--dy:${dy}"></span>`).join("");
+}
 
 function formChips(form) {
   return form.map(r => `<span class="chip chip-${r}">${r === "W" ? "V" : r === "D" ? "N" : "D"}</span>`).join("");
@@ -112,6 +117,7 @@ function matchCard(m) {
     </header>
     ${teamsRow(m)}
     <div class="pick-box tier-${tier.cls}${flashCls(score, tier)}">
+      ${flashCls(score, tier).includes("neon-green") ? impactFx() : ""}
       <div class="pick-left">
         <small>🎯 ${t("mkt_pick")}</small>
         <strong>${pickLbl}</strong>
@@ -175,6 +181,7 @@ function goalsCard(m) {
     </header>
     ${teamsRow(m)}
     <div class="pick-box tier-${tier.cls}${flashCls(score, tier)}">
+      ${flashCls(score, tier).includes("neon-green") ? impactFx() : ""}
       <div class="pick-left">
         <small>🎯 ${t("mkt_pick")}</small>
         <strong>${pickLbl}</strong>

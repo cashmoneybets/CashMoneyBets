@@ -144,23 +144,70 @@ const I18N = {
     footer: "Sportwetten bergen Risiken. Kein Tipp ist je garantiert, auch nicht mit hohem Safe Score: ein Favorit mit 1.04 kann verlieren. Wette nie mehr, als du verlieren kannst. Quoten vom 12.11.2026, Änderungen möglich. Live-Scores via ESPN.",
     footer_brand: "CASHMONEY·BETS — Safe Score Engine v2.2 · Hilfe? <b>BZgA: 0221 89 20 31</b>",
   },
+  sq: {
+    nav_home: "KRYEFAQA", nav_live: "NDESHJE LIVE", nav_buts: "GOLA", nav_upcoming: "NDESHJET E ARDHSHME", nav_acc: "AKUMULATOR", nav_method: "METODA",
+    badge: "SISTEMI ONLINE",
+    hero_sub: "Terminal betting i gjeneratës së re: <b>rezultate LIVE</b> të përditësuara vazhdimisht, <b>alarm GOLI</b> në kohë reale, <b>statistika të animuara</b> dhe <b>Safe Score /100</b> llogaritur nga probabilitetet e tregut.",
+    btn_live: "📡 Shiko LIVE", btn_buts: "⚽ Bastet e golave", btn_upcoming: "📅 Ndeshjet e ardhshme", btn_acc: "⚡ Akumulator",
+    stat_matches: "Ndeshje të skanuara", stat_score: "Safe Score mesatar", stat_elite: "Baste ELITE", stat_live: "Ndeshje LIVE tani",
+    live_title: "// REZULTATET <span class='accent'>LIVE</span>",
+    live_connecting: "Lidhja me transmetimin në kohë reale…",
+    live_none: "ASNJË NDESHJE NË TRANSMETIM — RIKONTROLL PAS 45s",
+    live_ok: "Transmetimi i lidhur — asnjë ndeshje live",
+    live_matches: "ndeshje live",
+    live_finished: "PËRFUNDUAR", live_upcoming: "E ARDHSHME",
+    s_poss: "POSEDIMI", s_shots: "GODITJE", s_sot: "NË PORTË", s_corners: "CORNERE",
+    season: "Sezoni", kickoff_at: "Nisja",
+    picks_title: "// TOP <span class='accent'>BASTET</span> E DITËS",
+    picks_sub: "3 bastet më të sigurta të shtunës, të përzgjedhura nga motori. Çdo kartë tregon bastin e rekomanduar, probabilitetet e fitores dhe tregjet e golave.",
+    buts_title: "// TREGJET <span class='accent'>E GOLAVE</span>",
+    buts_sub: "Probabilitetet e golave të vlerësuara nga motori (modeli Poisson i kalibruar me koeficientët): mbi 1.5 gola, mbi 2.5 gola, të dyja ekipet shënojnë. Renditur sipas mundësisë më të mirë.",
+    up_title: "// NDESHJET <span class='accent'>E ARDHSHME</span>",
+    up_sub: "Të gjitha ndeshjet e analizuar nga motori për të shtunën, të renditura sipas Safe Score. Çdo kartë tregon bastin e rekomanduar (cili ekip fiton), probabilitetet, tregjet e golave dhe notën e besueshmërisë.",
+    acc_title: "// AKUMULATORËT <span class='accent'>TË BOTIT</span>",
+    acc_sub: "Boti kombinon 2 deri 3 nga bastet më të sigurta të ditës për të krijuar tiketa me koeficientë të mirë. Double safe për besueshmëri, triple power për ekuilibër, acca value për koeficientin.",
+    acc_safe: "🔒 DOUBLE SAFE", acc_triple: "⚡ TRIPLE POWER", acc_value: "💎 ACCA VALUE",
+    acc_conf: "BESUESHMËRIA MESATARE", acc_best: "TIKETI TOP I BOTIT", acc_legs: "ZGJEDHJET",
+    g_best: "BASTI MË I MIRË I GOLAVE", g_safe: "SAFE", g_est_note: "Koeficientë të vlerësuar (100 ÷ probabiliteti) — krahaso me bookmakerin tënd.",
+    conf_label: "NOTA E BESUESHMËRISË", safe_score_lbl: "Safe Score", case_hint: "Shtyp një panel për të parë të dhënat",
+    safe_sub: "E shtuna, 13 nëntor 2026 · kualifikimet KAN, Nations League, miqësore. Çdo bast vlerësohet nga motori: probabiliteti implik i tregut + forma + konteksti.",
+    f_all: "TË GJITHA", f_elite: "🔥 ELITE 85+", f_solid: "SOLID", f_value: "VALUE", f_can: "KAN", f_nl: "NATIONS LEAGUE",
+    sort_score: "NOTA", sort_odds: "KOEF.", sort_time: "ORA",
+    bet_odds: "Koeficienti",
+    mkt_pick: "BASTI I REKOMANDUAR", mkt_pick_win: "{team} fiton",
+    mkt_1x2: "PROBABILITETET E FITORES", mkt_draw: "Barazim",
+    mkt_goals: "TREGJET E GOLAVE · VLERËSIM",
+    mkt_over15: "+1.5 GOLA", mkt_over25: "+2.5 GOLA", mkt_btts: "TË DYJAT SHËNOJNË",
+    parlay_title: "⚡ PARLAY I DITËS — ZGJEDHJA E MOTORIT",
+    parlay_sub: "Marokui (1.04) × Nigeria (1.14) × Gaboni (1.20). Tre favoritët më dominues të shtunës, të kombinuar në një tiket me koeficient të butë dhe besueshmëri të lartë.",
+    parlay_lbl: "KOEFICIENTI I KOMBINUAR",
+    stats_title: "// ANALIZA <span class='accent'>STATISTIKORE</span>",
+    tier_elite: "ELITE 85+", tier_solid: "SOLID 78-84", tier_value: "VALUE <78",
+    method_title: "// <span class='accent'>METODA</span>",
+    m1: "Probabiliteti implik: 100 ÷ koeficienti i tregut", m2: "Forma e fundit e të dyja ekipeve",
+    m3: "Konteksti: vendi, interesi, diferenca e nivelit", m4: "85+ ELITE · 78-84 SOLID · <78 VALUE",
+    goal_text: "GOOOL!",
+    warn: "🔞 LUAJ ME PËRGJEGJËSI — 18+",
+    footer: "Bastet sportive përfshijnë rreziqe. Asnjë bast nuk është kurrë i garantuar, edhe me Safe Score të lartë: një favorit me 1.04 mund të humbasë. Mos baste kurrë më shumë se sa mund të humbësh. Koeficientët marrë më 12/11/2026, mund të ndryshojnë. Rezultatet live përmes ESPN.",
+    footer_brand: "CASHMONEY·BETS — Safe Score Engine v2.2 · Ke nevojë për ndihmë? <b>Luaj me përgjegjësi</b>",
+  },
 };
 
 const TIER_I18N = {
-  elite: { fr: "ÉLITE", en: "ELITE", de: "ELITE" },
-  solid: { fr: "SOLIDE", en: "SOLID", de: "SOLID" },
-  value: { fr: "VALUE", en: "VALUE", de: "VALUE" },
+  elite: { fr: "ÉLITE", en: "ELITE", de: "ELITE", sq: "ELITE" },
+  solid: { fr: "SOLIDE", en: "SOLID", de: "SOLID", sq: "SOLID" },
+  value: { fr: "VALUE", en: "VALUE", de: "VALUE", sq: "VALUE" },
 };
 
 const COMP_I18N = {
-  "Qualifs CAN": { fr: "Qualifs CAN", en: "AFCON Qual.", de: "Afrika-Cup-Quali" },
-  "Nations League": { fr: "Nations League", en: "Nations League", de: "Nations League" },
-  "Nations League C": { fr: "Nations League C", en: "Nations League C", de: "Nations League C" },
-  "Amical": { fr: "Amical", en: "Friendly", de: "Freundschaftssp." },
+  "Qualifs CAN": { fr: "Qualifs CAN", en: "AFCON Qual.", de: "Afrika-Cup-Quali", sq: "Kualifikimet KAN" },
+  "Nations League": { fr: "Nations League", en: "Nations League", de: "Nations League", sq: "Nations League" },
+  "Nations League C": { fr: "Nations League C", en: "Nations League C", de: "Nations League C", sq: "Nations League C" },
+  "Amical": { fr: "Amical", en: "Friendly", de: "Freundschaftssp.", sq: "Miqësore" },
 };
 
-let LANG = "fr";
-try { LANG = localStorage.getItem("cmb_lang") || "fr"; } catch (e) {}
+let LANG = "en";
+try { LANG = localStorage.getItem("cmb_lang") || "en"; } catch (e) {}
 
 function t(key) {
   return (I18N[LANG] && I18N[LANG][key]) || I18N.fr[key] || key;

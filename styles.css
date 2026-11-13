@@ -1090,3 +1090,63 @@ a.logo { text-decoration: none; }
 .acc-best { animation: neon-green 1.8s ease-in-out infinite; }
 .acc-best-tag { background: linear-gradient(135deg, #2effa0, #7dffb8); }
 .hero-actions { flex-wrap: wrap; }
+
+/* ============ v2.9 — BALLON QUI S'ÉCRASE + VERRE BRISÉ (top safe) ============ */
+@keyframes ball-crash {
+  0%, 58% { transform: translateY(0) scale(1); opacity: 0; }
+  62% { opacity: 1; }
+  80% { transform: translateY(58px) scale(1.22); opacity: 1; }
+  84% { transform: translateY(62px) scale(0.82); opacity: 1; }
+  88% { transform: translateY(60px) scale(1.02); opacity: 1; }
+  96%, 100% { transform: translateY(60px) scale(0); opacity: 0; }
+}
+.pick-box .ball-impact {
+  position: absolute; left: 20%; top: -34px; z-index: 6;
+  font-size: 1.25rem; line-height: 1; pointer-events: none; opacity: 0;
+  filter: drop-shadow(0 0 10px rgba(46, 255, 160, 0.9));
+  animation: ball-crash 4.5s ease-in infinite;
+}
+.pick-box .crack {
+  position: absolute; inset: 0; z-index: 5; opacity: 0; pointer-events: none;
+  background:
+    linear-gradient(75deg, transparent 49.6%, rgba(255, 255, 255, 0.8) 49.6%, rgba(255, 255, 255, 0.8) 50.4%, transparent 50.4%),
+    linear-gradient(-60deg, transparent 49.7%, rgba(255, 255, 255, 0.55) 49.7%, rgba(255, 255, 255, 0.55) 50.3%, transparent 50.3%),
+    linear-gradient(15deg, transparent 49.8%, rgba(255, 255, 255, 0.45) 49.8%, rgba(255, 255, 255, 0.45) 50.2%, transparent 50.2%),
+    linear-gradient(-22deg, transparent 49.8%, rgba(46, 255, 160, 0.5) 49.8%, rgba(46, 255, 160, 0.5) 50.2%, transparent 50.2%),
+    linear-gradient(48deg, transparent 49.85%, rgba(255, 255, 255, 0.35) 49.85%, rgba(255, 255, 255, 0.35) 50.15%, transparent 50.15%),
+    radial-gradient(circle at 20% 55%, rgba(255, 255, 255, 0.30), transparent 44%);
+  animation: crack-appear 4.5s linear infinite;
+}
+@keyframes crack-appear {
+  0%, 79% { opacity: 0; }
+  82% { opacity: 1; }
+  93% { opacity: 0.8; }
+  100% { opacity: 0; }
+}
+@keyframes shard-fly {
+  0%, 81% { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 0; }
+  83% { opacity: 1; }
+  97%, 100% { transform: translate(var(--dx), var(--dy)) rotate(230deg) scale(0.35); opacity: 0; }
+}
+.pick-box .shard {
+  position: absolute; left: 20%; top: 55%; width: 7px; height: 7px;
+  z-index: 6; opacity: 0; pointer-events: none;
+  background: linear-gradient(135deg, #ffffff, #2effa0);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  animation: shard-fly 4.5s cubic-bezier(0.15, 0.6, 0.4, 1) infinite;
+}
+.shard.s2 { animation-delay: 0.06s; }
+.shard.s3 { animation-delay: 0.12s; }
+.shard.s4 { animation-delay: 0.18s; }
+.shard.s5 { animation-delay: 0.24s; }
+@keyframes impact-shake {
+  0%, 79%, 87%, 100% { transform: translate(0, 0); }
+  81% { transform: translate(-2px, 1px); }
+  83% { transform: translate(2px, -1px); }
+  85% { transform: translate(-1px, 0); }
+}
+.pick-box.neon-green { animation: neon-green 1.6s ease-in-out infinite, impact-shake 4.5s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pick-box .ball-impact, .pick-box .crack, .pick-box .shard { display: none; }
+}
