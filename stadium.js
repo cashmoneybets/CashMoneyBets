@@ -133,16 +133,16 @@
             s.phase = "charge"; s.t = 0;
             s.scorer.el.classList.remove(s.type);
             players.forEach(q => { if (q !== s.scorer) q.wait = 99; });
-            s.scorer.boost = 4;
+            s.scorer.boost = 3.5;
             s.scorer.tu = 0.5;
-            s.scorer.tv = 0.98;
+            s.scorer.tv = 0.9;
             s.scorer.el.style.zIndex = 12;
           },
         };
       }
     } else if (s.phase === "charge") {
       const p = s.scorer;
-      p.scale = Math.min(3.2, 1 + (s.t / 1.3) * 2.2);
+      p.scale = Math.min(2.2, 1 + (s.t / 1.3) * 1.2);
       if (s.t > 1.9 || Math.hypot(p.tu - p.u, p.tv - p.v) < 0.02) {
         s.phase = "siuu"; s.t = 0;
         p.el.classList.remove("running");
@@ -155,7 +155,7 @@
         showShout(s.scorer);
       }
     } else if (s.phase === "closeup") {
-      s.scorer.scale = Math.min(4.4, 3.2 + (s.t / 0.9) * 1.2);
+      s.scorer.scale = Math.min(2.6, 2.2 + (s.t / 0.9) * 0.4);
       if (s.t > 2.6) {
         s.phase = "return"; s.t = 0;
         s.scorer.el.classList.remove("siuu", "shout");
