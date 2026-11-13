@@ -2380,7 +2380,7 @@ nav { border-bottom: none; clip-path: none; }
 
 /* ============ v6.2 — ASK THE BOT ============ */
 
-.n-tile-bot { grid-column: 1 / -1; }
+.n-tile-bot { border-color: rgba(46, 255, 160, 0.28); }
 
 .bot-shell {
   width: min(760px, 92vw);
