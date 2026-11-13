@@ -529,19 +529,6 @@ function renderStatCases() {
 }
 window.renderStatCases = renderStatCases;
 
-document.querySelectorAll(".st-case").forEach(btn => {
-  btn.addEventListener("click", () => {
-    const wasOpen = btn.classList.contains("open");
-    document.querySelectorAll(".st-case.open").forEach(c => c.classList.remove("open"));
-    if (!wasOpen) {
-      btn.classList.add("open");
-      const det = btn.querySelector(".st-detail");
-      const sid = btn.querySelector("b[id]")?.id;
-      if (det && sid) det.innerHTML = statDetail(sid);
-    }
-  });
-});
-
 /* ============ INIT ============ */
 renderTopPicks();
 renderButs();
