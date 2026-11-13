@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=66" />
+  <link rel="stylesheet" href="styles.css?v=67" />
 </head>
 <body>
   <canvas id="scene"></canvas>
@@ -19,11 +19,12 @@
   <div class="scanlines"></div>
 
   <nav>
-    <a class="logo" href="#home" data-view="home">CASHMONEY<span class="logo-dot">·</span>BETS<sup class="ver">v6.1</sup></a>
+    <a class="logo" href="#home" data-view="home">CASHMONEY<span class="logo-dot">·</span>BETS<sup class="ver">v6.2</sup></a>
     <div class="nav-links">
       <a href="#live" data-view="live" data-i18n="nav_live"></a>
       <a href="#avenir" data-view="avenir" data-i18n="nav_upcoming"></a>
       <a href="#acc" data-view="acc" data-i18n="nav_acc"></a>
+      <a href="#bot" data-view="bot" data-i18n="nav_bot"></a>
     </div>
     <div class="nav-right">
       <div class="lang-switch">
@@ -42,6 +43,7 @@
     <a href="#live" data-view="live" data-i18n="nav_live"></a>
     <a href="#avenir" data-view="avenir" data-i18n="nav_upcoming"></a>
     <a href="#acc" data-view="acc" data-i18n="nav_acc"></a>
+    <a href="#bot" data-view="bot" data-i18n="nav_bot"></a>
   </div>
 
   <div class="ticker" id="ticker"></div>
@@ -63,7 +65,7 @@
         </div>
       </div>
       <figure class="hero-stadium">
-        <img src="assets/stadium-hero.jpg?v=66" alt="Stadium" decoding="async">
+        <img src="assets/stadium-hero.jpg?v=67" alt="Stadium" decoding="async">
         <figcaption class="hs-brand"><span class="hs-title">CASH MONEY BETS</span><span class="hs-sub">⚽ SAFE SCORE ENGINE</span></figcaption>
       </figure>
     </header>
@@ -100,6 +102,13 @@
           <span class="n-icon">⚽</span>
           <b class="n-name" data-i18n="nav_buts"></b>
           <small class="n-desc" data-i18n="menu_buts_desc"></small>
+          <span class="n-arrow">⟶</span>
+        </a>
+        <a class="n-tile n-tile-bot" href="#bot" data-view="bot">
+          <span class="n-node nn1"></span><span class="n-node nn2"></span><span class="n-node nn3"></span><span class="n-node nn4"></span>
+          <span class="n-icon">🤖</span>
+          <b class="n-name" data-i18n="nav_bot"></b>
+          <small class="n-desc" data-i18n="menu_bot_desc"></small>
           <span class="n-arrow">⟶</span>
         </a>
       </div>
@@ -193,6 +202,24 @@
     </section>
   </main>
 
+  <main class="view" id="view-bot">
+    <section class="section bot-section">
+      <div class="view-head-bar"><a class="btn-menu" href="#home" data-view="home" data-i18n="btn_menu"></a></div>
+      <div class="section-head">
+        <h2 class="section-title" data-i18n-html="bot_title"></h2>
+      </div>
+      <p class="section-sub" data-i18n="bot_sub"></p>
+      <div class="bot-shell">
+        <div class="bot-chat" id="bot-chat"></div>
+        <div class="bot-sugs" id="bot-sugs"></div>
+        <form class="bot-bar" id="bot-form">
+          <input id="bot-input" type="text" autocomplete="off" maxlength="200">
+          <button class="bot-send" type="submit" data-i18n="bot_send"></button>
+        </form>
+      </div>
+    </section>
+  </main>
+
   <div id="goal-overlay">
     <div class="goal-shockwave"></div>
     <div class="goal-content">
@@ -210,10 +237,11 @@
     <span data-i18n-html="footer_brand"></span>
   </footer>
 
-  <script src="i18n.js?v=66"></script>
-  <script src="data.js?v=66"></script>
-  <script src="scene.js?v=66"></script>
-  <script src="live.js?v=66"></script>
-  <script src="app.js?v=66"></script>
+  <script src="i18n.js?v=67"></script>
+  <script src="data.js?v=67"></script>
+  <script src="scene.js?v=67"></script>
+  <script src="live.js?v=67"></script>
+  <script src="app.js?v=67"></script>
+  <script src="bot.js?v=67"></script>
 </body>
 </html>
