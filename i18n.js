@@ -260,16 +260,15 @@ function applyI18n() {
 function setLang(lang) {
   LANG = lang;
   try { localStorage.setItem("cmb_lang", lang); } catch (e) {}
-  applyI18n();
-  if (typeof window.renderSafeBets === "function") window.renderSafeBets();
-  if (typeof window.renderButs === "function") window.renderButs();
-  if (typeof window.renderUpcoming === "function") window.renderUpcoming();
-  if (typeof window.renderAcc === "function") window.renderAcc();
-  if (typeof window.renderStatCases === "function") window.renderStatCases();
-  if (typeof window.buildTicker === "function") window.buildTicker();
-  if (window.__lastLive && typeof window.renderLiveFromCache === "function") {
-    window.renderLiveFromCache();
-  }
+  /* le vert passe immediatement, avant tout re-rendu */
   document.querySelectorAll(".lang-btn").forEach(b =>
     b.classList.toggle("active", b.dataset.lang === lang));
+  applyI18n();
+  /* chaque re-rendu isole : une erreur n'arrete plus le changement de langue */
+  ["renderSafeBets", "renderButs", "renderUpcoming", "renderAcc", "renderStatCases", "buildTicker"].forEach(fn => {
+    try { if (typeof window[fn] === "function") window[fn](); } catch (e) {}
+  });
+  if (window.__lastLive && typeof window.renderLiveFromCache === "function") {
+    try { window.renderLiveFromCache(); } catch (e) {}
+  }
 }

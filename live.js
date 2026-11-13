@@ -133,7 +133,7 @@ function renderLive(all) {
       liveGrid.querySelectorAll(".live-card").forEach(c => c.classList.add("visible")));
   }
   const liveCount = matches.filter(m => m.state === "in").length;
-  statLive.textContent = liveCount;
+  if (statLive) statLive.textContent = liveCount;
   liveStatus.textContent = liveCount > 0
     ? `${liveCount} ${t("live_matches")}`
     : t("live_ok");
