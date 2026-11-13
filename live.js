@@ -77,6 +77,58 @@ function extractStats(home, away) {
   ];
 }
 
+/* ============ LIVE BET ENGINE (v6.6) — Over buts + momentum quantique ============ */
+function liveBetAdvice(m) {
+  const total = (m.home.score || 0) + (m.away.score || 0);
+  const mm = String(m.displayClock || "").match(/(\d+)/);
+  const min = mm ? Math.min(parseInt(mm[1], 10) || 0, 120) : 0;
+  const remain = Math.max(0, 90 - min);
+  /* régression vers la moyenne ligue (~2.7 buts/90) pour éviter les λ divergents */
+  const rate = (total + 0.03 * min) / Math.max(min, 15);
+  const lambda = Math.min(3.2, Math.max(0.08, rate * remain * 0.95));
+  const pAtLeast = k => {
+    let s = 0, p = Math.exp(-lambda);
+    for (let i = 0; i < k; i++) { s += p; p *= lambda / (i + 1); }
+    return Math.max(0.02, Math.min(0.97, 1 - s));
+  };
+  let k = 1;
+  while (k < 4 && pAtLeast(k) > 0.85) k++;
+  const pOver = pAtLeast(k);
+  const line = (total + k - 0.5).toFixed(1);
+  const st = m.stats || [];
+  const num = i => (parseFloat(st[i] && st[i].h) || 0) + (parseFloat(st[i] && st[i].a) || 0);
+  const sot = num(2), shots = num(1), cor = num(3);
+  let mom = 0.42;
+  mom += Math.min(0.22, sot * 0.024);
+  mom += Math.min(0.12, shots * 0.007);
+  mom += Math.min(0.08, cor * 0.016);
+  if (Math.abs((m.home.score || 0) - (m.away.score || 0)) <= 1) mom += 0.08;
+  mom += Math.min(0.12, Math.max(0, (rate - 0.028) * 4));
+  if (min > 80) mom -= 0.18;
+  if (remain <= 0) mom = 0.05;
+  mom = Math.max(0.05, Math.min(0.95, mom));
+  return { line, pOver, mom, go: mom >= 0.58 && remain > 0 && pOver >= 0.4 };
+}
+
+function liveBetHTML(m) {
+  const a = liveBetAdvice(m);
+  return `
+    <div class="live-bet">
+      <div class="lb-head">
+        <span class="lb-title">⚡ ${t("lb_engine")}</span>
+        <span class="lb-line">OVER ${a.line}</span>
+      </div>
+      <div class="lb-gauge" title="${t("lb_scan")}">
+        <div class="lb-gauge-fill" style="width:${Math.round(a.mom * 100)}%"></div>
+        <span class="lb-gauge-val">${Math.round(a.mom * 100)}%</span>
+      </div>
+      <div class="lb-foot">
+        <span class="lb-prob">${t("lb_prob")} <b>${Math.round(a.pOver * 100)}%</b> · ${t("lb_mom")} <b>${Math.round(a.mom * 100)}%</b></span>
+        <span class="lb-btn ${a.go ? "go" : "wait"}">${a.go ? `🔥 ${t("lb_bet_now")}` : `⏳ ${t("lb_wait")}`}</span>
+      </div>
+    </div>`;
+}
+
 function liveCard(m) {
   const st = m.state === "in" ? "in" : m.state === "post" ? "post" : "pre";
   const label = m.state === "in" ? "● LIVE" : m.state === "post" ? t("live_finished") : t("live_upcoming");
@@ -111,6 +163,7 @@ function liveCard(m) {
       </div>
     </div>
     ${m.state === "pre" ? `<div class="live-note">🏟️ ${m.venue} · ${m.clock}</div>` : statsHtml}
+    ${m.state === "in" ? liveBetHTML(m) : ""}
     <div class="live-clock">
       <span>${m.state === "in" ? `<span class="min">${m.displayClock}</span>` : m.league}</span>
       <span>${m.home.record ? `${t("season")} ${m.home.record}` : ""}</span>
@@ -119,11 +172,10 @@ function liveCard(m) {
 }
 
 function renderLive(all) {
-  /* v5.8 : on n'affiche que les matchs reellement en direct ou termines —
-     les matchs pas encore commences polluent la page Live (ils sont deja dans Matchs a venir) */
-  const matches = all.filter(m => m.state !== "pre");
-  const order = { in: 0, post: 2 };
-  matches.sort((a, b) => order[a.state] - order[b.state] || a.id.localeCompare(b.id));
+  /* v6.6 : uniquement les matchs reellement EN DIRECT — les terminés et les
+     pas encore commences ne polluent plus la page Live */
+  const matches = all.filter(m => m.state === "in");
+  matches.sort((a, b) => a.id.localeCompare(b.id));
   const shown = matches.slice(0, 15);
   if (shown.length === 0) {
     liveGrid.innerHTML = `<div class="live-loading">${t("live_none")}</div>`;
@@ -132,7 +184,7 @@ function renderLive(all) {
     requestAnimationFrame(() =>
       liveGrid.querySelectorAll(".live-card").forEach(c => c.classList.add("visible")));
   }
-  const liveCount = matches.filter(m => m.state === "in").length;
+  const liveCount = matches.length;
   if (statLive) statLive.textContent = liveCount;
   liveStatus.textContent = liveCount > 0
     ? `${liveCount} ${t("live_matches")}`

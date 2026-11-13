@@ -2746,3 +2746,30 @@ nav { border-bottom: none; clip-path: none; }
 
 .bot-live b { font-size: 0.8rem; }
 .bot-live span { color: #ff3b5c; }
+
+/* ============ v6.6 — LIVE BET ENGINE : momentum quantique + bouton BET/WAIT ============ */
+.live-bet { margin-top: 12px; padding: 10px 12px; border: 1px solid rgba(46, 255, 160, 0.18); border-radius: 10px; background: rgba(46, 255, 160, 0.04); display: grid; gap: 8px; }
+.lb-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.lb-title { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.14em; color: var(--muted); text-transform: uppercase; }
+.lb-line { font-family: var(--mono); font-size: 0.78rem; font-weight: 700; color: var(--cyan); border: 1px solid rgba(245, 196, 81, 0.4); border-radius: 6px; padding: 2px 8px; background: rgba(245, 196, 81, 0.08); white-space: nowrap; }
+.lb-gauge { position: relative; height: 14px; border-radius: 7px; background: rgba(255, 255, 255, 0.06); overflow: hidden; }
+.lb-gauge-fill { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 7px; background: linear-gradient(90deg, rgba(46, 255, 160, 0.35), var(--magenta)); transition: width 0.8s ease; }
+.lb-gauge::after { content: ""; position: absolute; top: 0; bottom: 0; left: -40%; width: 40%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent); animation: lb-scan 1.6s linear infinite; }
+@keyframes lb-scan { from { left: -40%; } to { left: 100%; } }
+.lb-gauge-val { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-family: var(--mono); font-size: 0.62rem; color: #fff; text-shadow: 0 0 4px rgba(0, 0, 0, 0.8); }
+.lb-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.lb-prob { font-family: var(--mono); font-size: 0.66rem; color: var(--muted); }
+.lb-prob b { color: var(--cyan); }
+.lb-btn { font-family: var(--mono); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; padding: 6px 12px; border-radius: 8px; border: 1px solid; white-space: nowrap; }
+.lb-btn.go { color: #06130c; background: var(--magenta); border-color: var(--magenta); box-shadow: 0 0 16px rgba(46, 255, 160, 0.5); animation: lb-go 1s ease infinite; }
+@keyframes lb-go { 50% { opacity: 0.55; box-shadow: 0 0 26px rgba(46, 255, 160, 0.85); } }
+.lb-btn.wait { color: #fff; background: rgba(255, 59, 92, 0.15); border-color: rgba(255, 59, 92, 0.6); animation: lb-wait 2.2s ease infinite; }
+@keyframes lb-wait { 50% { opacity: 0.6; } }
+@media (max-width: 720px) {
+  .live-bet { padding: 8px 10px; }
+  .lb-btn { font-size: 0.62rem; padding: 5px 9px; }
+  .lb-prob { font-size: 0.6rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lb-btn.go, .lb-btn.wait, .lb-gauge::after { animation: none; }
+}
