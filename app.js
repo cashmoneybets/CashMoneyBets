@@ -287,7 +287,8 @@ function bindCards() {
     const fire = card.querySelector(":scope > .sp-fire");
     const pb = card.querySelector(".pick-box");
     if (ball && pb) {
-      ball.style.setProperty("--dive-h", (pb.offsetTop + pb.offsetHeight / 2 - 40).toFixed(0) + "px");
+      const half = window.innerWidth <= 720 ? 42 : 52;
+      ball.style.setProperty("--dive-h", (pb.offsetTop + pb.offsetHeight / 2 - half).toFixed(0) + "px");
     }
     if (fire && pb) {
       fire.style.left = (pb.offsetLeft - 26).toFixed(0) + "px";
