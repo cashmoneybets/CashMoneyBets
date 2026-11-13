@@ -11,7 +11,7 @@ function botNum(s) {
   return m ? parseFloat(m[1].replace(",", ".")) : null;
 }
 
-function botCard(m) {
+function botCard(m, leg) {
   const score = safeScore(m);
   const cls = score >= 85 ? "elite" : score >= 78 ? "solid" : "value";
   const pickTeam = tn(m.pick === "1" ? m.home : m.away);
@@ -19,7 +19,7 @@ function botCard(m) {
     <div class="bot-card">
       <div class="bc-head">
         <span class="bc-comp">${flagImg(m.cc[0])}${flagImg(m.cc[1])} ${m.kickoff}</span>
-        <span class="bc-score bc-${cls}">${score}</span>
+        <span class="bc-right">${leg ? `<span class="bc-leg">LEG ${leg}</span>` : ""}<span class="bc-odds">@ ${m.odds[m.pick].toFixed(2)}</span><span class="bc-score bc-${cls}">${score}</span></span>
       </div>
       <div class="bc-teams">${tn(m.home)} <i>vs</i> ${tn(m.away)}</div>
       <div class="bc-pick"><span>${t("mkt_pick_win").replace("{team}", pickTeam)}</span><b>${m.odds[m.pick].toFixed(2)}</b></div>
@@ -73,13 +73,14 @@ function botAnswer(raw) {
       (num !== null && num >= 2 && !has("over", "but", "goal", "tor", "gol", "btts"))) {
     const target = num && num >= 1.2 ? num : 4;
     const acc = botBuildAcc(target);
-    const cards = acc.legs.map(botCard).join("");
+    const cards = acc.legs.map((m, i) => botCard(m, i + 1)).join("");
+    const calc = acc.legs.map(m => m.odds[m.pick].toFixed(2)).join(" \u00d7 ");
     const done = t("bot_acc_done")
       .replace("{odds}", acc.prod.toFixed(2)).replace("{conf}", acc.conf);
     const capped = acc.prod < target * 0.85
       ? `<p>${t("bot_acc_max").replace("{target}", target).replace("{odds}", acc.prod.toFixed(2))}</p>`
       : "";
-    return `${capped}<p>${t("bot_acc_intro").replace("{target}", target)}</p>${cards}<p class="bot-done">${done}</p>`;
+    return `${capped}<p>${t("bot_acc_intro").replace("{target}", target)}</p>${cards}<p class="bot-done">${done}<span class="bot-calc">${calc} = <b>${acc.prod.toFixed(2)}</b></span></p>`;
   }
 
   if (has("safe", "sur", "sure", "sicher", "sigurt", "fiable")) {
@@ -139,10 +140,39 @@ function botAdd(who, html) {
   if (who === "bot") window.__lastBot = html;
 }
 
+function botCoreHTML() {
+  return `
+    <div class="bot-core">
+      <span class="core-visual"><i class="cr cr1"></i><i class="cr cr2"></i><i class="cr cr3"></i><i class="cr-dot"></i></span>
+      <span class="core-status" id="core-status">${t("bot_think1")}</span>
+    </div>`;
+}
+
 function botAsk(raw) {
   if (!raw || !raw.trim()) return;
   botAdd("user", raw.trim());
-  setTimeout(() => botAdd("bot", botAnswer(raw)), 350);
+  const chat = document.getElementById("bot-chat");
+  if (!chat) return;
+  const div = document.createElement("div");
+  div.className = "msg bot bot-thinking";
+  div.innerHTML = botCoreHTML();
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+  window.__lastBot = div.innerHTML;
+  const steps = [t("bot_think1"), t("bot_think2"), t("bot_think3"), t("bot_think4")];
+  const st = div.querySelector("#core-status") || div.querySelector(".core-status");
+  let i = 0;
+  const iv = setInterval(() => {
+    i = (i + 1) % steps.length;
+    if (st) st.textContent = steps[i];
+  }, 400);
+  setTimeout(() => {
+    clearInterval(iv);
+    div.classList.remove("bot-thinking");
+    div.innerHTML = botAnswer(raw);
+    chat.scrollTop = chat.scrollHeight;
+    window.__lastBot = div.innerHTML;
+  }, 1500 + Math.random() * 500);
 }
 
 function botRenderStatic() {

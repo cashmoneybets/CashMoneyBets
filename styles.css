@@ -2614,3 +2614,107 @@ nav { border-bottom: none; clip-path: none; }
   .msg { max-width: 94%; font-size: 0.78rem; }
   .bot-send { padding: 12px 14px; }
 }
+
+
+/* ============ v6.4 — NEURAL CORE (recherche live du bot) ============ */
+
+.bot-thinking { padding: 14px 16px; }
+
+.bot-core {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.core-visual {
+  position: relative;
+  width: 58px;
+  height: 58px;
+  flex: 0 0 58px;
+}
+
+.core-visual .cr {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px dashed rgba(46, 255, 160, 0.55);
+}
+
+.cr1 { inset: 0; animation: core-spin 3.2s linear infinite; }
+.cr2 { inset: 8px; border-color: rgba(245, 196, 81, 0.55); animation: core-spin 2.2s linear infinite reverse; }
+.cr3 { inset: 16px; border-color: rgba(46, 255, 160, 0.8); animation: core-spin 1.4s linear infinite; }
+
+.core-visual .cr-dot {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 10px; height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: #2effa0;
+  box-shadow: 0 0 14px rgba(46, 255, 160, 0.9), 0 0 30px rgba(46, 255, 160, 0.4);
+  animation: core-pulse 1s ease-in-out infinite;
+}
+
+@keyframes core-spin { to { transform: rotate(360deg); } }
+@keyframes core-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: 0.55; }
+}
+
+.core-status {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 1.5px;
+  color: rgba(46, 255, 160, 0.9);
+  animation: core-blink 0.9s ease-in-out infinite;
+}
+
+@keyframes core-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+
+.bc-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bc-leg {
+  font-family: var(--mono);
+  font-size: 0.54rem;
+  letter-spacing: 1px;
+  color: #000;
+  background: #f5c451;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+.bc-odds {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 1px;
+  color: var(--cyan);
+  border: 1px solid rgba(245, 196, 81, 0.45);
+  padding: 2px 7px;
+  border-radius: 5px;
+  background: rgba(245, 196, 81, 0.08);
+}
+
+.bot-calc {
+  display: block;
+  margin-top: 5px;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+
+.bot-calc b { color: var(--cyan); }
+
+@media (max-width: 720px) {
+  .core-visual { width: 46px; height: 46px; flex-basis: 46px; }
+  .cr2 { inset: 6px; }
+  .cr3 { inset: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .core-visual .cr, .core-visual .cr-dot, .core-status { animation: none; }
+}
