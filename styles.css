@@ -1507,3 +1507,23 @@ a.logo { text-decoration: none; }
 @media (prefers-reduced-motion: reduce) {
   .sp-fire { display: none; }
 }
+
+/* ============ v3.5 — MENU DESCENDU SOUS LE STADE + FOULE RETIREE + TICKER LENT ============ */
+
+/* les 4 menus descendent bien sous la debordance 3D du terrain pour etre lisibles en entier */
+.menu-section { margin-top: 130px; }
+
+/* la foule multicolore est retiree : on garde uniquement le panneau CASH MONEY BETS */
+.crowd-canvas { display: none !important; }
+
+/* ticker bien plus lent */
+.ticker-track { animation-duration: 170s; }
+
+@media (max-width: 720px) {
+  .menu-section { margin-top: 100px; }
+  .ticker-track { animation-duration: 210s; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-section { margin-top: 10px; }
+}

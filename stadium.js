@@ -139,7 +139,7 @@
     const dt = Math.min(0.05, (now - last) / 1000);
     last = now;
     if (!homeView || !homeView.classList.contains("active")) return;
-    drawCrowd(now);
+    if (crowd && crowd.offsetParent !== null) drawCrowd(now);
     stepPlayers(dt);
     stepBall(dt);
   }
