@@ -37,6 +37,13 @@ window.buildTicker = buildTicker;
 /* ============ CARTES DE PARIS (accueil + buts) ============ */
 const topGrid = document.getElementById("top-grid");
 const butsGrid = document.getElementById("buts-grid");
+const BEST_SCORE = Math.max(...MATCHES.map(m => safeScore(m)));
+const BEST_OVER = Math.max(...MATCHES.map(m => marketsOf(m).over15));
+function flashCls(score, tier) {
+  if (score >= BEST_SCORE) return " neon-green";
+  if (tier.cls === "value") return " neon-red";
+  return "";
+}
 
 function formChips(form) {
   return form.map(r => `<span class="chip chip-${r}">${r === "W" ? "V" : r === "D" ? "N" : "D"}</span>`).join("");
@@ -104,7 +111,7 @@ function matchCard(m) {
       <span class="kick">🕗 ${m.kickoff} CET</span>
     </header>
     ${teamsRow(m)}
-    <div class="pick-box tier-${tier.cls} neon-flash">
+    <div class="pick-box tier-${tier.cls}${flashCls(score, tier)}">
       <div class="pick-left">
         <small>🎯 ${t("mkt_pick")}</small>
         <strong>${pickLbl}</strong>
@@ -167,7 +174,7 @@ function goalsCard(m) {
       <span class="kick">🕗 ${m.kickoff} CET</span>
     </header>
     ${teamsRow(m)}
-    <div class="pick-box tier-${tier.cls} neon-flash">
+    <div class="pick-box tier-${tier.cls}${flashCls(score, tier)}">
       <div class="pick-left">
         <small>🎯 ${t("mkt_pick")}</small>
         <strong>${pickLbl}</strong>
@@ -179,7 +186,7 @@ function goalsCard(m) {
       ${gbar(t("mkt_over25"), mk.over25, "g2", best.key === "mkt_over25")}
       ${gbar(t("mkt_btts"), mk.btts, "g3", false)}
     </div>
-    <div class="g-best neon-flash">🎯 ${t("g_best")} : <b>${t(best.key)} · ${best.pct}%</b> <em>@ ${(100 / best.pct).toFixed(2)}</em></div>
+    <div class="g-best${best.pct >= BEST_OVER ? " neon-green" : tier.cls === "value" ? " neon-red" : ""}">🎯 ${t("g_best")} : <b>${t(best.key)} · ${best.pct}%</b> <em>@ ${(100 / best.pct).toFixed(2)}</em></div>
     <small class="g-est-note">${t("g_est_note")}</small>
     <p class="note">${tr(m.note)}</p>
     ${confidenceBlock(score, tier, tierLbl)}

@@ -1074,3 +1074,19 @@ a.logo { text-decoration: none; }
   .acc-best-tag { top: 10px; right: 10px; font-size: 0.52rem; }
   .al-pick { display: none; }
 }
+
+/* ============ v2.8 — FLASH VERT (top safe) / ROUGE (value) ============ */
+@keyframes neon-green {
+  0%, 100% { border-color: rgba(46, 255, 160, 0.40); box-shadow: inset 0 0 10px rgba(46, 255, 160, 0.05); }
+  50% { border-color: #2effa0; box-shadow: inset 0 0 26px rgba(46, 255, 160, 0.20), 0 0 26px rgba(46, 255, 160, 0.35); }
+}
+@keyframes neon-red {
+  0%, 100% { border-color: rgba(255, 59, 92, 0.40); box-shadow: inset 0 0 10px rgba(255, 59, 92, 0.05); }
+  50% { border-color: #ff3b5c; box-shadow: inset 0 0 26px rgba(255, 59, 92, 0.20), 0 0 26px rgba(255, 59, 92, 0.35); }
+}
+.pick-box.neon-green, .g-best.neon-green { animation: neon-green 1.6s ease-in-out infinite; }
+.pick-box.neon-red, .g-best.neon-red { animation: neon-red 1.6s ease-in-out infinite; }
+.g-market.g-star { animation: none; }
+.acc-best { animation: neon-green 1.8s ease-in-out infinite; }
+.acc-best-tag { background: linear-gradient(135deg, #2effa0, #7dffb8); }
+.hero-actions { flex-wrap: wrap; }
