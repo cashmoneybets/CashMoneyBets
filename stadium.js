@@ -1,4 +1,4 @@
-/* ============ v3.1 — STADE VIVANT : foule + joueurs + ballon ============ */
+/* ============ v3.1 STADE VIVANT — v4.4 : scenarios (tir, tete, retourné, but + SIUU) ============ */
 (function () {
   const stands = document.querySelector(".st-stands");
   const crowd = document.getElementById("crowd-canvas");
@@ -77,6 +77,75 @@
     p.tv = 0.18 + Math.random() * 0.68;
   }
 
+  /* ---- scenarios : tir / tete / retourné -> BUT -> celebration SIUU ---- */
+  let scenario = null;
+  let nextScenario = 5 + Math.random() * 5;
+
+  function showBubble(p) {
+    hideBubble(p);
+    const b = document.createElement("span");
+    b.className = "siuu-bubble";
+    b.textContent = "SIUUUU! \u26BD\U0001F4B0";
+    p.el.appendChild(b);
+  }
+  function hideBubble(p) {
+    p.el.querySelectorAll(".siuu-bubble").forEach(b => b.remove());
+  }
+
+  function startScenario() {
+    const scorer = players[(Math.random() * players.length) | 0];
+    const type = Math.random() < 0.5 ? "shot" : (Math.random() < 0.5 ? "header" : "bicycle");
+    scenario = { phase: "steal", scorer, goalFar: Math.random() < 0.5, type, t: 0 };
+    ball.flight = {
+      u1: ball.u, v1: ball.v, toU: scorer.u, toV: scorer.v, toPlayer: scorer, lift: 16, dur: 0.3,
+      onArrive: () => { if (scenario) { scenario.phase = "run"; scenario.t = 0; } },
+    };
+  }
+
+  function stepScenario(dt) {
+    if (!scenario) {
+      nextScenario -= dt;
+      if (nextScenario <= 0) startScenario();
+      return;
+    }
+    const s = scenario;
+    s.t += dt;
+    const gv = s.goalFar ? 0.17 : 0.83;
+    if (s.phase === "run") {
+      s.scorer.tu = 0.5 + (Math.random() - 0.5) * 0.12;
+      s.scorer.tv = gv;
+      s.scorer.wait = 99;
+      const d = Math.hypot(s.scorer.tu - s.scorer.u, s.scorer.tv - s.scorer.v);
+      if (s.t > 1.6 || d < 0.035) {
+        s.phase = "shoot"; s.t = 0;
+        s.scorer.el.classList.add(s.type);
+        ball.holder = null;
+        ball.flight = {
+          u1: ball.u, v1: ball.v,
+          toU: 0.5 + (Math.random() - 0.5) * 0.1,
+          toV: s.goalFar ? 0.06 : 0.94,
+          lift: s.type === "header" ? 36 : 26, dur: 0.6,
+          onArrive: () => {
+            s.phase = "celebrate"; s.t = 0;
+            s.scorer.el.classList.remove(s.type);
+            s.scorer.el.classList.add("siuu");
+            showBubble(s.scorer);
+          },
+        };
+      }
+    } else if (s.phase === "celebrate" && s.t > 2.5) {
+      s.scorer.el.classList.remove("siuu", "shot", "header", "bicycle");
+      hideBubble(s.scorer);
+      newTarget(s.scorer);
+      s.scorer.wait = 0.5;
+      const p = players[(Math.random() * players.length) | 0];
+      ball.u = 0.5; ball.v = 0.5;
+      ball.flight = { u1: 0.5, v1: 0.5, toU: p.u, toV: p.v, toPlayer: p, lift: 30, dur: 0.5 };
+      scenario = null;
+      nextScenario = 7 + Math.random() * 7;
+    }
+  }
+
   function stepPlayers(dt) {
     for (const p of players) {
       const dx = p.tu - p.u, dy = p.tv - p.v;
@@ -107,17 +176,20 @@
       const f = ball.flight;
       f.k = Math.min(1, f.k + dt / f.dur);
       const e = f.k < 0.5 ? 2 * f.k * f.k : 1 - Math.pow(-2 * f.k + 2, 2) / 2;
-      ball.u = f.u1 + (f.to.u - f.u1) * e;
-      ball.v = f.v1 + (f.to.v + 0.02 - f.v1) * e;
-      ball.lift = Math.sin(f.k * Math.PI) * 24;
+      ball.u = f.u1 + (f.toU - f.u1) * e;
+      ball.v = f.v1 + (f.toV - f.v1) * e;
+      ball.lift = Math.sin(f.k * Math.PI) * f.lift;
       if (f.k >= 1) {
-        ball.holder = f.to;
         ball.flight = null;
         ball.lift = 0;
-        newTarget(f.to);
-        f.to.wait = 0.8 + Math.random() * 1.4;
+        if (f.toPlayer) {
+          ball.holder = f.toPlayer;
+          newTarget(f.toPlayer);
+          f.toPlayer.wait = 0.8 + Math.random() * 1.4;
+        }
+        if (f.onArrive) f.onArrive();
       }
-    } else {
+    } else if (ball.holder && !scenario) {
       const p = ball.holder;
       p.wait -= dt;
       ball.u = p.u + (p.team === "a" ? 1 : -1) * 0.035;
@@ -125,8 +197,13 @@
       ball.lift = 0;
       if (p.wait <= 0) {
         const mate = players.find(q => q.team === p.team && q !== p);
-        ball.flight = { u1: ball.u, v1: ball.v, to: mate, k: 0, dur: 0.55 + Math.random() * 0.45 };
+        ball.flight = { u1: ball.u, v1: ball.v, toU: mate.u, toV: mate.v, toPlayer: mate, lift: 24, dur: 0.55 + Math.random() * 0.45 };
       }
+    } else if (ball.holder && scenario) {
+      const p = ball.holder;
+      ball.u = p.u + (p.team === "a" ? 1 : -1) * 0.035;
+      ball.v = p.v + 0.012;
+      ball.lift = 0;
     }
     ballEl.style.left = (ball.u * 100).toFixed(2) + "%";
     ballEl.style.top = (ball.v * 100).toFixed(2) + "%";
@@ -140,6 +217,7 @@
     last = now;
     if (!homeView || !homeView.classList.contains("active")) return;
     if (crowd && crowd.offsetParent !== null) drawCrowd(now);
+    stepScenario(dt);
     stepPlayers(dt);
     stepBall(dt);
   }

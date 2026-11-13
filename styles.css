@@ -1966,3 +1966,80 @@ a.logo { text-decoration: none; }
 @media (prefers-reduced-motion: reduce) {
   .spg-eye { animation: none; }
 }
+
+/* ================= V4.4 — SCENARIOS JOUEURS + LOGO VIVANT ================= */
+/* bulle SIUU */
+.siuu-bubble {
+  position: absolute; bottom: 78px; left: 50%; transform: translateX(-50%);
+  background: #fff; color: #14141a; font-family: var(--disp); font-weight: 900;
+  font-size: 11px; letter-spacing: 1px; padding: 6px 10px; border-radius: 10px;
+  white-space: nowrap; z-index: 30; pointer-events: none;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), 0 0 16px rgba(46, 255, 160, 0.35);
+  animation: bubble-pop 0.35s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+.siuu-bubble::after {
+  content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+  border: 6px solid transparent; border-top-color: #fff;
+}
+@keyframes bubble-pop { from { transform: translateX(-50%) scale(0); } }
+
+/* tir */
+.st-player.shot .spg-leg-r { animation: shoot-kick 0.55s ease-out; }
+@keyframes shoot-kick {
+  0% { transform: rotate(12deg); }
+  40% { transform: rotate(-78deg); }
+  100% { transform: rotate(12deg); }
+}
+
+/* tete : saut vertical */
+.st-player.header .sp-svg { animation: head-jump 0.65s ease-in-out; }
+@keyframes head-jump {
+  0%, 100% { transform: translateX(-50%) rotateX(-38deg) translateY(0); }
+  45% { transform: translateX(-50%) rotateX(-38deg) translateY(-30px); }
+}
+
+/* retourné : salto arriere */
+.st-player.bicycle .sp-svg { animation: bicycle-flip 0.75s ease-in-out; }
+@keyframes bicycle-flip {
+  0% { transform: translateX(-50%) rotateX(-38deg) rotate(0deg); }
+  55% { transform: translateX(-50%) rotateX(-38deg) translateY(-22px) rotate(-360deg); }
+  100% { transform: translateX(-50%) rotateX(-38deg) rotate(-360deg); }
+}
+
+/* SIUU : saut + spin + bras balayes vers le bas */
+.st-player.siuu .sp-svg { animation: siuu-jump 1.4s cubic-bezier(0.3, 0.7, 0.4, 1); }
+@keyframes siuu-jump {
+  0% { transform: translateX(-50%) rotateX(-38deg) translateY(0) rotateY(0deg); }
+  35% { transform: translateX(-50%) rotateX(-38deg) translateY(-34px) rotateY(200deg); }
+  60%, 100% { transform: translateX(-50%) rotateX(-38deg) translateY(0) rotateY(360deg); }
+}
+.spg-arm-l, .spg-arm-r { transition: transform 0.3s ease; }
+.st-player.siuu .spg-arm-l { transform: rotate(47deg); }
+.st-player.siuu .spg-arm-r { transform: rotate(-47deg); }
+
+/* logo vivant : degrade brillant + halo pulsant + dot qui bat */
+.logo {
+  background: linear-gradient(90deg, #f5c451, #fff3c4, #2effa0, #f5c451);
+  background-size: 300% 100%;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  text-shadow: none;
+  animation: logo-shine 4s linear infinite, logo-glow 2.6s ease-in-out infinite;
+}
+@keyframes logo-shine { to { background-position: 300% 0; } }
+@keyframes logo-glow {
+  0%, 100% { filter: drop-shadow(0 0 7px rgba(245, 196, 81, 0.3)); }
+  50% { filter: drop-shadow(0 0 16px rgba(245, 196, 81, 0.55)); }
+}
+.logo-dot {
+  color: var(--cyan); -webkit-text-fill-color: var(--cyan);
+  display: inline-block; animation: logo-dot-pulse 1.6s ease-in-out infinite;
+}
+@keyframes logo-dot-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.5); } }
+
+/* ligne de trop : bord bas du nav retire */
+nav { border-bottom: none; clip-path: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .siuu-bubble { display: none; }
+  .logo, .logo-dot { animation: none; }
+}
