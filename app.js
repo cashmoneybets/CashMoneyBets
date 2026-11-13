@@ -547,6 +547,7 @@ renderTopPicks();
 renderButs();
 renderUpcoming();
 renderAcc();
+buildTicker();
 observeReveals();
 routeFromHash();
 
