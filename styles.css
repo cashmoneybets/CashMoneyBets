@@ -2102,3 +2102,48 @@ nav { border-bottom: none; clip-path: none; }
 /* le lift ne soulève que le ballon, l'ombre reste au sol */
 .st-ball-fig { transform: translateX(-50%) rotateX(-56deg); }
 .sb-ball { transform: rotateX(56deg) translateY(calc(-1 * var(--lift, 0px))); }
+
+/* ============ V4.8 — CELEBRATION SIUU CINEMATIQUE ============ */
+/* le joueur grossit en venant vers la camera */
+.sp-svg { transform: translateX(-50%) rotateX(-38deg) scale(var(--ps, 1)); }
+
+/* saut + spin du Siuu (l'echelle suit le joueur) */
+.st-player.siuu .sp-svg { animation: siuu-jump 1.4s cubic-bezier(0.3, 0.7, 0.4, 1); }
+@keyframes siuu-jump {
+  0% { transform: translateX(-50%) rotateX(-38deg) translateY(0) scale(var(--ps, 1)) rotateY(0deg); }
+  38% { transform: translateX(-50%) rotateX(-38deg) translateY(-46px) scale(var(--ps, 1)) rotateY(200deg); }
+  62%, 100% { transform: translateX(-50%) rotateX(-38deg) translateY(0) scale(var(--ps, 1)) rotateY(360deg); }
+}
+
+/* pose Siuu tenue : jambes ecartees, bras balances vers l'arriere-bas, poitrine sortie */
+.st-player.siuu .spg-leg-l { transform: rotate(16deg); }
+.st-player.siuu .spg-leg-r { transform: rotate(-16deg); }
+.st-player.siuu .spg-arm-l { transform: rotate(52deg); }
+.st-player.siuu .spg-arm-r { transform: rotate(-52deg); }
+.st-player.siuu .spg-head { transform: translateY(1.5px); }
+
+/* bouche : fermee au repos, grande ouverte pendant le cri */
+.spg-mouth {
+  transform: scaleY(0); transform-box: fill-box; transform-origin: 50% 15%;
+  transition: transform 0.22s ease;
+}
+.st-player.shout .spg-mouth { transform: scaleY(1); }
+
+/* le cri qui jaillit de la bouche, ancre a la hauteur de la bouche, suit l'echelle */
+.siuu-shout {
+  position: absolute; bottom: calc(var(--ps, 1) * 84px); left: 50%;
+  transform: translateX(-50%) rotateX(-56deg);
+  font-family: var(--disp); font-weight: 900; white-space: nowrap;
+  font-size: calc(var(--ps, 1) * 15px); letter-spacing: 2px;
+  color: #ffffff; z-index: 40; pointer-events: none;
+  text-shadow: 0 0 10px rgba(245, 196, 81, 0.95), 0 0 28px rgba(245, 196, 81, 0.6), 0 3px 6px rgba(0, 0, 0, 0.75);
+  animation: shout-burst 0.4s cubic-bezier(0.2, 1.6, 0.4, 1);
+}
+@keyframes shout-burst {
+  from { transform: translateX(-50%) rotateX(-56deg) scale(0.2); opacity: 0; }
+  to { transform: translateX(-50%) rotateX(-56deg) scale(1); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .siuu-shout { display: none; }
+}

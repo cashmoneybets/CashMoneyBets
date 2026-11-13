@@ -81,15 +81,15 @@
   let scenario = null;
   let nextScenario = 5 + Math.random() * 5;
 
-  function showBubble(p) {
-    hideBubble(p);
+  function showShout(p) {
+    hideShout(p);
     const b = document.createElement("span");
-    b.className = "siuu-bubble";
-    b.textContent = "SIUUUU! ⚽💰";
+    b.className = "siuu-shout";
+    b.textContent = "SSSUUUUUIIIIIIIIIII";
     p.el.appendChild(b);
   }
-  function hideBubble(p) {
-    p.el.querySelectorAll(".siuu-bubble").forEach(b => b.remove());
+  function hideShout(p) {
+    p.el.querySelectorAll(".siuu-shout").forEach(b => b.remove());
   }
 
   function startScenario() {
@@ -130,23 +130,53 @@
           toV: s.goalFar ? 0.06 : 0.94,
           lift: s.type === "header" ? 36 : 26, dur: 0.6,
           onArrive: () => {
-            s.phase = "celebrate"; s.t = 0;
+            s.phase = "charge"; s.t = 0;
             s.scorer.el.classList.remove(s.type);
-            s.scorer.el.classList.add("siuu");
-            showBubble(s.scorer);
+            players.forEach(q => { if (q !== s.scorer) q.wait = 99; });
+            s.scorer.boost = 4;
+            s.scorer.tu = 0.5;
+            s.scorer.tv = 0.98;
+            s.scorer.el.style.zIndex = 12;
           },
         };
       }
-    } else if (s.phase === "celebrate" && s.t > 2.5) {
-      s.scorer.el.classList.remove("siuu", "shot", "header", "bicycle");
-      hideBubble(s.scorer);
-      newTarget(s.scorer);
-      s.scorer.wait = 0.5;
-      const p = players[(Math.random() * players.length) | 0];
-      p.wait = 99;
-      ball.flight = { k: 0, u1: ball.u, v1: ball.v, toU: p.tu, toV: p.tv, toPlayer: p, lift: 30, dur: 0.55 };
-      scenario = null;
-      nextScenario = 7 + Math.random() * 7;
+    } else if (s.phase === "charge") {
+      const p = s.scorer;
+      p.scale = Math.min(3.2, 1 + (s.t / 1.3) * 2.2);
+      if (s.t > 1.9 || Math.hypot(p.tu - p.u, p.tv - p.v) < 0.02) {
+        s.phase = "siuu"; s.t = 0;
+        p.el.classList.remove("running");
+        p.el.classList.add("siuu");
+      }
+    } else if (s.phase === "siuu") {
+      if (s.t > 1.6) {
+        s.phase = "closeup"; s.t = 0;
+        s.scorer.el.classList.add("shout");
+        showShout(s.scorer);
+      }
+    } else if (s.phase === "closeup") {
+      s.scorer.scale = Math.min(4.4, 3.2 + (s.t / 0.9) * 1.2);
+      if (s.t > 2.6) {
+        s.phase = "return"; s.t = 0;
+        s.scorer.el.classList.remove("siuu", "shout");
+        hideShout(s.scorer);
+        s.scorer.boost = 2.5;
+        newTarget(s.scorer);
+        s.scorer.tv = Math.min(s.scorer.tv, 0.84);
+        s.scorer.wait = 99;
+      }
+    } else if (s.phase === "return") {
+      const p = s.scorer;
+      p.scale = Math.max(1, p.scale - dt * 4.5);
+      if (p.scale <= 1 && (Math.hypot(p.tu - p.u, p.tv - p.v) < 0.03 || s.t > 2.2)) {
+        p.scale = 1;
+        p.boost = 0;
+        players.forEach(q => { q.wait = 0.4 + Math.random() * 0.8; q.el.style.zIndex = ""; });
+        const r = players[(Math.random() * players.length) | 0];
+        ball.flight = { k: 0, u1: ball.u, v1: ball.v, toU: r.tu, toV: r.tv, toPlayer: r, lift: 30, dur: 0.55 };
+        scenario = null;
+        nextScenario = 7 + Math.random() * 7;
+      }
     }
   }
 
@@ -164,7 +194,7 @@
           }
         }
       } else {
-        const sp = p.speed * (ball.holder === p ? 0.9 : 1.25) * dt;
+        const sp = p.speed * (p.boost || 1) * (ball.holder === p ? 0.9 : 1.25) * dt;
         const k = Math.min(sp, dist) / dist;
         p.u += dx * k;
         p.v += dy * k;
@@ -172,6 +202,7 @@
       }
       p.el.style.left = (p.u * 100).toFixed(2) + "%";
       p.el.style.top = (p.v * 100).toFixed(2) + "%";
+      p.el.style.setProperty("--ps", (p.scale || 1).toFixed(3));
     }
   }
 
