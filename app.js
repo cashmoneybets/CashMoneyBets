@@ -15,6 +15,7 @@ function showView(name) {
     a.classList.toggle("active", a.dataset.view === name));
   window.scrollTo(0, 0);
   positionFx();
+  requestAnimationFrame(() => requestAnimationFrame(positionFx));
   observeReveals();
 }
 function routeFromHash() {
@@ -23,6 +24,9 @@ function routeFromHash() {
 }
 addEventListener("hashchange", routeFromHash);
 
+function ccB(m) { return `<span class="ccb"><i>${m.cc[0]}</i><i>${m.cc[1]}</i></span>`; }
+function ccOne(m, side) { return `<span class="ccb"><i>${m.cc[side]}</i></span>`; }
+
 /* ============ TICKER ============ */
 function buildTicker() {
   const items = [...MATCHES]
@@ -30,7 +34,7 @@ function buildTicker() {
     .map(m => {
       const arrow = safeScore(m) >= 85 ? "▲" : safeScore(m) >= 78 ? "▶" : "▼";
       const cls = safeScore(m) >= 85 ? "up" : safeScore(m) >= 78 ? "" : "lbl";
-      return `<span><span class="lbl">${m.flag} ${m.home.toUpperCase()}-${m.away.toUpperCase()}</span> <b class="${cls}">${m.odds[m.pick].toFixed(2)}</b> <span class="${cls}">${arrow}</span> <span class="lbl">SCORE ${safeScore(m)}</span></span>`;
+      return `<span><span class="lbl">${ccB(m)} ${m.home.toUpperCase()}-${m.away.toUpperCase()}</span> <b class="${cls}">${m.odds[m.pick].toFixed(2)}</b> <span class="${cls}">${arrow}</span> <span class="lbl">SCORE ${safeScore(m)}</span></span>`;
     }).join("");
   document.getElementById("ticker").innerHTML =
     `<div class="ticker-track">${items}${items}</div>`;
@@ -114,7 +118,7 @@ function matchCard(m) {
     <i class="card-bg"></i>
     ${rollBall()}
     <header class="card-head">
-      <span class="comp">${m.flag} ${compLbl}</span>
+      <span class="comp">${ccB(m)} ${compLbl}</span>
       <span class="kick">🕗 ${m.kickoff} CET</span>
     </header>
     ${teamsRow(m)}
@@ -179,7 +183,7 @@ function goalsCard(m) {
     <i class="card-bg"></i>
     ${rollBall()}
     <header class="card-head">
-      <span class="comp">${m.flag} ${compLbl}</span>
+      <span class="comp">${ccB(m)} ${compLbl}</span>
       <span class="kick">🕗 ${m.kickoff} CET</span>
     </header>
     ${teamsRow(m)}
@@ -228,33 +232,33 @@ window.renderUpcoming = renderUpcoming;
 function apPlayer() {
   return `<svg class="acc-player" viewBox="0 0 90 150" aria-hidden="true">
     <defs>
-      <linearGradient id="apKit" x1="0" y1="0" x2="1" y2="1">
+      <linearGradient id="apk1" x1="0" y1="0" x2="1" y2="1">
         <stop offset="0" stop-color="#ffe08a"/><stop offset=".5" stop-color="#f5c451"/><stop offset="1" stop-color="#b8860b"/>
       </linearGradient>
-      <linearGradient id="apSkin" x1="0" y1="0" x2="0" y2="1">
+      <linearGradient id="aps1" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0" stop-color="#f4d7b0"/><stop offset="1" stop-color="#c98d5f"/>
       </linearGradient>
-      <radialGradient id="apHead" cx=".35" cy=".3" r="1">
+      <radialGradient id="aph1" cx=".35" cy=".3" r="1">
         <stop offset="0" stop-color="#f7ddba"/><stop offset=".7" stop-color="#dba675"/><stop offset="1" stop-color="#b07f4f"/>
       </radialGradient>
     </defs>
     <ellipse cx="45" cy="144" rx="24" ry="5" fill="rgba(0,0,0,0.45)"/>
-    <rect x="34" y="96" width="9" height="34" rx="4" fill="url(#apSkin)"/>
-    <rect x="47" y="96" width="9" height="34" rx="4" fill="url(#apSkin)"/>
+    <rect x="34" y="96" width="9" height="34" rx="4" fill="url(#aps1)"/>
+    <rect x="47" y="96" width="9" height="34" rx="4" fill="url(#aps1)"/>
     <rect x="34" y="118" width="9" height="10" rx="3" fill="#b8860b"/>
     <rect x="47" y="118" width="9" height="10" rx="3" fill="#b8860b"/>
     <rect x="31" y="128" width="14" height="7" rx="3" fill="#14141a"/>
     <rect x="46" y="128" width="14" height="7" rx="3" fill="#14141a"/>
     <rect x="31" y="84" width="28" height="16" rx="5" fill="#1d232e"/>
-    <path d="M33 52 Q45 46 57 52 L59 88 Q45 93 31 88 Z" fill="url(#apKit)"/>
+    <path d="M33 52 Q45 46 57 52 L59 88 Q45 93 31 88 Z" fill="url(#apk1)"/>
     <text x="45" y="78" font-size="12" text-anchor="middle" fill="#14141a" font-family="Orbitron, sans-serif" font-weight="bold">9</text>
-    <rect x="25" y="54" width="8" height="30" rx="4" fill="url(#apSkin)" transform="rotate(10 29 56)"/>
+    <rect x="25" y="54" width="8" height="30" rx="4" fill="url(#aps1)" transform="rotate(10 29 56)"/>
     <g class="ap-arm">
-      <rect x="57" y="52" width="9" height="36" rx="4.5" fill="url(#apSkin)" transform="rotate(-34 61 54)"/>
-      <circle cx="75" cy="86" r="5.5" fill="url(#apSkin)"/>
-      <rect x="72.5" y="88" width="4.5" height="10" rx="2.2" fill="url(#apSkin)"/>
+      <rect x="57" y="52" width="9" height="36" rx="4.5" fill="url(#aps1)" transform="rotate(-34 61 54)"/>
+      <circle cx="75" cy="86" r="5.5" fill="url(#aps1)"/>
+      <rect x="72.5" y="88" width="4.5" height="10" rx="2.2" fill="url(#aps1)"/>
     </g>
-    <circle cx="45" cy="36" r="14" fill="url(#apHead)"/>
+    <circle cx="45" cy="36" r="14" fill="url(#aph1)"/>
     <path d="M31 34 Q33 19 45 19 Q57 19 59 34 Q52 25 45 26 Q38 25 31 34 Z" fill="#2a2118"/>
     <g class="ap-hint">
       <path d="M74 102 L67 112 L74 122" fill="none" stroke="#2effa0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
@@ -269,19 +273,30 @@ function apMoneyPlayer() {
     `<i style="left:${bx[i]}%;top:${by[i]}%;animation-delay:${(i * 0.2).toFixed(2)}s;animation-duration:${(2.2 + (i % 4) * 0.35).toFixed(2)}s">💵</i>`).join("");
   return `<span class="ap-bills">${bills}</span>
   <svg class="acc-player acc-player-money" viewBox="0 0 90 150" aria-hidden="true">
+    <defs>
+      <linearGradient id="apk2" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ffe08a"/><stop offset=".5" stop-color="#f5c451"/><stop offset="1" stop-color="#b8860b"/>
+      </linearGradient>
+      <linearGradient id="aps2" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#f4d7b0"/><stop offset="1" stop-color="#c98d5f"/>
+      </linearGradient>
+      <radialGradient id="aph2" cx=".35" cy=".3" r="1">
+        <stop offset="0" stop-color="#f7ddba"/><stop offset=".7" stop-color="#dba675"/><stop offset="1" stop-color="#b07f4f"/>
+      </radialGradient>
+    </defs>
     <ellipse cx="45" cy="144" rx="24" ry="5" fill="rgba(0,0,0,0.45)"/>
-    <rect x="34" y="96" width="9" height="34" rx="4" fill="url(#apSkin)"/>
-    <rect x="47" y="96" width="9" height="34" rx="4" fill="url(#apSkin)"/>
+    <rect x="34" y="96" width="9" height="34" rx="4" fill="url(#aps2)"/>
+    <rect x="47" y="96" width="9" height="34" rx="4" fill="url(#aps2)"/>
     <rect x="34" y="118" width="9" height="10" rx="3" fill="#b8860b"/>
     <rect x="47" y="118" width="9" height="10" rx="3" fill="#b8860b"/>
     <rect x="31" y="128" width="14" height="7" rx="3" fill="#14141a"/>
     <rect x="46" y="128" width="14" height="7" rx="3" fill="#14141a"/>
     <rect x="31" y="84" width="28" height="16" rx="5" fill="#1d232e"/>
-    <path d="M33 52 Q45 46 57 52 L59 88 Q45 93 31 88 Z" fill="url(#apKit)"/>
+    <path d="M33 52 Q45 46 57 52 L59 88 Q45 93 31 88 Z" fill="url(#apk2)"/>
     <text x="45" y="80" font-size="12" text-anchor="middle" fill="#14141a" font-family="Orbitron, sans-serif" font-weight="bold">10</text>
     <g class="apm-arm-l">
-      <rect x="25" y="54" width="8" height="26" rx="4" fill="url(#apSkin)" transform="rotate(58 29 58)"/>
-      <circle cx="36" cy="64" r="5" fill="url(#apSkin)"/>
+      <rect x="25" y="54" width="8" height="26" rx="4" fill="url(#aps2)" transform="rotate(58 29 58)"/>
+      <circle cx="36" cy="64" r="5" fill="url(#aps2)"/>
       <g class="apm-hold">
         <rect x="28" y="57" width="18" height="11" rx="2" fill="#2effa0" stroke="#0c6e3f" stroke-width="1.5"/>
         <rect x="30" y="54" width="14" height="4" rx="1" fill="#7dffb8" stroke="#0c6e3f" stroke-width="1"/>
@@ -289,12 +304,12 @@ function apMoneyPlayer() {
       </g>
     </g>
     <g class="apm-arm-r">
-      <rect x="57" y="52" width="9" height="36" rx="4.5" fill="url(#apSkin)"/>
-      <circle cx="61.5" cy="90" r="5.5" fill="url(#apSkin)"/>
-      <rect x="59" y="92" width="4.5" height="9" rx="2.2" fill="url(#apSkin)"/>
+      <rect x="57" y="52" width="9" height="36" rx="4.5" fill="url(#aps2)"/>
+      <circle cx="61.5" cy="90" r="5.5" fill="url(#aps2)"/>
+      <rect x="59" y="92" width="4.5" height="9" rx="2.2" fill="url(#aps2)"/>
     </g>
     <g class="apm-head">
-      <circle cx="45" cy="32" r="14" fill="url(#apHead)"/>
+      <circle cx="45" cy="32" r="14" fill="url(#aph2)"/>
       <path d="M31 30 Q33 15 45 15 Q57 15 59 30 Q52 21 45 22 Q38 21 31 30 Z" fill="#2a2118"/>
     </g>
   </svg>`;
@@ -306,7 +321,7 @@ function comboCard(nameKey, ids, best) {
   const conf = ms.reduce((a, m) => a + safeScore(m), 0) / ms.length;
   const legs = ms.map(m => {
     const team = m.pick === "1" ? m.home : m.away;
-    return `<div class="acc-leg"><span class="al-flag">${m.flag}</span><span class="al-team">${team}</span><span class="al-pick">${t("mkt_pick_win").replace("{team}", team)}</span><b class="al-odds">${m.odds[m.pick].toFixed(2)}</b></div>`;
+    return `<div class="acc-leg"><span class="al-flag">${ccOne(m, m.pick === "1" ? 0 : 1)}</span><span class="al-team">${team}</span><span class="al-pick">${t("mkt_pick_win").replace("{team}", team)}</span><b class="al-odds">${m.odds[m.pick].toFixed(2)}</b></div>`;
   }).join("");
   return `
   <article class="card acc-card${best ? " acc-best" : ""}">
@@ -339,28 +354,31 @@ function renderAcc() {
 }
 window.renderAcc = renderAcc;
 
+function fxCard(card) {
+  const ball = card.querySelector(":scope > .roll-ball");
+  const mkts = card.querySelectorAll(".mkt, .g-market");
+  mkts.forEach(el => el.classList.remove("mkt-target"));
+  if (!ball || !mkts.length) return;
+  let bestMkt = null, bv = -1;
+  mkts.forEach(el => {
+    const b = el.querySelector("b");
+    const v = b ? parseFloat(b.textContent) || 0 : 0;
+    if (v > bv) { bv = v; bestMkt = el; }
+  });
+  if (!bestMkt) return;
+  bestMkt.classList.add("mkt-target");
+  const cr = card.getBoundingClientRect();
+  const mr = bestMkt.getBoundingClientRect();
+  if (!cr.width || !mr.width) return;
+  const half = Math.max(20, ball.offsetWidth / 2);
+  ball.style.setProperty("--drop-x", (mr.left - cr.left + mr.width / 2 - half).toFixed(0) + "px");
+  ball.style.setProperty("--drop-y", (mr.top - cr.top + mr.height / 2 - half).toFixed(0) + "px");
+}
+
 function bindCards() {
   document.querySelectorAll(".tilt").forEach((card, i) => {
     card.style.animationDelay = `-${((i * 1.3) % 7).toFixed(1)}s`;
-    const ball = card.querySelector(":scope > .roll-ball");
-    const pb = card.querySelector(".pick-box");
-    const mkts = card.querySelectorAll(".mkt, .g-market");
-    mkts.forEach(el => el.classList.remove("mkt-target"));
-    if (ball && mkts.length) {
-      let bestMkt = null, bv = -1;
-      mkts.forEach(el => {
-        const b = el.querySelector("b");
-        const v = b ? parseFloat(b.textContent) || 0 : 0;
-        if (v > bv) { bv = v; bestMkt = el; }
-      });
-      if (bestMkt) {
-        bestMkt.classList.add("mkt-target");
-        let x = 0, y = 0, n = bestMkt;
-        while (n && n !== card) { x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent; }
-        ball.style.setProperty("--drop-x", (x + bestMkt.offsetWidth / 2 - 26).toFixed(0) + "px");
-        ball.style.setProperty("--drop-y", (y + bestMkt.offsetHeight / 2 - 26).toFixed(0) + "px");
-      }
-    }
+    fxCard(card);
     card.addEventListener("mousemove", e => {
       card.classList.add("tilting");
       const r = card.getBoundingClientRect();
@@ -377,27 +395,7 @@ function bindCards() {
 }
 
 function positionFx() {
-  document.querySelectorAll(".tilt").forEach(card => {
-    const ball = card.querySelector(":scope > .roll-ball");
-    const pb = card.querySelector(".pick-box");
-    const mkts = card.querySelectorAll(".mkt, .g-market");
-    mkts.forEach(el => el.classList.remove("mkt-target"));
-    if (ball && mkts.length) {
-      let bestMkt = null, bv = -1;
-      mkts.forEach(el => {
-        const b = el.querySelector("b");
-        const v = b ? parseFloat(b.textContent) || 0 : 0;
-        if (v > bv) { bv = v; bestMkt = el; }
-      });
-      if (bestMkt) {
-        bestMkt.classList.add("mkt-target");
-        let x = 0, y = 0, n = bestMkt;
-        while (n && n !== card) { x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent; }
-        ball.style.setProperty("--drop-x", (x + bestMkt.offsetWidth / 2 - 26).toFixed(0) + "px");
-        ball.style.setProperty("--drop-y", (y + bestMkt.offsetHeight / 2 - 26).toFixed(0) + "px");
-      }
-    }
-  });
+  document.querySelectorAll(".tilt").forEach(fxCard);
 }
 
 function animateRings() {
@@ -448,6 +446,7 @@ const revealObserver = new IntersectionObserver(entries => {
   entries.forEach(en => {
     if (en.isIntersecting) {
       en.target.classList.add("visible");
+      if (en.target.classList.contains("tilt")) fxCard(en.target);
       revealObserver.unobserve(en.target);
     }
   });
@@ -489,11 +488,11 @@ function statDetail(id) {
   }
   if (id === "stat-score") {
     return [...MATCHES].sort((a, b) => safeScore(b) - safeScore(a)).slice(0, 3)
-      .map(m => `<div class="sd-row"><span>${m.flag} ${m.home} - ${m.away}</span><b>${safeScore(m)}</b></div>`).join("");
+      .map(m => `<div class="sd-row"><span>${ccB(m)} ${m.home} - ${m.away}</span><b>${safeScore(m)}</b></div>`).join("");
   }
   if (id === "stat-elite") {
     const e = MATCHES.filter(m => safeScore(m) >= 85);
-    return e.map(m => `<div class="sd-row"><span>${m.flag} ${m.home} - ${m.away}</span><b>${safeScore(m)}</b></div>`).join("");
+    return e.map(m => `<div class="sd-row"><span>${ccB(m)} ${m.home} - ${m.away}</span><b>${safeScore(m)}</b></div>`).join("");
   }
   if (id === "stat-live") return liveDetail();
   return "";

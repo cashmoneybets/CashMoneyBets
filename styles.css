@@ -2043,3 +2043,48 @@ nav { border-bottom: none; clip-path: none; }
   .siuu-bubble { display: none; }
   .logo, .logo-dot { animation: none; }
 }
+
+/* ============ V4.5 — BADGES CODES PAYS + BALLON STADE REALISTE ============ */
+.ccb { display: inline-flex; gap: 3px; vertical-align: middle; }
+.ccb i {
+  font-style: normal; font-family: var(--mono); font-size: 0.58rem; font-weight: 700;
+  letter-spacing: 0.5px; line-height: 1.25; color: var(--cyan);
+  background: rgba(245, 196, 81, 0.1);
+  border: 1px solid rgba(245, 196, 81, 0.45); border-radius: 3px; padding: 1px 4px;
+}
+.al-flag .ccb i { font-size: 0.55rem; }
+
+/* ballon du stade : plus gros, vraie sphere (contre-rotation de la perspective du terrain) */
+.st-ball-fig { width: 24px; height: 24px; }
+.sb-shadow { width: 27px; height: 9px; }
+.sb-ball {
+  transform: rotateX(56deg);
+  background: radial-gradient(circle at 32% 26%,
+    #ffffff 0%, #f6f8fa 26%, #dde4ea 48%, #b9c4cf 72%, #83909e 90%, #64717f 100%);
+  box-shadow:
+    inset -4px -5px 7px rgba(50, 62, 76, 0.62),
+    inset 3px 4px 6px rgba(255, 255, 255, 0.8),
+    0 0 12px rgba(255, 255, 255, 0.35);
+}
+.sb-ball::before {
+  content: ""; position: absolute; inset: 0; border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(24, 27, 33, 0.95) 0 15%, transparent 16%),
+    radial-gradient(circle at 50% 96%, rgba(24, 27, 33, 0.9) 0 16%, transparent 17%),
+    radial-gradient(circle at 4% 62%, rgba(24, 27, 33, 0.88) 0 14%, transparent 15%),
+    radial-gradient(circle at 96% 62%, rgba(24, 27, 33, 0.88) 0 14%, transparent 15%),
+    radial-gradient(circle at 26% 8%, rgba(24, 27, 33, 0.85) 0 12%, transparent 13%),
+    radial-gradient(circle at 74% 8%, rgba(24, 27, 33, 0.85) 0 12%, transparent 13%);
+  box-shadow: inset 2px 3px 4px rgba(255, 255, 255, 0.18);
+}
+.sb-ball::after {
+  content: ""; position: absolute; left: 20%; top: 12%; width: 24%; height: 16%;
+  border-radius: 50%; transform: rotate(-20deg);
+  background: rgba(255, 255, 255, 0.9); filter: blur(1.2px);
+}
+
+@media (max-width: 720px) {
+  .st-ball-fig { width: 18px; height: 18px; }
+  .sb-shadow { width: 21px; height: 7px; }
+  .ccb i { font-size: 0.52rem; padding: 1px 3px; }
+}
