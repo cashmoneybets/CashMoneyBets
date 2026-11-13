@@ -85,7 +85,7 @@
     hideBubble(p);
     const b = document.createElement("span");
     b.className = "siuu-bubble";
-    b.textContent = "SIUUUU! \u26BD\U0001F4B0";
+    b.textContent = "SIUUUU! ⚽💰";
     p.el.appendChild(b);
   }
   function hideBubble(p) {
@@ -97,7 +97,7 @@
     const type = Math.random() < 0.5 ? "shot" : (Math.random() < 0.5 ? "header" : "bicycle");
     scenario = { phase: "steal", scorer, goalFar: Math.random() < 0.5, type, t: 0 };
     ball.flight = {
-      u1: ball.u, v1: ball.v, toU: scorer.u, toV: scorer.v, toPlayer: scorer, lift: 16, dur: 0.3,
+      k: 0, u1: ball.u, v1: ball.v, toU: scorer.u, toV: scorer.v, toPlayer: scorer, lift: 16, dur: 0.3,
       onArrive: () => { if (scenario) { scenario.phase = "run"; scenario.t = 0; } },
     };
   }
@@ -112,8 +112,11 @@
     s.t += dt;
     const gv = s.goalFar ? 0.17 : 0.83;
     if (s.phase === "run") {
-      s.scorer.tu = 0.5 + (Math.random() - 0.5) * 0.12;
-      s.scorer.tv = gv;
+      if (!s.aimed) {
+        s.aimed = true;
+        s.scorer.tu = 0.5 + (Math.random() - 0.5) * 0.12;
+        s.scorer.tv = gv;
+      }
       s.scorer.wait = 99;
       const d = Math.hypot(s.scorer.tu - s.scorer.u, s.scorer.tv - s.scorer.v);
       if (s.t > 1.6 || d < 0.035) {
@@ -121,7 +124,7 @@
         s.scorer.el.classList.add(s.type);
         ball.holder = null;
         ball.flight = {
-          u1: ball.u, v1: ball.v,
+          k: 0, u1: ball.u, v1: ball.v,
           toU: 0.5 + (Math.random() - 0.5) * 0.1,
           toV: s.goalFar ? 0.06 : 0.94,
           lift: s.type === "header" ? 36 : 26, dur: 0.6,
@@ -140,7 +143,7 @@
       s.scorer.wait = 0.5;
       const p = players[(Math.random() * players.length) | 0];
       ball.u = 0.5; ball.v = 0.5;
-      ball.flight = { u1: 0.5, v1: 0.5, toU: p.u, toV: p.v, toPlayer: p, lift: 30, dur: 0.5 };
+      ball.flight = { k: 0, u1: 0.5, v1: 0.5, toU: p.u, toV: p.v, toPlayer: p, lift: 30, dur: 0.5 };
       scenario = null;
       nextScenario = 7 + Math.random() * 7;
     }
