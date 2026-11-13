@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=29" />
+  <link rel="stylesheet" href="styles.css?v=30" />
 </head>
 <body>
   <canvas id="scene"></canvas>
@@ -19,7 +19,7 @@
   <div class="scanlines"></div>
 
   <nav>
-    <a class="logo" href="#home" data-view="home">CASHMONEY<span class="logo-dot">·</span>BETS<sup class="ver">v2.9</sup></a>
+    <a class="logo" href="#home" data-view="home">CASHMONEY<span class="logo-dot">·</span>BETS<sup class="ver">v3.0</sup></a>
     <div class="nav-links">
       <a href="#live" data-view="live" data-i18n="nav_live"></a>
       <a href="#avenir" data-view="avenir" data-i18n="nav_upcoming"></a>
@@ -97,6 +97,43 @@
       <small class="st-hint" data-i18n="case_hint"></small>
     </header>
 
+    <section class="section menu-section">
+      <div class="section-head">
+        <h2 class="section-title" data-i18n-html="menu_title"></h2>
+      </div>
+      <p class="section-sub" data-i18n="menu_sub"></p>
+      <div class="neural-menu">
+        <a class="n-tile" href="#live" data-view="live">
+          <span class="n-node nn1"></span><span class="n-node nn2"></span><span class="n-node nn3"></span><span class="n-node nn4"></span>
+          <span class="n-icon">📡</span>
+          <b class="n-name" data-i18n="nav_live"></b>
+          <small class="n-desc" data-i18n="menu_live_desc"></small>
+          <span class="n-arrow">⟶</span>
+        </a>
+        <a class="n-tile" href="#avenir" data-view="avenir">
+          <span class="n-node nn1"></span><span class="n-node nn2"></span><span class="n-node nn3"></span><span class="n-node nn4"></span>
+          <span class="n-icon">📅</span>
+          <b class="n-name" data-i18n="nav_upcoming"></b>
+          <small class="n-desc" data-i18n="menu_upcoming_desc"></small>
+          <span class="n-arrow">⟶</span>
+        </a>
+        <a class="n-tile" href="#acc" data-view="acc">
+          <span class="n-node nn1"></span><span class="n-node nn2"></span><span class="n-node nn3"></span><span class="n-node nn4"></span>
+          <span class="n-icon">⚡</span>
+          <b class="n-name" data-i18n="nav_acc"></b>
+          <small class="n-desc" data-i18n="menu_acc_desc"></small>
+          <span class="n-arrow">⟶</span>
+        </a>
+        <a class="n-tile" href="#buts" data-view="buts">
+          <span class="n-node nn1"></span><span class="n-node nn2"></span><span class="n-node nn3"></span><span class="n-node nn4"></span>
+          <span class="n-icon">⚽</span>
+          <b class="n-name" data-i18n="nav_buts"></b>
+          <small class="n-desc" data-i18n="menu_buts_desc"></small>
+          <span class="n-arrow">⟶</span>
+        </a>
+      </div>
+    </section>
+
     <section class="section">
       <div class="section-head">
         <h2 class="section-title" data-i18n-html="picks_title"></h2>
@@ -134,6 +171,7 @@
   <!-- ================= VUE LIVE ================= -->
   <main class="view" id="view-live">
     <section class="section">
+      <div class="view-head-bar"><a class="btn-menu" href="#home" data-view="home" data-i18n="btn_menu"></a></div>
       <div class="section-head">
         <h2 class="section-title" data-i18n-html="live_title"></h2>
         <div class="live-meta">
@@ -151,6 +189,7 @@
   <!-- ================= VUE GAMES TO COME ================= -->
   <main class="view" id="view-avenir">
     <section class="section">
+      <div class="view-head-bar"><a class="btn-menu" href="#home" data-view="home" data-i18n="btn_menu"></a></div>
       <div class="section-head">
         <h2 class="section-title" data-i18n-html="up_title"></h2>
       </div>
@@ -162,6 +201,7 @@
   <!-- ================= VUE ACCUMULATEUR ================= -->
   <main class="view" id="view-acc">
     <section class="section">
+      <div class="view-head-bar"><a class="btn-menu" href="#home" data-view="home" data-i18n="btn_menu"></a></div>
       <div class="section-head">
         <h2 class="section-title" data-i18n-html="acc_title"></h2>
       </div>
@@ -173,6 +213,7 @@
   <!-- ================= VUE BUTS ================= -->
   <main class="view" id="view-buts">
     <section class="section">
+      <div class="view-head-bar"><a class="btn-menu" href="#home" data-view="home" data-i18n="btn_menu"></a></div>
       <div class="section-head">
         <h2 class="section-title" data-i18n-html="buts_title"></h2>
       </div>
@@ -198,10 +239,10 @@
     <span data-i18n-html="footer_brand"></span>
   </footer>
 
-  <script src="i18n.js?v=29"></script>
-  <script src="data.js?v=29"></script>
-  <script src="scene.js?v=29"></script>
-  <script src="live.js?v=29"></script>
-  <script src="app.js?v=29"></script>
+  <script src="i18n.js?v=30"></script>
+  <script src="data.js?v=30"></script>
+  <script src="scene.js?v=30"></script>
+  <script src="live.js?v=30"></script>
+  <script src="app.js?v=30"></script>
 </body>
 </html>

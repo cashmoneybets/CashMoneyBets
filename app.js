@@ -1,8 +1,10 @@
-/* ============ HUD CLOCK ============ */
-setInterval(() => {
+/* ============ HUD CLOCK (heure locale de l'utilisateur) ============ */
+function tickClock() {
   const el = document.getElementById("hud-clock");
-  if (el) el.textContent = new Date().toISOString().slice(11, 19) + " UTC";
-}, 1000);
+  if (el) el.textContent = new Date().toLocaleTimeString([], { hour12: false });
+}
+setInterval(tickClock, 1000);
+tickClock();
 
 /* ============ VIEW ROUTER (Accueil / LIVE / BUTS) ============ */
 const VIEWS = ["home", "live", "buts", "avenir", "acc"];
@@ -326,7 +328,7 @@ const revealObserver = new IntersectionObserver(entries => {
 }, { threshold: 0.1 });
 
 function observeReveals() {
-  document.querySelectorAll(".card, .live-card, .section-title, .stat, .parlay-banner").forEach(el => {
+  document.querySelectorAll(".card, .live-card, .section-title, .stat, .parlay-banner, .n-tile").forEach(el => {
     if (!el.classList.contains("visible")) revealObserver.observe(el);
   });
 }
