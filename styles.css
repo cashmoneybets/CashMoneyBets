@@ -1255,3 +1255,61 @@ a.logo { text-decoration: none; }
   .n-tile { padding: 20px 18px 18px; }
   .n-name { font-size: 0.95rem; }
 }
+
+/* ============ v3.1 — STADE VIVANT (foule canvas + joueurs 3D) & FIX MENU ============ */
+.st-pitch { transform-style: preserve-3d; }
+
+.crowd-canvas {
+  position: absolute; left: -7%; right: -7%; top: 6%; height: 44%;
+  width: 114%; height: 44%; pointer-events: none;
+}
+.st-stands, .st-stands2 {
+  background: linear-gradient(180deg, #0c0c16, #14142a) !important;
+  background-size: 100% 100% !important;
+  animation: none;
+}
+
+.st-player, .st-ball { position: absolute; width: 0; height: 0; z-index: 2; }
+.sp-fig, .st-ball-fig { position: absolute; bottom: 0; left: 0; transform-origin: 50% 100%; }
+.sp-fig {
+  width: 15px; height: 27px;
+  transform: translateX(-50%) rotateX(-56deg);
+}
+.st-ball-fig {
+  width: 10px; height: 10px;
+  transform: translateX(-50%) rotateX(-56deg) translateY(calc(-1 * var(--lift, 0px)));
+}
+.sp-shadow {
+  position: absolute; bottom: -1px; left: 50%; width: 18px; height: 7px;
+  transform: translateX(-50%); border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55), transparent 70%);
+}
+.sp-leg {
+  position: absolute; bottom: 0; width: 3px; height: 9px;
+  border-radius: 1.5px; background: #101018; transform-origin: 50% 0;
+}
+.sp-leg-l { left: 3.5px; }
+.sp-leg-r { right: 3.5px; }
+.st-player.running .sp-leg-l { animation: leg-swing 0.32s ease-in-out infinite alternate; }
+.st-player.running .sp-leg-r { animation: leg-swing 0.32s ease-in-out infinite alternate-reverse; }
+@keyframes leg-swing { from { transform: rotate(24deg); } to { transform: rotate(-24deg); } }
+.sp-body { position: absolute; bottom: 8px; left: 2px; right: 2px; height: 11px; border-radius: 4px 4px 2px 2px; }
+.team-a .sp-body { background: linear-gradient(180deg, #f5c451, #b98a25); box-shadow: 0 0 6px rgba(245, 196, 81, 0.5); }
+.team-b .sp-body { background: linear-gradient(180deg, #2effa0, #128f56); box-shadow: 0 0 6px rgba(46, 255, 160, 0.5); }
+.sp-head { position: absolute; bottom: 18px; left: 4.5px; right: 4.5px; height: 7px; border-radius: 50%; background: #e9c9a3; }
+
+.sb-ball {
+  position: absolute; inset: 0; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffffff, #b9c4cf 75%, #8a97a5);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
+}
+.sb-shadow {
+  position: absolute; bottom: -3px; left: 50%; width: 12px; height: 5px;
+  transform: translateX(-50%); border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.5), transparent 70%);
+}
+
+/* fix : texte des tuiles du menu plus jamais coupe */
+.n-tile { clip-path: none; border-radius: 14px; padding: 24px 22px; }
+.n-name { overflow-wrap: break-word; }
+.n-desc { max-width: 100%; }
