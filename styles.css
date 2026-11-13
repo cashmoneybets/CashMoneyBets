@@ -2269,3 +2269,55 @@ nav { border-bottom: none; clip-path: none; }
 @media (prefers-reduced-motion: reduce) {
   .live-badge, .live-dot { animation: none; }
 }
+
+
+/* ============ v6.0 — OÙ REGARDER : CHAÎNES TV PAR MATCH / PAR LANGUE ============ */
+/* inspiré des TV guides (streamfc) : noms de chaînes uniquement, aucun lien de stream */
+
+.tv-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 10px 0 12px;
+  padding: 9px 11px;
+  border: 1px solid rgba(245, 196, 81, 0.14);
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(245, 196, 81, 0.04), rgba(245, 196, 81, 0.015));
+}
+
+.tv-lbl {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(245, 196, 81, 0.75);
+}
+
+.tv-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tv-chip {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 1px;
+  color: var(--text);
+  padding: 3px 9px;
+  border: 1px solid rgba(245, 196, 81, 0.35);
+  border-radius: 6px;
+  background: rgba(245, 196, 81, 0.07);
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 720px) {
+  .tv-row { padding: 8px 9px; margin: 8px 0 10px; }
+  .tv-chip { font-size: 0.55rem; padding: 3px 7px; }
+  .tv-lbl { font-size: 0.55rem; }
+}

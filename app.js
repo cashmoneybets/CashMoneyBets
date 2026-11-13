@@ -76,6 +76,16 @@ function teamsRow(m) {
     </div>`;
 }
 
+function tvRow(m) {
+  const chans = (m.tv && (m.tv[LANG] || m.tv.fr)) || [];
+  if (!chans.length) return "";
+  return `
+    <div class="tv-row">
+      <small class="tv-lbl">📺 ${t("tv_watch")}</small>
+      <div class="tv-chips">${chans.map(c => `<span class="tv-chip">${c}</span>`).join("")}</div>
+    </div>`;
+}
+
 function confidenceBlock(score, tier, tierLbl) {
   const R = 27, CIRC = 2 * Math.PI * R;
   return `
@@ -125,6 +135,7 @@ function matchCard(m) {
       <span class="kick">🕗 ${m.kickoff} CET</span>
     </header>
     ${teamsRow(m)}
+    ${tvRow(m)}
     <div class="pick-box tier-${tier.cls}${flashCls(score, tier)}${score >= BEST_SCORE ? " on-fire" : ""}">
       <div class="pick-left">
         <small>🎯 ${t("mkt_pick")}</small>
