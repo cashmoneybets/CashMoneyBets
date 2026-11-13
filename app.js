@@ -47,9 +47,12 @@ function flashCls(score, tier) {
   return "";
 }
 function impactFx() {
-  return `<span class="ball-impact">⚽</span><span class="crack"></span>` +
-    [["-42px", "16px"], ["38px", "-14px"], ["-20px", "-24px"], ["28px", "22px"], ["4px", "32px"]]
-      .map(([dx, dy], i) => `<span class="shard s${i + 1}" style="--dx:${dx};--dy:${dy}"></span>`).join("");
+  return `<span class="crack"></span>` +
+    [[-42, 16], [38, -14], [-20, -24], [28, 22], [4, 32]]
+      .map(([dx, dy], i) => `<span class="shard s${i + 1}" style="--dx:${dx}px;--dy:${dy}px"></span>`).join("");
+}
+function crashBall() {
+  return `<span class="crash-ball">⚽</span>`;
 }
 
 function formChips(form) {
@@ -113,13 +116,14 @@ function matchCard(m) {
     </div>`;
   return `
   <article class="card tilt" data-id="${m.id}">
+    ${crashBall()}
     <header class="card-head">
       <span class="comp">${m.flag} ${compLbl}</span>
       <span class="kick">🕗 ${m.kickoff} CET</span>
     </header>
     ${teamsRow(m)}
     <div class="pick-box tier-${tier.cls}${flashCls(score, tier)}">
-      ${flashCls(score, tier).includes("neon-green") ? impactFx() : ""}
+      ${impactFx()}
       <div class="pick-left">
         <small>🎯 ${t("mkt_pick")}</small>
         <strong>${pickLbl}</strong>
@@ -177,13 +181,14 @@ function goalsCard(m) {
     </div>`;
   return `
   <article class="card g-card tilt" data-id="${m.id}">
+    ${crashBall()}
     <header class="card-head">
       <span class="comp">${m.flag} ${compLbl}</span>
       <span class="kick">🕗 ${m.kickoff} CET</span>
     </header>
     ${teamsRow(m)}
     <div class="pick-box tier-${tier.cls}${flashCls(score, tier)}">
-      ${flashCls(score, tier).includes("neon-green") ? impactFx() : ""}
+      ${impactFx()}
       <div class="pick-left">
         <small>🎯 ${t("mkt_pick")}</small>
         <strong>${pickLbl}</strong>
@@ -263,14 +268,24 @@ function renderAcc() {
 window.renderAcc = renderAcc;
 
 function bindCards() {
-  document.querySelectorAll(".tilt").forEach(card => {
+  document.querySelectorAll(".tilt").forEach((card, i) => {
+    card.style.animationDelay = `-${((i * 1.3) % 7).toFixed(1)}s`;
+    const ball = card.querySelector(":scope > .crash-ball");
+    const pb = card.querySelector(".pick-box");
+    if (ball && pb) {
+      ball.style.setProperty("--dive-h", (pb.offsetTop + pb.offsetHeight / 2 - 40).toFixed(0) + "px");
+    }
     card.addEventListener("mousemove", e => {
+      card.classList.add("tilting");
       const r = card.getBoundingClientRect();
       const rx = ((e.clientY - r.top) / r.height - 0.5) * -7;
       const ry = ((e.clientX - r.left) / r.width - 0.5) * 7;
       card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
     });
-    card.addEventListener("mouseleave", () => { card.style.transform = ""; });
+    card.addEventListener("mouseleave", () => {
+      card.classList.remove("tilting");
+      card.style.transform = "";
+    });
   });
 }
 
