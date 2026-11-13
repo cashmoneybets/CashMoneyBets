@@ -2159,3 +2159,23 @@ nav { border-bottom: none; clip-path: none; }
   from { transform: translateX(-50%) rotateX(-56deg) translateY(calc(var(--ps, 1) * -80px)) scale(0.2); opacity: 0; }
   to { transform: translateX(-50%) rotateX(-56deg) translateY(calc(var(--ps, 1) * -80px)) scale(1); opacity: 1; }
 }
+
+/* ============ V5.0 — STADE PHOTOREALISTE (photo fixe, joueurs animes par-dessus) ============ */
+.st-photo {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: center 62%;
+  border-radius: 14px; z-index: 0;
+}
+/* fondu de fusion avec le fond de la page en haut, leger vignettage en bas */
+.st-shade {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none; border-radius: 14px;
+  background: linear-gradient(180deg,
+    rgba(6, 6, 5, 0.92), rgba(6, 6, 5, 0.25) 26%, rgba(6, 6, 5, 0) 48%, rgba(6, 6, 5, 0.55) 90%);
+}
+/* tribunes et marquages CSS remplaces par la photo */
+.st-stands, .st-stands2, .crowd-canvas { display: none !important; }
+.st-mid, .st-circle, .st-box, .st-sheen { display: none !important; }
+/* la photo ne bouge pas : plus de balancement du monde */
+.st-world { animation: none; }
+/* plan de jeu aligne sur la pelouse de la photo (transparent) */
+.st-pitch { height: 55%; background: none; border: none; box-shadow: none; }
