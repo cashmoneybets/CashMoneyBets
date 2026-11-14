@@ -1,6 +1,11 @@
 /* ============ v6.2 — ASK THE BOT (assistant paris, 100% client) ============ */
 /* Le bot connaît les 15 matchs, Safe Scores, cotes, marchés buts (Poisson) et chaînes TV.
-   Aucune requête externe : tout tourne dans le navigateur. */
+   Aucune requête externe : tout tourne dans le navigateur.
+   v6.8 — upgrade LLM optionnel : si BOT_LLM_URL pointe vers le proxy Cloudflare
+   (worker/cloudflare-worker.js), les questions passent par un vrai LLM gratuit
+   (Gemini ou Workers AI) nourri avec les données du site ; en cas d'échec,
+   fallback instantané sur le moteur de règles local. URL vide = moteur local. */
+const BOT_LLM_URL = "";
 
 function botNorm(s) {
   return (s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -179,6 +184,47 @@ function botAnswer(raw) {
   return `<p>${t("bot_notfound")}</p>`;
 }
 
+/* ============ v6.8 — LLM via proxy Cloudflare (optionnel) ============ */
+function botContextDigest() {
+  const lines = MATCHES.map(m => {
+    const mk = marketsOf(m);
+    const tv = ((m.tv && (m.tv[LANG] || m.tv.fr)) || []).join(",") || "—";
+    return `${tn(m.home)}-${tn(m.away)} | ${m.comp} ${m.kickoff} | 1:${m.odds["1"].toFixed(2)} X:${m.odds["X"].toFixed(2)} 2:${m.odds["2"].toFixed(2)} | pick:${m.pick} | safe:${safeScore(m)} | over1.5:${mk.over15}% over2.5:${mk.over25}% btts:${mk.btts}% | ${m.venue || ""} | h2h ${m.h2h ? m.h2h.w + "W " + m.h2h.d + "D " + m.h2h.l + "L" : "?"} | TV: ${tv}`;
+  });
+  const live = (window.__lastLive || []).filter(m => m.state === "in").slice(0, 10)
+    .map(m => `${m.home.name} ${m.home.score}-${m.away.score} ${m.away.name} (${m.displayClock || ""} ${m.league || ""})`);
+  let s = "MATCHES:\n" + lines.join("\n");
+  if (live.length) s += "\n\nLIVE NOW:\n" + live.join("\n");
+  return s;
+}
+
+function botFormatLLM(txt) {
+  const esc = botEscape(String(txt || "").trim());
+  return esc.split(/\n\n+/).map(p =>
+    `<p>${p.replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/\n/g, "<br>")}</p>`
+  ).join("") || `<p>${t("bot_notfound")}</p>`;
+}
+
+async function botLLM(q) {
+  const ctrl = new AbortController();
+  const to = setTimeout(() => ctrl.abort(), 15000);
+  try {
+    const r = await fetch(BOT_LLM_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ q, lang: LANG, context: botContextDigest() }),
+      signal: ctrl.signal,
+    });
+    if (!r.ok) return null;
+    const d = await r.json();
+    return d && d.reply ? String(d.reply) : null;
+  } catch (e) {
+    return null;
+  } finally {
+    clearTimeout(to);
+  }
+}
+
 function botEscape(s) {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
@@ -221,13 +267,20 @@ function botAsk(raw) {
     i = (i + 1) % steps.length;
     if (st) st.textContent = steps[i];
   }, 400);
-  setTimeout(() => {
+  const finish = html => {
     clearInterval(iv);
     div.classList.remove("bot-thinking");
-    div.innerHTML = botAnswer(raw);
+    div.innerHTML = html;
     chat.scrollTop = chat.scrollHeight;
-    window.__lastBot = div.innerHTML;
-  }, 4800 + Math.random() * 600);
+    window.__lastBot = html;
+  };
+  if (BOT_LLM_URL) {
+    const wait = new Promise(res => setTimeout(res, 2500 + Math.random() * 800));
+    Promise.all([botLLM(raw.trim()).catch(() => null), wait]).then(([rep]) =>
+      finish(rep ? botFormatLLM(rep) : botAnswer(raw)));
+  } else {
+    setTimeout(() => finish(botAnswer(raw)), 4800 + Math.random() * 600);
+  }
 }
 
 function botRenderStatic() {

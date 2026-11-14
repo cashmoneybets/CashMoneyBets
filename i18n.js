@@ -81,7 +81,7 @@ const I18N = {
     goal_text: "BUUUT !",
     warn: "🔞 JOUEUR RESPONSABLE — 18+",
     footer: "Les paris sportifs comportent des risques. Aucun pari n'est jamais garanti, même avec un Safe Score élevé : un favori à 1.04 peut perdre. Ne mise jamais plus que ce que tu peux te permettre de perdre. Cotes relevées le 12/11/2026, susceptibles d'évoluer. Scores live via ESPN.",
-    footer_brand: "CASHMONEY·BETS — Safe Score Engine v6.7 · Besoin d'aide ? <b>Joueurs Info Service : 09 74 75 13 13</b>",
+    footer_brand: "CASHMONEY·BETS — Safe Score Engine v6.8 · Besoin d'aide ? <b>Joueurs Info Service : 09 74 75 13 13</b>",
   },
   en: {
     nav_home: "HOME", nav_live: "LIVE MATCH", nav_buts: "GOALS", nav_upcoming: "GAMES TO COME", nav_acc: "ACCUMULATOR", nav_method: "METHOD",
@@ -164,7 +164,7 @@ const I18N = {
     goal_text: "GOOOAL!",
     warn: "🔞 BET RESPONSIBLY — 18+",
     footer: "Sports betting involves risk. No bet is ever guaranteed, even with a high Safe Score: a 1.04 favorite can lose. Never wager more than you can afford to lose. Odds collected on Nov 12, 2026, subject to change. Live scores via ESPN.",
-    footer_brand: "CASHMONEY·BETS — Safe Score Engine v6.7 · Need help? <b>Be gamble aware</b>",
+    footer_brand: "CASHMONEY·BETS — Safe Score Engine v6.8 · Need help? <b>Be gamble aware</b>",
   },
   de: {
     nav_home: "START", nav_live: "LIVE-SPIELE", nav_buts: "TORE", nav_upcoming: "KOMMENDE SPIELE", nav_acc: "KOMBIWETTE", nav_method: "METHODE",
@@ -247,7 +247,7 @@ const I18N = {
     goal_text: "TOOOR!",
     warn: "🔞 VERANTWORTUNGSVOLL SPIELEN — 18+",
     footer: "Sportwetten bergen Risiken. Kein Tipp ist je garantiert, auch nicht mit hohem Safe Score: ein Favorit mit 1.04 kann verlieren. Wette nie mehr, als du verlieren kannst. Quoten vom 12.11.2026, Änderungen möglich. Live-Scores via ESPN.",
-    footer_brand: "CASHMONEY·BETS — Safe Score Engine v6.7 · Hilfe? <b>BZgA: 0221 89 20 31</b>",
+    footer_brand: "CASHMONEY·BETS — Safe Score Engine v6.8 · Hilfe? <b>BZgA: 0221 89 20 31</b>",
   },
   sq: {
     nav_home: "KRYEFAQA", nav_live: "NDESHJE LIVE", nav_buts: "GOLA", nav_upcoming: "NDESHJET E ARDHSHME", nav_acc: "AKUMULATOR", nav_method: "METODA",
@@ -329,7 +329,7 @@ const I18N = {
     goal_text: "GOOOL!",
     warn: "🔞 LUAJ ME PËRGJEGJËSI — 18+",
     footer: "Bastet sportive përfshijnë rreziqe. Asnjë bast nuk është kurrë i garantuar, edhe me Safe Score të lartë: një favorit me 1.04 mund të humbasë. Mos baste kurrë më shumë se sa mund të humbësh. Koeficientët marrë më 12/11/2026, mund të ndryshojnë. Rezultatet live përmes ESPN.",
-    footer_brand: "CASHMONEY·BETS — Safe Score Engine v6.7 · Ke nevojë për ndihmë? <b>Luaj me përgjegjësi</b>",
+    footer_brand: "CASHMONEY·BETS — Safe Score Engine v6.8 · Ke nevojë për ndihmë? <b>Luaj me përgjegjësi</b>",
   },
 };
 
