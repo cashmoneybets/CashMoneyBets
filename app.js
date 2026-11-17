@@ -26,13 +26,22 @@ addEventListener("hashchange", routeFromHash);
 
 const CC_MAP = { SC: "gb-sct" };
 function flagUrl(cc) { return "https://flagcdn.com/w80/" + (CC_MAP[cc] || cc).toLowerCase() + ".png"; }
-function flagImg(cc) { return `<img class="flag-img" src="${flagUrl(cc)}" alt="${cc}" width="24" height="16" loading="lazy">`; }
-function ccB(m) { return `<span class="ccb">${flagImg(m.cc[0])}${flagImg(m.cc[1])}</span>`; }
-function ccOne(m, side) { return `<span class="ccb">${flagImg(m.cc[side])}</span>`; }
+function flagImg(cc) { return cc ? `<img class="flag-img" src="${flagUrl(cc)}" alt="${cc}" width="24" height="16" loading="lazy">` : ""; }
+function ccB(m) { return m.cc ? `<span class="ccb">${flagImg(m.cc[0])}${flagImg(m.cc[1])}</span>` : ""; }
+function ccOne(m, side) { return m.cc && m.cc[side] ? `<span class="ccb">${flagImg(m.cc[side])}</span>` : ""; }
+
+/* ============ v6.9 — POOL DYNAMIQUE : vrais matchs du jour (ESPN) sinon démo ============ */
+function mpool() {
+  return (window.__REAL_MATCHES && window.__REAL_MATCHES.length >= 4) ? window.__REAL_MATCHES : MATCHES;
+}
+function realOn() { return window.__REAL_MATCHES && window.__REAL_MATCHES.length >= 4; }
+function bestScoreOf() { return Math.max(...mpool().map(m => safeScore(m))); }
+function bestOverOf() { return Math.max(...mpool().map(m => marketsOf(m).over15)); }
+function realBanner() { return realOn() ? `<div class="real-banner">⚡ ${t("upc_real")}</div>` : ""; }
 
 /* ============ TICKER ============ */
 function buildTicker() {
-  const items = [...MATCHES]
+  const items = [...mpool()]
     .sort((a, b) => safeScore(b) - safeScore(a))
     .map(m => {
       const arrow = safeScore(m) >= 85 ? "▲" : safeScore(m) >= 78 ? "▶" : "▼";
@@ -47,10 +56,8 @@ window.buildTicker = buildTicker;
 /* ============ CARTES DE PARIS (accueil + buts) ============ */
 const topGrid = document.getElementById("top-grid");
 const butsGrid = document.getElementById("buts-grid");
-const BEST_SCORE = Math.max(...MATCHES.map(m => safeScore(m)));
-const BEST_OVER = Math.max(...MATCHES.map(m => marketsOf(m).over15));
 function flashCls(score, tier) {
-  if (score >= BEST_SCORE) return " neon-green";
+  if (score >= bestScoreOf()) return " neon-green";
   if (tier.cls === "value") return " neon-red";
   return "";
 }
@@ -132,11 +139,11 @@ function matchCard(m) {
     ${rollBall()}
     <header class="card-head">
       <span class="comp">${ccB(m)} ${compLbl}</span>
-      <span class="kick">🕗 ${m.kickoff} CET</span>
+      <span class="kick">🕗 ${m.kickoff}${m.real ? "" : " CET"}</span>
     </header>
     ${teamsRow(m)}
     ${tvRow(m)}
-    <div class="pick-box tier-${tier.cls}${flashCls(score, tier)}${score >= BEST_SCORE ? " on-fire" : ""}">
+    <div class="pick-box tier-${tier.cls}${flashCls(score, tier)}${score >= bestScoreOf() ? " on-fire" : ""}">
       <div class="pick-left">
         <small>🎯 ${t("mkt_pick")}</small>
         <strong>${pickLbl}</strong>
@@ -157,13 +164,13 @@ function matchCard(m) {
         ${mkt(t("mkt_btts"), mk.btts)}
       </div>
     </div>
-    <p class="note">${tr(m.note)}</p>
+    ${m.note ? `<p class="note">${tr(m.note)}</p>` : ""}
     ${confidenceBlock(score, tier, tierLbl)}
   </article>`;
 }
 
 function renderTopPicks() {
-  const list = [...MATCHES].sort((a, b) => safeScore(b) - safeScore(a)).slice(0, 3);
+  const list = [...mpool()].sort((a, b) => safeScore(b) - safeScore(a)).slice(0, 3);
   topGrid.innerHTML = list.map(matchCard).join("");
   bindCards();
   requestAnimationFrame(animateRings);
@@ -198,10 +205,10 @@ function goalsCard(m) {
     ${rollBall()}
     <header class="card-head">
       <span class="comp">${ccB(m)} ${compLbl}</span>
-      <span class="kick">🕗 ${m.kickoff} CET</span>
+      <span class="kick">🕗 ${m.kickoff}${m.real ? "" : " CET"}</span>
     </header>
     ${teamsRow(m)}
-    <div class="pick-box tier-${tier.cls}${flashCls(score, tier)}${score >= BEST_SCORE ? " on-fire" : ""}">
+    <div class="pick-box tier-${tier.cls}${flashCls(score, tier)}${score >= bestScoreOf() ? " on-fire" : ""}">
       <div class="pick-left">
         <small>🎯 ${t("mkt_pick")}</small>
         <strong>${pickLbl}</strong>
@@ -213,15 +220,15 @@ function goalsCard(m) {
       ${gbar(t("mkt_over25"), mk.over25, "g2", best.key === "mkt_over25")}
       ${gbar(t("mkt_btts"), mk.btts, "g3", false)}
     </div>
-    <div class="g-best${best.pct >= BEST_OVER ? " neon-green" : tier.cls === "value" ? " neon-red" : ""}">🎯 ${t("g_best")} : <b>${t(best.key)} · ${best.pct}%</b> <em>@ ${(100 / best.pct).toFixed(2)}</em></div>
+    <div class="g-best${best.pct >= bestOverOf() ? " neon-green" : tier.cls === "value" ? " neon-red" : ""}">🎯 ${t("g_best")} : <b>${t(best.key)} · ${best.pct}%</b> <em>@ ${(100 / best.pct).toFixed(2)}</em></div>
     <small class="g-est-note">${t("g_est_note")}</small>
-    <p class="note">${tr(m.note)}</p>
+    ${m.note ? `<p class="note">${tr(m.note)}</p>` : ""}
     ${confidenceBlock(score, tier, tierLbl)}
   </article>`;
 }
 
 function renderButs() {
-  const list = [...MATCHES].sort((a, b) => marketsOf(b).over25 - marketsOf(a).over25);
+  const list = [...mpool()].sort((a, b) => marketsOf(b).over25 - marketsOf(a).over25);
   butsGrid.innerHTML = list.map(goalsCard).join("");
   bindCards();
   requestAnimationFrame(animateBars);
@@ -233,8 +240,8 @@ window.renderButs = renderButs;
 function renderUpcoming() {
   const upGrid = document.getElementById("up-grid");
   if (!upGrid) return;
-  const list = [...MATCHES].sort((a, b) => safeScore(b) - safeScore(a));
-  upGrid.innerHTML = list.map(matchCard).join("");
+  const list = [...mpool()].sort((a, b) => safeScore(b) - safeScore(a));
+  upGrid.innerHTML = realBanner() + list.map(matchCard).join("");
   bindCards();
   requestAnimationFrame(animateRings);
   requestAnimationFrame(animateBars);
@@ -334,7 +341,7 @@ function apMoneyPlayer() {
 }
 
 function comboCard(nameKey, ids, best) {
-  const ms = ids.map(id => MATCHES.find(m => m.id === id)).filter(Boolean);
+  const ms = ids.map(id => mpool().find(m => m.id === id)).filter(Boolean);
   const odds = ms.reduce((a, m) => a * m.odds[m.pick], 1);
   const conf = ms.reduce((a, m) => a + safeScore(m), 0) / ms.length;
   const legs = ms.map(m => {
@@ -359,7 +366,7 @@ function comboCard(nameKey, ids, best) {
 function renderAcc() {
   const accGrid = document.getElementById("acc-grid");
   if (!accGrid) return;
-  const byScore = [...MATCHES].sort((a, b) => safeScore(b) - safeScore(a));
+  const byScore = [...mpool()].sort((a, b) => safeScore(b) - safeScore(a));
   const byOdds = byScore.filter(m => safeScore(m) >= 78)
     .sort((a, b) => b.odds[b.pick] - a.odds[a.pick]);
   const combos = [
@@ -367,7 +374,7 @@ function renderAcc() {
     ["acc_triple", byScore.slice(0, 3).map(m => m.id), true],
     ["acc_value", byOdds.slice(0, 3).map(m => m.id), false],
   ];
-  accGrid.innerHTML = combos.map(([k, ids, best]) => comboCard(k, ids, best)).join("");
+  accGrid.innerHTML = realBanner() + combos.map(([k, ids, best]) => comboCard(k, ids, best)).join("");
   observeReveals();
 }
 window.renderAcc = renderAcc;
@@ -446,15 +453,16 @@ function animateCounter(el, target, decimals = 0) {
   requestAnimationFrame(step);
 }
 
-const avgScore = MATCHES.reduce((a, m) => a + safeScore(m), 0) / MATCHES.length;
 const countersDone = new Set();
 const counterObserver = new IntersectionObserver(entries => {
   entries.forEach(en => {
     if (!en.isIntersecting || countersDone.has(en.target.id)) return;
     countersDone.add(en.target.id);
-    if (en.target.id === "stat-matches") animateCounter(en.target, MATCHES.length);
-    if (en.target.id === "stat-score") animateCounter(en.target, avgScore, 1);
-    if (en.target.id === "stat-elite") animateCounter(en.target, MATCHES.filter(m => safeScore(m) >= 85).length);
+    const pool = mpool();
+    const avg = pool.reduce((a, m) => a + safeScore(m), 0) / pool.length;
+    if (en.target.id === "stat-matches") animateCounter(en.target, pool.length);
+    if (en.target.id === "stat-score") animateCounter(en.target, avg, 1);
+    if (en.target.id === "stat-elite") animateCounter(en.target, pool.filter(m => safeScore(m) >= 85).length);
   });
 }, { threshold: 0.5 });
 document.querySelectorAll(".stat b[id]").forEach(el => counterObserver.observe(el));
@@ -497,7 +505,7 @@ function liveDetail() {
 function statDetail(id) {
   if (id === "stat-matches") {
     const comps = {};
-    MATCHES.forEach(m => {
+    mpool().forEach(m => {
       const k = tr(COMP_I18N[m.comp]) || m.comp;
       comps[k] = (comps[k] || 0) + 1;
     });
@@ -505,11 +513,11 @@ function statDetail(id) {
       .map(([c, n]) => `<div class="sd-row"><span>${c}</span><b>${n}</b></div>`).join("");
   }
   if (id === "stat-score") {
-    return [...MATCHES].sort((a, b) => safeScore(b) - safeScore(a)).slice(0, 3)
+    return [...mpool()].sort((a, b) => safeScore(b) - safeScore(a)).slice(0, 3)
       .map(m => `<div class="sd-row"><span>${ccB(m)} ${tn(m.home)} - ${tn(m.away)}</span><b>${safeScore(m)}</b></div>`).join("");
   }
   if (id === "stat-elite") {
-    const e = MATCHES.filter(m => safeScore(m) >= 85);
+    const e = mpool().filter(m => safeScore(m) >= 85);
     return e.map(m => `<div class="sd-row"><span>${ccB(m)} ${tn(m.home)} - ${tn(m.away)}</span><b>${safeScore(m)}</b></div>`).join("");
   }
   if (id === "stat-live") return liveDetail();
@@ -537,6 +545,8 @@ renderAcc();
 buildTicker();
 observeReveals();
 routeFromHash();
+/* v6.9 : si le flux ESPN a déjà répondu avant le parse d'app.js, on applique le pool réel */
+if (window.__REAL_MATCHES && window.__REAL_MATCHES.length) window.__applyRealPool();
 
 document.querySelectorAll(".lang-btn").forEach(btn =>
   btn.addEventListener("click", () => setLang(btn.dataset.lang)));

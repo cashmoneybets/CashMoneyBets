@@ -17,6 +17,69 @@ const LEAGUES = [
 ];
 
 const POLL_MS = 45000;
+
+/* ============ v6.9 — VRAIS MATCHS DU JOUR (fixtures + cotes ESPN) ============ */
+/* Ligues de clubs : drapeau = pays de la ligue. Sélections : code FIFA -> ISO2. */
+const LEAGUE_CC = {
+  "eng.1": "gb-eng", "esp.1": "es", "ger.1": "de", "ita.1": "it", "fra.1": "fr",
+  "ned.1": "nl", "por.1": "pt", "bra.1": "br", "arg.1": "ar", "usa.1": "us", "mex.1": "mx",
+};
+const FIFA_CC = {
+  ALG: "dz", MAR: "ma", EGY: "eg", NGA: "ng", TAN: "tz", KEN: "ke", RSA: "za", GAB: "ga",
+  LEO: "ls", CPV: "cv", LBR: "lr", MWI: "mw", ECU: "ec", CRC: "cr", SCO: "gb-sct", MKD: "mk",
+  LIE: "li", AZE: "az", SVK: "sk", FRO: "fo", COL: "co", CHI: "cl", NED: "nl", GRE: "gr",
+  ARG: "ar", URU: "uy", GER: "de", FRA: "fr", ESP: "es", ITA: "it", ENG: "gb-eng", POR: "pt",
+  USA: "us", MEX: "mx", BRA: "br", PUR: "pr", DMA: "dm", CRO: "hr", SUI: "ch", AUT: "at",
+  BEL: "be", DEN: "dk", TUR: "tr", WAL: "gb-wls", IRL: "ie", NIR: "gb-nir", ISR: "il",
+  SEN: "sn", CIV: "ci", CMR: "cm", GHA: "gh", MLI: "ml", BFA: "bf", ZAM: "zm", MOZ: "mz", TUN: "tn",
+};
+function teamCc(team, lg) {
+  if (LEAGUE_CC[lg.code]) return LEAGUE_CC[lg.code];
+  return FIFA_CC[(team.abbreviation || "").toUpperCase()] || null;
+}
+function amToDec(ml) {
+  const v = parseFloat(ml);
+  if (isNaN(v)) return null;
+  return v < 0 ? 1 + 100 / Math.abs(v) : 1 + v / 100;
+}
+function buildRealMatches(all) {
+  const out = [];
+  for (const m of all) {
+    if (m.state !== "pre" || !m.oddsRaw) continue;
+    const ml = m.oddsRaw.moneyline || {};
+    const dec = side => {
+      const x = ml[side] && ml[side].close && ml[side].close.odds;
+      return x ? amToDec(x) : null;
+    };
+    const d1 = dec("home"), dX = dec("draw"), d2 = dec("away");
+    if (!d1 || !dX || !d2) continue;
+    const r2 = x => Math.round(x * 100) / 100;
+    const odds = { "1": r2(d1), "X": r2(dX), "2": r2(d2) };
+    const pick = d1 <= dX && d1 <= d2 ? "1" : d2 <= dX ? "2" : "X";
+    const ko = new Date(m.date);
+    const kickoff = isNaN(ko) ? "" : ko.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
+    const f = s => (s || "").split("").filter(c => "WDL".includes(c)).slice(-5);
+    const chans = (m.broadcasts || []).map(b => (b.names || []).join(" · ")).filter(Boolean);
+    out.push({
+      id: "espn-" + m.id, home: m.home.name, away: m.away.name, comp: m.league,
+      cc: m.ccH || m.ccA ? [m.ccH, m.ccA] : null,
+      kickoff, date: m.date || "", odds, pick,
+      tv: chans.length ? { fr: chans, en: chans, de: chans, sq: chans } : null,
+      venue: m.venue || "", pitch: "grass",
+      formHome: f(m.formH), formAway: f(m.formA),
+      real: true,
+    });
+  }
+  out.sort((a, b) => (a.date || "").localeCompare(b.date || ""));
+  return out;
+}
+let __realSig = "";
+window.__applyRealPool = function () {
+  if (typeof renderTopPicks !== "function") return;
+  try {
+    renderTopPicks(); renderButs(); renderUpcoming(); renderAcc(); buildTicker(); renderStatCases();
+  } catch (e) {}
+};
 const liveGrid = document.getElementById("live-grid");
 const liveStatus = document.getElementById("live-status");
 const refreshInfo = document.getElementById("refresh-info");
@@ -62,6 +125,11 @@ async function fetchLeague(lg) {
         },
         stats: extractStats(home, away),
         lastScorer: lastGoal ? lastGoal.athletesInvolved?.[0]?.displayName : null,
+        date: ev.date,
+        ccH: teamCc(home.team, lg), ccA: teamCc(away.team, lg),
+        formH: home.form || "", formA: away.form || "",
+        oddsRaw: (comp.odds && comp.odds[0]) || null,
+        broadcasts: comp.broadcasts || [],
       };
     });
   } catch (e) { return []; }
@@ -233,6 +301,13 @@ async function pollLive() {
   const results = await Promise.all(LEAGUES.map(fetchLeague));
   const matches = results.flat();
   window.__lastLive = matches;
+  const real = buildRealMatches(matches);
+  const sig = real.map(m => m.id + ":" + m.odds["1"] + "/" + m.odds["X"] + "/" + m.odds["2"]).join("|");
+  if (sig !== __realSig) {
+    __realSig = sig;
+    window.__REAL_MATCHES = real;
+    window.__applyRealPool();
+  }
   const goals = detectGoals(matches);
   renderLive(matches);
   if (goals.length > 0) showGoalAnimation(goals[0]);

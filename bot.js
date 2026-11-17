@@ -40,7 +40,7 @@ function botKCombos(arr, k) {
 }
 
 function botBuildAcc(target) {
-  const top = [...MATCHES].sort((a, b) => safeScore(b) - safeScore(a));
+  const top = [...mpool()].sort((a, b) => safeScore(b) - safeScore(a));
   let best = null;
   for (let n = 2; n <= 5; n++) {
     for (const c of botKCombos(top, n)) {
@@ -55,7 +55,7 @@ function botBuildAcc(target) {
 }
 
 function botGoalsList() {
-  return [...MATCHES]
+  return [...mpool()]
     .map(m => {
       const mk = marketsOf(m);
       const entries = [
@@ -78,7 +78,7 @@ function botVariants(team) {
 
 function botFindMatch(q) {
   const hits = [];
-  for (const m of MATCHES) {
+  for (const m of mpool()) {
     const h = botVariants(m.home).some(v => new RegExp("\\b" + v + "\\b").test(q));
     const a = botVariants(m.away).some(v => new RegExp("\\b" + v + "\\b").test(q));
     if (h && a) return m;
@@ -138,7 +138,7 @@ function botAnswer(raw) {
   if (fm) return botAnalyse(fm);
 
   if (has("safe", "sur", "sure", "sicher", "sigurt", "fiable")) {
-    const top = [...MATCHES].sort((a, b) => safeScore(b) - safeScore(a)).slice(0, 3);
+    const top = [...mpool()].sort((a, b) => safeScore(b) - safeScore(a)).slice(0, 3);
     return `<p>${t("bot_safe_intro").replace("{n}", top.length)}</p>${top.map(botCard).join("")}`;
   }
 
@@ -158,7 +158,7 @@ function botAnswer(raw) {
   }
 
   if (has("chaine", "chaine ", "tv", "channel", "regarder", "watch", "schauen", "shikoj", "shikosh", "diffus")) {
-    const top = [...MATCHES].sort((a, b) => safeScore(b) - safeScore(a)).slice(0, 5);
+    const top = [...mpool()].sort((a, b) => safeScore(b) - safeScore(a)).slice(0, 5);
     const rows = top.map(m => {
       const chans = (m.tv && (m.tv[LANG] || m.tv.fr)) || [];
       return `<div class="bot-tv"><b>${flagImg(m.cc[0])}${flagImg(m.cc[1])} ${tn(m.home)} - ${tn(m.away)}</b>
@@ -186,7 +186,7 @@ function botAnswer(raw) {
 
 /* ============ v6.8 — LLM via proxy Cloudflare (optionnel) ============ */
 function botContextDigest() {
-  const lines = MATCHES.map(m => {
+  const lines = mpool().map(m => {
     const mk = marketsOf(m);
     const tv = ((m.tv && (m.tv[LANG] || m.tv.fr)) || []).join(",") || "—";
     return `${tn(m.home)}-${tn(m.away)} | ${m.comp} ${m.kickoff} | 1:${m.odds["1"].toFixed(2)} X:${m.odds["X"].toFixed(2)} 2:${m.odds["2"].toFixed(2)} | pick:${m.pick} | safe:${safeScore(m)} | over1.5:${mk.over15}% over2.5:${mk.over25}% btts:${mk.btts}% | ${m.venue || ""} | h2h ${m.h2h ? m.h2h.w + "W " + m.h2h.d + "D " + m.h2h.l + "L" : "?"} | TV: ${tv}`;
