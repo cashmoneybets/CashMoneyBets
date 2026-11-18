@@ -24,6 +24,7 @@ const I18N = {
     lb_engine: "MOTEUR LIVE — MOMENTUM BUTS", lb_prob: "PROBA OVER", lb_mom: "MOMENTUM",
     lb_bet_now: "PARIER MAINTENANT", lb_wait: "ATTENDS", lb_scan: "SCAN QUANTIQUE DU MOMENTUM…",
     upc_real: "MATCHS RÉELS DU JOUR — cotes ESPN en direct",
+    upc_soon: "MATCHS RÉELS — PROCHAINES JOURNÉES · cotes ESPN en direct",
     season: "Saison", kickoff_at: "Coup d'envoi",
     picks_title: "// TOP <span class='accent'>PICKS</span> DU JOUR",
     picks_sub: "Les 3 paris les plus sûrs du vendredi, sélectionnés par le moteur. Chaque carte affiche le pari recommandé, les probabilités de victoire et les marchés buts.",
@@ -82,7 +83,7 @@ const I18N = {
     goal_text: "BUUUT !",
     warn: "🔞 JOUEUR RESPONSABLE — 18+",
     footer: "Les paris sportifs comportent des risques. Aucun pari n'est jamais garanti, même avec un Safe Score élevé : un favori à 1.04 peut perdre. Ne mise jamais plus que ce que tu peux te permettre de perdre. Cotes relevées le 12/11/2026, susceptibles d'évoluer. Scores live via ESPN.",
-    footer_brand: "CASHMONEY·BETS — Safe Score Engine v6.9 · Besoin d'aide ? <b>Joueurs Info Service : 09 74 75 13 13</b>",
+    footer_brand: "CASHMONEY·BETS — Safe Score Engine v7.0 · Besoin d'aide ? <b>Joueurs Info Service : 09 74 75 13 13</b>",
   },
   en: {
     nav_home: "HOME", nav_live: "LIVE MATCH", nav_buts: "GOALS", nav_upcoming: "GAMES TO COME", nav_acc: "ACCUMULATOR", nav_method: "METHOD",
@@ -108,6 +109,7 @@ const I18N = {
     lb_engine: "LIVE ENGINE — GOALS MOMENTUM", lb_prob: "OVER PROB", lb_mom: "MOMENTUM",
     lb_bet_now: "BET NOW", lb_wait: "WAIT", lb_scan: "QUANTUM MOMENTUM SCAN…",
     upc_real: "TODAY'S REAL MATCHES — live ESPN odds",
+    upc_soon: "REAL MATCHES — UPCOMING DAYS · live ESPN odds",
     season: "Season", kickoff_at: "Kick-off",
     picks_title: "// TODAY'S TOP <span class='accent'>PICKS</span>",
     picks_sub: "Friday's 3 safest bets, selected by the engine. Each card shows the recommended bet, win probabilities and goals markets.",
@@ -166,7 +168,7 @@ const I18N = {
     goal_text: "GOOOAL!",
     warn: "🔞 BET RESPONSIBLY — 18+",
     footer: "Sports betting involves risk. No bet is ever guaranteed, even with a high Safe Score: a 1.04 favorite can lose. Never wager more than you can afford to lose. Odds collected on Nov 12, 2026, subject to change. Live scores via ESPN.",
-    footer_brand: "CASHMONEY·BETS — Safe Score Engine v6.9 · Need help? <b>Be gamble aware</b>",
+    footer_brand: "CASHMONEY·BETS — Safe Score Engine v7.0 · Need help? <b>Be gamble aware</b>",
   },
   de: {
     nav_home: "START", nav_live: "LIVE-SPIELE", nav_buts: "TORE", nav_upcoming: "KOMMENDE SPIELE", nav_acc: "KOMBIWETTE", nav_method: "METHODE",
@@ -192,6 +194,7 @@ const I18N = {
     lb_engine: "LIVE-ENGINE — TOR-MOMENTUM", lb_prob: "OVER-CHANCE", lb_mom: "MOMENTUM",
     lb_bet_now: "JETZT WETTEN", lb_wait: "WARTEN", lb_scan: "QUANTEN-MOMENTUM-SCAN…",
     upc_real: "ECHTE SPIELE VON HEUTE — Live-ESPN-Quoten",
+    upc_soon: "ECHTE SPIELE — KOMMENDE TAGE · Live-ESPN-Quoten",
     season: "Saison", kickoff_at: "Anpfiff",
     picks_title: "// TOP-<span class='accent'>TIPPS</span> HEUTE",
     picks_sub: "Die 3 sichersten Tipps des Freitags, vom Motor ausgewählt. Jede Karte zeigt die empfohlene Wette, Siegchancen und Tor-Märkte.",
@@ -250,7 +253,7 @@ const I18N = {
     goal_text: "TOOOR!",
     warn: "🔞 VERANTWORTUNGSVOLL SPIELEN — 18+",
     footer: "Sportwetten bergen Risiken. Kein Tipp ist je garantiert, auch nicht mit hohem Safe Score: ein Favorit mit 1.04 kann verlieren. Wette nie mehr, als du verlieren kannst. Quoten vom 12.11.2026, Änderungen möglich. Live-Scores via ESPN.",
-    footer_brand: "CASHMONEY·BETS — Safe Score Engine v6.9 · Hilfe? <b>BZgA: 0221 89 20 31</b>",
+    footer_brand: "CASHMONEY·BETS — Safe Score Engine v7.0 · Hilfe? <b>BZgA: 0221 89 20 31</b>",
   },
   sq: {
     nav_home: "KRYEFAQA", nav_live: "NDESHJE LIVE", nav_buts: "GOLA", nav_upcoming: "NDESHJET E ARDHSHME", nav_acc: "AKUMULATOR", nav_method: "METODA",
@@ -276,6 +279,7 @@ const I18N = {
     lb_engine: "MOTORI LIVE — MOMENTUMI I GOLAVE", lb_prob: "PROBA OVER", lb_mom: "MOMENTUMI",
     lb_bet_now: "BASTO TANI", lb_wait: "PRIT", lb_scan: "SKANIMI KUANTIK I MOMENTUMIT…",
     upc_real: "NDESHJE REALE TË SOTME — koeficientë live ESPN",
+    upc_soon: "NDESHJE REALE — DITËT E ARDHSHME · koeficientë live ESPN",
     season: "Sezoni", kickoff_at: "Nisja",
     picks_title: "// TOP <span class='accent'>BASTET</span> E DITËS",
     picks_sub: "3 bastet më të sigurta të shtunës, të përzgjedhura nga motori. Çdo kartë tregon bastin e rekomanduar, probabilitetet e fitores dhe tregjet e golave.",
@@ -333,7 +337,7 @@ const I18N = {
     goal_text: "GOOOL!",
     warn: "🔞 LUAJ ME PËRGJEGJËSI — 18+",
     footer: "Bastet sportive përfshijnë rreziqe. Asnjë bast nuk është kurrë i garantuar, edhe me Safe Score të lartë: një favorit me 1.04 mund të humbasë. Mos baste kurrë më shumë se sa mund të humbësh. Koeficientët marrë më 12/11/2026, mund të ndryshojnë. Rezultatet live përmes ESPN.",
-    footer_brand: "CASHMONEY·BETS — Safe Score Engine v6.9 · Ke nevojë për ndihmë? <b>Luaj me përgjegjësi</b>",
+    footer_brand: "CASHMONEY·BETS — Safe Score Engine v7.0 · Ke nevojë për ndihmë? <b>Luaj me përgjegjësi</b>",
   },
 };
 

@@ -37,7 +37,11 @@ function mpool() {
 function realOn() { return window.__REAL_MATCHES && window.__REAL_MATCHES.length >= 4; }
 function bestScoreOf() { return Math.max(...mpool().map(m => safeScore(m))); }
 function bestOverOf() { return Math.max(...mpool().map(m => marketsOf(m).over15)); }
-function realBanner() { return realOn() ? `<div class="real-banner">⚡ ${t("upc_real")}</div>` : ""; }
+function realBanner() {
+  if (!realOn()) return "";
+  const allToday = window.__REAL_MATCHES.every(m => m.today);
+  return `<div class="real-banner">⚡ ${t(allToday ? "upc_real" : "upc_soon")}</div>`;
+}
 
 /* ============ TICKER ============ */
 function buildTicker() {
@@ -240,7 +244,9 @@ window.renderButs = renderButs;
 function renderUpcoming() {
   const upGrid = document.getElementById("up-grid");
   if (!upGrid) return;
-  const list = [...mpool()].sort((a, b) => safeScore(b) - safeScore(a));
+  /* v7.0 : tri à l'horaire — c'est le programme du jour, pas un classement de confiance */
+  const list = [...mpool()].sort((a, b) =>
+    (a.date || a.kickoff || "").localeCompare(b.date || b.kickoff || ""));
   upGrid.innerHTML = realBanner() + list.map(matchCard).join("");
   bindCards();
   requestAnimationFrame(animateRings);

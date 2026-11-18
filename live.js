@@ -1,19 +1,31 @@
 /* ============ LIVE SCORES — ESPN public feed ============ */
 const LEAGUES = [
+  { code: "uefa.champions", name: "CHAMPIONS LEAGUE" },
+  { code: "uefa.europa", name: "EUROPA LEAGUE" },
+  { code: "uefa.europa.conf", name: "CONFERENCE LEAGUE" },
   { code: "uefa.nations", name: "NATIONS LEAGUE" },
   { code: "eng.1", name: "PREMIER LEAGUE" },
+  { code: "eng.2", name: "CHAMPIONSHIP" },
   { code: "esp.1", name: "LA LIGA" },
   { code: "ger.1", name: "BUNDESLIGA" },
   { code: "ita.1", name: "SERIE A" },
   { code: "fra.1", name: "LIGUE 1" },
   { code: "ned.1", name: "EREDIVISIE" },
   { code: "por.1", name: "LIGA PORTUGAL" },
+  { code: "sco.1", name: "SCOTTISH PL" },
+  { code: "tur.1", name: "SUPER LIG" },
+  { code: "ksa.1", name: "SAUDI PRO LEAGUE" },
   { code: "bra.1", name: "BRASILEIRAO" },
   { code: "arg.1", name: "LIGA ARGENTINA" },
   { code: "usa.1", name: "MLS" },
   { code: "mex.1", name: "LIGA MX" },
   { code: "fifa.friendly", name: "AMICAUX INT." },
   { code: "caf.nations", name: "CAN" },
+  { code: "fifa.worldq.uefa", name: "ELIM. CD EUROPE" },
+  { code: "fifa.worldq.conmebol", name: "ELIM. CD AM. SUD" },
+  { code: "fifa.worldq.caf", name: "ELIM. CD AFRIQUE" },
+  { code: "fifa.worldq.concacaf", name: "ELIM. CD CONCACAF" },
+  { code: "fifa.worldq.afc", name: "ELIM. CD ASIE" },
 ];
 
 const POLL_MS = 45000;
@@ -21,8 +33,9 @@ const POLL_MS = 45000;
 /* ============ v6.9 — VRAIS MATCHS DU JOUR (fixtures + cotes ESPN) ============ */
 /* Ligues de clubs : drapeau = pays de la ligue. Sélections : code FIFA -> ISO2. */
 const LEAGUE_CC = {
-  "eng.1": "gb-eng", "esp.1": "es", "ger.1": "de", "ita.1": "it", "fra.1": "fr",
-  "ned.1": "nl", "por.1": "pt", "bra.1": "br", "arg.1": "ar", "usa.1": "us", "mex.1": "mx",
+  "eng.1": "gb-eng", "eng.2": "gb-eng", "esp.1": "es", "ger.1": "de", "ita.1": "it", "fra.1": "fr",
+  "ned.1": "nl", "por.1": "pt", "sco.1": "gb-sct", "tur.1": "tr", "ksa.1": "sa",
+  "bra.1": "br", "arg.1": "ar", "usa.1": "us", "mex.1": "mx",
 };
 const FIFA_CC = {
   ALG: "dz", MAR: "ma", EGY: "eg", NGA: "ng", TAN: "tz", KEN: "ke", RSA: "za", GAB: "ga",
@@ -32,6 +45,9 @@ const FIFA_CC = {
   USA: "us", MEX: "mx", BRA: "br", PUR: "pr", DMA: "dm", CRO: "hr", SUI: "ch", AUT: "at",
   BEL: "be", DEN: "dk", TUR: "tr", WAL: "gb-wls", IRL: "ie", NIR: "gb-nir", ISR: "il",
   SEN: "sn", CIV: "ci", CMR: "cm", GHA: "gh", MLI: "ml", BFA: "bf", ZAM: "zm", MOZ: "mz", TUN: "tn",
+  PAR: "py", PER: "pe", VEN: "ve", BOL: "bo", HON: "hn", JAM: "jm", PAN: "pa", SLV: "sv",
+  GUI: "gn", BEN: "bj", TOG: "tg", SUD: "sd", ANG: "ao", UGA: "ug", NIG: "ne",
+  KOR: "kr", JPN: "jp", IRN: "ir", AUS: "au", KSA: "sa", IRQ: "iq", UAE: "ae", QAT: "qa",
 };
 function teamCc(team, lg) {
   if (LEAGUE_CC[lg.code]) return LEAGUE_CC[lg.code];
@@ -43,33 +59,53 @@ function amToDec(ml) {
   return v < 0 ? 1 + 100 / Math.abs(v) : 1 + v / 100;
 }
 function buildRealMatches(all) {
-  const out = [];
+  /* v7.0 : on écarte les faux "pre" (matchs passés reportés, vieux slates) puis
+     fenêtre progressive : aujourd'hui d'abord ; journée creuse -> prochaines journées
+     (dates affichées sur les cartes). Jamais de match dont le coup d'envoi est passé. */
+  const nowKey = d => { const x = new Date(d); return `${x.getFullYear()}-${x.getMonth() + 1}-${x.getDate()}`; };
+  const now = Date.now();
+  const todayKey = nowKey(now);
+  const cand = [];
   for (const m of all) {
-    if (m.state !== "pre" || !m.oddsRaw) continue;
+    if (m.state !== "pre" || !m.oddsRaw || !m.date) continue;
+    const t = new Date(m.date).getTime();
+    if (isNaN(t) || t < now - 3 * 3600e3) continue;
+    cand.push({ m, t });
+  }
+  cand.sort((a, b) => a.t - b.t);
+  let windowMs = 30 * 3600e3;
+  let sel = cand.filter(c => c.t <= now + windowMs);
+  while (sel.length < 6 && windowMs < 8 * 86400e3) {
+    windowMs *= 2;
+    sel = cand.filter(c => c.t <= now + windowMs);
+  }
+  const out = sel.map(({ m, t }) => {
     const ml = m.oddsRaw.moneyline || {};
     const dec = side => {
       const x = ml[side] && ml[side].close && ml[side].close.odds;
       return x ? amToDec(x) : null;
     };
     const d1 = dec("home"), dX = dec("draw"), d2 = dec("away");
-    if (!d1 || !dX || !d2) continue;
+    if (!d1 || !dX || !d2) return null;
     const r2 = x => Math.round(x * 100) / 100;
     const odds = { "1": r2(d1), "X": r2(dX), "2": r2(d2) };
     const pick = d1 <= dX && d1 <= d2 ? "1" : d2 <= dX ? "2" : "X";
-    const ko = new Date(m.date);
-    const kickoff = isNaN(ko) ? "" : ko.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
+    const d = new Date(t);
+    const hm = d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
+    const isToday = nowKey(t) === todayKey;
+    const kickoff = isToday ? hm : `${d.getDate()}/${d.getMonth() + 1} ${hm}`;
     const f = s => (s || "").split("").filter(c => "WDL".includes(c)).slice(-5);
     const chans = (m.broadcasts || []).map(b => (b.names || []).join(" · ")).filter(Boolean);
-    out.push({
+    return {
       id: "espn-" + m.id, home: m.home.name, away: m.away.name, comp: m.league,
       cc: m.ccH || m.ccA ? [m.ccH, m.ccA] : null,
-      kickoff, date: m.date || "", odds, pick,
+      kickoff, date: m.date || "", odds, pick, today: isToday,
       tv: chans.length ? { fr: chans, en: chans, de: chans, sq: chans } : null,
       venue: m.venue || "", pitch: "grass",
       formHome: f(m.formH), formAway: f(m.formA),
       real: true,
-    });
-  }
+    };
+  }).filter(Boolean);
   out.sort((a, b) => (a.date || "").localeCompare(b.date || ""));
   return out;
 }
