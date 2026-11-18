@@ -385,6 +385,24 @@ function renderAcc() {
 }
 window.renderAcc = renderAcc;
 
+/* v7.1 — Parlay du jour dynamique : le double le plus sûr du pool réel */
+function renderParlay() {
+  const oddsEl = document.getElementById("parlay-odds");
+  const box = document.getElementById("parlay");
+  if (!oddsEl || !box) return;
+  const subEl = box.querySelector(".parlay-left p");
+  const legs = [...mpool()].sort((a, b) => safeScore(b) - safeScore(a)).slice(0, 2);
+  if (legs.length < 2) return;
+  if (subEl) {
+    subEl.innerHTML = legs.map(m => {
+      const team = tn(m.pick === "1" ? m.home : m.away);
+      return `${ccOne(m, m.pick === "1" ? 0 : 1)}<b>${team}</b> @${m.odds[m.pick].toFixed(2)}`;
+    }).join(" × ") + ` — ${t("parlay_sub")}`;
+  }
+  oddsEl.textContent = legs.reduce((a, m) => a * m.odds[m.pick], 1).toFixed(2);
+}
+window.renderParlay = renderParlay;
+
 function fxCard(card) {
   const ball = card.querySelector(":scope > .roll-ball");
   const mkts = card.querySelectorAll(".mkt, .g-market");
@@ -549,6 +567,7 @@ renderButs();
 renderUpcoming();
 renderAcc();
 buildTicker();
+renderParlay();
 observeReveals();
 routeFromHash();
 /* v6.9 : si le flux ESPN a déjà répondu avant le parse d'app.js, on applique le pool réel */

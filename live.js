@@ -113,7 +113,7 @@ let __realSig = "";
 window.__applyRealPool = function () {
   if (typeof renderTopPicks !== "function") return;
   try {
-    renderTopPicks(); renderButs(); renderUpcoming(); renderAcc(); buildTicker(); renderStatCases();
+    renderTopPicks(); renderButs(); renderUpcoming(); renderAcc(); buildTicker(); renderStatCases(); renderParlay();
   } catch (e) {}
 };
 const liveGrid = document.getElementById("live-grid");
