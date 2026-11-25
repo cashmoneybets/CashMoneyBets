@@ -2815,3 +2815,9 @@ nav { border-bottom: none; clip-path: none; }
 .vid-token-help { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.06em; color: var(--lbl, #8d8d84); line-height: 1.5; }
 .vid-token-help a { color: var(--cyan); text-decoration: underline; }
 .studio-input { transition: border-color 0.15s ease; }
+/* ============ v7.4 — BALLON QUI TOMBE SUPPRIMÉ (demande utilisateur) ============
+   Le .roll-ball (⚽ qui plonge sur la case over) et son anneau au sol sont retirés.
+   On garde uniquement un liseré vert STATIQUE sur le meilleur marché (mkt-target). */
+.roll-ball, .roll-ball::after { display: none !important; animation: none !important; }
+.mkt-target, .card.visible .mkt-target { animation: none !important; }
+.pick-box.neon-green { animation: none; }

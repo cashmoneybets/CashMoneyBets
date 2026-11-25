@@ -65,9 +65,6 @@ function flashCls(score, tier) {
   if (tier.cls === "value") return " neon-red";
   return "";
 }
-function rollBall() {
-  return `<span class="roll-ball">⚽</span>`;
-}
 function formChips(form) {
   return form.map(r => `<span class="chip chip-${r}">${r === "W" ? "V" : r === "D" ? "N" : "D"}</span>`).join("");
 }
@@ -140,7 +137,6 @@ function matchCard(m) {
   return `
   <article class="card tilt" data-id="${m.id}">
     <i class="card-bg"></i>
-    ${rollBall()}
     <header class="card-head">
       <span class="comp">${ccB(m)} ${compLbl}</span>
       <span class="kick">🕗 ${m.kickoff}${m.real ? "" : " CET"}</span>
@@ -206,7 +202,6 @@ function goalsCard(m) {
   return `
   <article class="card g-card tilt" data-id="${m.id}">
     <i class="card-bg"></i>
-    ${rollBall()}
     <header class="card-head">
       <span class="comp">${ccB(m)} ${compLbl}</span>
       <span class="kick">🕗 ${m.kickoff}${m.real ? "" : " CET"}</span>
@@ -404,24 +399,17 @@ function renderParlay() {
 window.renderParlay = renderParlay;
 
 function fxCard(card) {
-  const ball = card.querySelector(":scope > .roll-ball");
+  /* v7.4 : plus de ballon qui tombe — simple liseré vert sur le meilleur marché */
   const mkts = card.querySelectorAll(".mkt, .g-market");
   mkts.forEach(el => el.classList.remove("mkt-target"));
-  if (!ball || !mkts.length) return;
+  if (!mkts.length) return;
   let bestMkt = null, bv = -1;
   mkts.forEach(el => {
     const b = el.querySelector("b");
     const v = b ? parseFloat(b.textContent) || 0 : 0;
     if (v > bv) { bv = v; bestMkt = el; }
   });
-  if (!bestMkt) return;
-  bestMkt.classList.add("mkt-target");
-  const cr = card.getBoundingClientRect();
-  const mr = bestMkt.getBoundingClientRect();
-  if (!cr.width || !mr.width) return;
-  const half = Math.max(20, ball.offsetWidth / 2);
-  ball.style.setProperty("--drop-x", (mr.left - cr.left + mr.width / 2 - half).toFixed(0) + "px");
-  ball.style.setProperty("--drop-y", (mr.top - cr.top + mr.height / 2 - half).toFixed(0) + "px");
+  if (bestMkt) bestMkt.classList.add("mkt-target");
 }
 
 function bindCards() {
