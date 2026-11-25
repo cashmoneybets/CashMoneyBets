@@ -7,7 +7,7 @@ setInterval(tickClock, 1000);
 tickClock();
 
 /* ============ VIEW ROUTER (Accueil / LIVE / BUTS) ============ */
-const VIEWS = ["home", "live", "buts", "avenir", "acc", "bot", "video", "graph"];
+const VIEWS = ["home", "live", "buts", "avenir", "acc", "bot", "video", "graph", "analyse"];
 function showView(name) {
   document.querySelectorAll(".view").forEach(v =>
     v.classList.toggle("active", v.id === "view-" + name));
@@ -15,6 +15,7 @@ function showView(name) {
     a.classList.toggle("active", a.dataset.view === name));
   window.scrollTo(0, 0);
   if (name === "graph" && typeof window.renderCharts === "function") requestAnimationFrame(window.renderCharts);
+  if (name === "analyse" && typeof window.renderAnalyse === "function") window.renderAnalyse();
   positionFx();
   requestAnimationFrame(() => requestAnimationFrame(positionFx));
   observeReveals();
@@ -136,7 +137,7 @@ function matchCard(m) {
       <div class="mkt-bar"><i style="width:${pct}%"></i></div>
     </div>`;
   return `
-  <article class="card tilt" data-id="${m.id}">
+  <article class="card tilt" data-id="${m.id}" data-analyse="${m.id}">
     <i class="card-bg"></i>
     <header class="card-head">
       <span class="comp">${ccB(m)} ${compLbl}</span>
@@ -201,7 +202,7 @@ function goalsCard(m) {
       <em>@ ${(100 / pct).toFixed(2)}</em>
     </div>`;
   return `
-  <article class="card g-card tilt" data-id="${m.id}">
+  <article class="card g-card tilt" data-id="${m.id}" data-analyse="${m.id}">
     <i class="card-bg"></i>
     <header class="card-head">
       <span class="comp">${ccB(m)} ${compLbl}</span>

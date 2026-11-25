@@ -250,7 +250,7 @@ function liveCard(m) {
       }).join("")}
     </div>`;
   return `
-  <article class="live-card ${st === "in" ? "is-live" : ""}" data-mid="${m.id}">
+  <article class="live-card ${st === "in" ? "is-live" : ""}" data-mid="${m.id}" data-analyse="${m.id}">
     <div class="live-head">
       <span class="live-league">${m.league}</span>
       <span class="live-status-badge ${st}">${label}</span>

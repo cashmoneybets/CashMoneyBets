@@ -2835,3 +2835,47 @@ nav { border-bottom: none; clip-path: none; }
 .chart-card canvas { display: block; width: 100%; }
 .ch-group { font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.2em; color: var(--magenta); margin: 26px 0 12px; text-transform: uppercase; }
 @media (prefers-reduced-motion: reduce) { .chart-card, .ch-group { transition: none !important; animation: none !important; } }
+
+/* ===== v7.7 ANALYSE MATCH (type SofaScore) ===== */
+.ana-body { display: flex; flex-direction: column; gap: 8px; }
+.ana-card { padding: 18px; margin-bottom: 6px; }
+.ana-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.ana-league { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.16em; color: var(--magenta); text-transform: uppercase; }
+.ana-fin { font-family: var(--mono); font-size: 0.7rem; color: #9aa7c7; }
+.ana-clk-bad .min { font-family: var(--mono); font-size: 0.8rem; color: var(--cyan); }
+.ana-scoreline { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; }
+.ana-team { display: flex; align-items: center; gap: 10px; font-size: 1.02rem; font-weight: 700; letter-spacing: 0.02em; }
+.ana-team.away { justify-content: flex-end; text-align: right; }
+.ana-logo { width: 42px; height: 42px; object-fit: contain; filter: drop-shadow(0 0 8px rgba(245,196,81,0.25)); }
+.ana-mid { text-align: center; }
+.ana-score { font-family: var(--mono); font-size: 2rem; color: #fff; text-shadow: 0 0 18px rgba(245,196,81,0.35); white-space: nowrap; }
+.ana-score .sep { color: var(--cyan); }
+.ana-vs { font-family: var(--mono); font-size: 1rem; color: var(--cyan); letter-spacing: 0.3em; }
+.ana-live-clk { font-family: var(--mono); font-size: 0.85rem; color: #4dff9d; animation: lb-go 1.2s ease-in-out infinite; }
+.ana-meta { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 12px; }
+.ana-venue, .ana-tv { font-family: var(--mono); font-size: 0.7rem; color: #9d9d94; letter-spacing: 0.05em; }
+.ana-sec { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.2em; color: var(--cyan); text-transform: uppercase; margin: 22px 0 10px; }
+.ana-row { display: grid; grid-template-columns: 44px 1fr auto 1fr 44px; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.ana-row:last-child { border-bottom: none; }
+.ana-val { font-family: var(--mono); font-size: 0.95rem; text-align: center; color: #fff; }
+.ana-val.h { color: var(--cyan); }
+.ana-val.a { color: var(--magenta); }
+.ana-lbl { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em; color: #8d8d84; text-transform: uppercase; white-space: nowrap; padding: 0 4px; }
+.ana-bar { height: 8px; border-radius: 99px; background: rgba(255,255,255,0.05); overflow: hidden; }
+.ana-bar.i, .ana-bar i { display: block; height: 100%; }
+.ana-bar.h { border-top-right-radius: 2px; border-bottom-right-radius: 2px; }
+.ana-bar.a { border-top-left-radius: 2px; border-bottom-left-radius: 2px; }
+.ana-bar.h i { background: linear-gradient(90deg, rgba(245,196,81,0.35), #f5c451); border-radius: 99px 2px 2px 99px; float: right; }
+.ana-bar.a i { background: linear-gradient(270deg, rgba(46,255,160,0.35), #2effa0); border-radius: 2px 99px 99px 2px; }
+.ana-teams-form { display: flex; flex-direction: column; gap: 8px; }
+.atf-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.atf-row small { font-family: var(--mono); font-size: 0.74rem; color: #cfcfc6; }
+.atf-row span { display: flex; gap: 5px; }
+@media (max-width: 640px) {
+  .ana-row { grid-template-columns: 34px 1fr auto 1fr 34px; gap: 5px; }
+  .ana-val { font-size: 0.85rem; }
+  .ana-team { font-size: 0.85rem; }
+  .ana-score { font-size: 1.5rem; }
+  .ana-logo { width: 30px; height: 30px; }
+}
+@media (prefers-reduced-motion: reduce) { .ana-live-clk { animation: none !important; } }
