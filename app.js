@@ -7,7 +7,7 @@ setInterval(tickClock, 1000);
 tickClock();
 
 /* ============ VIEW ROUTER (Accueil / LIVE / BUTS) ============ */
-const VIEWS = ["home", "live", "buts", "avenir", "acc", "bot"];
+const VIEWS = ["home", "live", "buts", "avenir", "acc", "bot", "video"];
 function showView(name) {
   document.querySelectorAll(".view").forEach(v =>
     v.classList.toggle("active", v.id === "view-" + name));

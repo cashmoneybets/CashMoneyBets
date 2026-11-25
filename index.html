@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=76" />
+  <link rel="stylesheet" href="styles.css?v=77" />
 </head>
 <body>
   <canvas id="scene"></canvas>
@@ -19,12 +19,14 @@
   <div class="scanlines"></div>
 
   <nav>
-    <a class="logo" href="#home" data-view="home">CASHMONEY<span class="logo-dot">·</span>BETS<sup class="ver">v7.1</sup></a>
+    <a class="logo" href="#home" data-view="home">CASHMONEY<span class="logo-dot">·</span>BETS<sup class="ver">v7.2</sup></a>
     <div class="nav-links">
       <a href="#live" data-view="live" data-i18n="nav_live"></a>
       <a href="#avenir" data-view="avenir" data-i18n="nav_upcoming"></a>
       <a href="#acc" data-view="acc" data-i18n="nav_acc"></a>
       <a href="#bot" data-view="bot" data-i18n="nav_bot"></a>
+    <a href="#video" data-view="video" data-i18n="nav_video"></a>
+      <a href="#video" data-view="video" data-i18n="nav_video"></a>
     </div>
     <div class="nav-right">
       <div class="lang-switch">
@@ -66,7 +68,7 @@
         </div>
       </div>
       <figure class="hero-stadium">
-        <img src="assets/stadium-hero.jpg?v=76" alt="Stadium" decoding="async">
+        <img src="assets/stadium-hero.jpg?v=77" alt="Stadium" decoding="async">
         <figcaption class="hs-brand"><span class="hs-title">CASH MONEY BETS</span><span class="hs-sub">⚽ SAFE SCORE ENGINE</span></figcaption>
       </figure>
     </header>
@@ -103,6 +105,13 @@
           <span class="n-icon">🤖</span>
           <b class="n-name" data-i18n="nav_bot"></b>
           <small class="n-desc" data-i18n="menu_bot_desc"></small>
+          <span class="n-arrow">⟶</span>
+        </a>
+        <a class="n-tile" href="#video" data-view="video">
+          <span class="n-node nn1"></span><span class="n-node nn2"></span><span class="n-node nn3"></span><span class="n-node nn4"></span>
+          <span class="n-icon">🎬</span>
+          <b class="n-name" data-i18n="nav_video"></b>
+          <small class="n-desc" data-i18n="menu_video_desc"></small>
           <span class="n-arrow">⟶</span>
         </a>
         <a class="n-tile" href="#buts" data-view="buts">
@@ -238,11 +247,70 @@
     <span data-i18n-html="footer_brand"></span>
   </footer>
 
-  <script src="i18n.js?v=76"></script>
-  <script src="data.js?v=76"></script>
-  <script src="scene.js?v=76"></script>
-  <script src="live.js?v=76"></script>
-  <script src="app.js?v=76"></script>
-  <script src="bot.js?v=76"></script>
+  <!-- ================= VUE STUDIO VIDEO (v7.2) ================= -->
+  <main class="view" id="view-video">
+    <section class="section">
+      <div class="view-head-bar"><a class="btn-menu" href="#home" data-view="home" data-i18n="btn_menu"></a></div>
+      <div class="section-head">
+        <h2 class="section-title" data-i18n-html="vid_title"></h2>
+      </div>
+      <p class="section-sub" data-i18n="vid_sub"></p>
+      <div class="studio card">
+        <label class="studio-lbl" data-i18n="vid_prompt"></label>
+        <textarea id="vid-prompt" class="studio-input" rows="3" data-i18n-ph="vid_prompt_ph"></textarea>
+        <div class="studio-opts">
+          <div class="studio-opt">
+            <label data-i18n="vid_style"></label>
+            <select id="vid-style">
+              <option value="cinema" selected data-i18n="vid_s_cinema"></option>
+              <option value="stadium" data-i18n="vid_s_stadium"></option>
+              <option value="cyberpunk" data-i18n="vid_s_cyberpunk"></option>
+              <option value="anime" data-i18n="vid_s_anime"></option>
+            </select>
+          </div>
+          <div class="studio-opt">
+            <label data-i18n="vid_frames"></label>
+            <select id="vid-n">
+              <option value="6">6</option>
+              <option value="8" selected>8</option>
+              <option value="10">10</option>
+              <option value="12">12</option>
+            </select>
+          </div>
+          <div class="studio-opt">
+            <label data-i18n="vid_ratio"></label>
+            <select id="vid-ratio">
+              <option value="16:9" selected>16:9</option>
+              <option value="9:16">9:16</option>
+              <option value="1:1">1:1</option>
+            </select>
+          </div>
+          <div class="studio-opt">
+            <label data-i18n="vid_model"></label>
+            <select id="vid-model">
+              <option value="flux" selected>FLUX</option>
+              <option value="turbo">TURBO</option>
+            </select>
+          </div>
+        </div>
+        <div class="studio-actions">
+          <button id="vid-go" class="studio-go" data-i18n="vid_generate"></button>
+          <button id="vid-export" class="studio-export" data-i18n="vid_export" disabled></button>
+        </div>
+        <div class="vid-status" id="vid-status"></div>
+        <div class="vid-canvas-wrap"><canvas id="vid-canvas" width="1024" height="576"></canvas></div>
+        <div class="vid-gallery" id="vid-gal"></div>
+        <small class="vid-hint" data-i18n="vid_hint"></small>
+      </div>
+    </section>
+  </main>
+
+  <script src="i18n.js?v=77"></script>
+  <script src="data.js?v=77"></script>
+  <script src="scene.js?v=77"></script>
+  <script src="live.js?v=77"></script>
+  <script src="app.js?v=77"></script>
+  <script src="bot.js?v=77"></script>
+  <script src="video.js?v=77"></script>
 </body>
 </html>
