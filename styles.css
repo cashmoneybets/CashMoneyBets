@@ -2809,3 +2809,9 @@ nav { border-bottom: none; clip-path: none; }
 .vid-thumb:hover { border-color: var(--cyan); transform: translateY(-2px); }
 .vid-hint { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.08em; color: var(--lbl, #8d8d84); line-height: 1.6; }
 @media (max-width: 640px) { .studio-actions { flex-direction: column; } .studio-go, .studio-export { width: 100%; text-align: center; } }
+/* ============ v7.3 – TOKEN & CANCEL ============ */
+.studio-token { display: flex; flex-direction: column; gap: 5px; }
+.studio-input-sm { min-height: 0; padding: 9px 12px; font-size: 0.75rem; }
+.vid-token-help { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.06em; color: var(--lbl, #8d8d84); line-height: 1.5; }
+.vid-token-help a { color: var(--cyan); text-decoration: underline; }
+.studio-input { transition: border-color 0.15s ease; }

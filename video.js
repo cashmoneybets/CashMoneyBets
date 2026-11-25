@@ -12,13 +12,16 @@ const VID_SUFFIX = {
   cyberpunk: ", cyberpunk neon style, futuristic city, glowing gold and emerald",
   anime: ", anime style, vibrant colors, studio quality"
 };
-let vidFrames = [], vidAnimRAF = null, vidBusy = false;
+let vidFrames = [], vidAnimRAF = null, vidBusy = false, vidAbort = false;
 
 function vidQ(id) { return document.getElementById(id); }
 
 function vidPollUrl(prompt, w, h, seed, model) {
-  return "https://image.pollinations.ai/prompt/" + encodeURIComponent(prompt) +
+  let u = "https://image.pollinations.ai/prompt/" + encodeURIComponent(prompt) +
     "?width=" + w + "&height=" + h + "&seed=" + seed + "&nologo=true&model=" + model;
+  const tok = localStorage.getItem("cmb_pol_token");
+  if (tok) u += "&token=" + encodeURIComponent(tok);
+  return u;
 }
 window.vidPollUrl = vidPollUrl;
 
@@ -43,7 +46,7 @@ function vidDraw(ctx, im, pr, W, H) {
 }
 
 async function vidGenerate() {
-  if (vidBusy) return;
+  if (vidBusy) { vidAbort = true; return; }   // 2e clic = annule
   const btn = vidQ("vid-go"), status = vidQ("vid-status"), gal = vidQ("vid-gal");
   const cv = vidQ("vid-canvas"), exp = vidQ("vid-export");
   if (!btn || !status) return;
@@ -63,19 +66,34 @@ async function vidGenerate() {
   const seed = Math.floor(Math.random() * 1e6);
   const full = p + (VID_SUFFIX[style] || "");
 
-  const jobs = [];
-  for (let i = 0; i < n; i++)
-    jobs.push(vidLoadImg(vidPollUrl(full, w, h, seed + i * 7, model), 90000).then(im => ({ i, im })).catch(() => null));
-  const out = await Promise.all(jobs);
-  vidFrames = out.filter(Boolean).sort((a, b) => a.i - b.i).map(o => o.im);
+  /* v7.3 : tier anonyme Pollinations tres limite (402 des la 2e image de salve)
+     generation SEQUENTIELLE avec pauses + retries exponentiels, resultat partiel accepte */
+  const backoff = [0, 6000, 15000, 30000];
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  for (let i = 0; i < n; i++) {
+    let im = null;
+    for (let r = 0; r < backoff.length && !im; r++) {
+      if (backoff[r]) { await sleep(backoff[r]); if (vidAbort) break; }
+      status.textContent = (i + 1) + "/" + n + " " + t("vid_wait") + (r ? " (+" + r + ")" : "");
+      try { im = await vidLoadImg(vidPollUrl(full, w, h, seed + i * 7, model), 90000); }
+      catch (e) { im = null; }
+      if (vidAbort) break;   // annule par un nouveau clic
+    }
+    if (im) { vidFrames.push(im); vidThumbs(); }
+    else if (vidAbort) break;
+    await sleep(1600);
+    if (vidAbort) break;
+  }
 
-  vidBusy = false;
+  const wasAborted = vidAbort;
+  vidBusy = false; vidAbort = false;
   btn.disabled = false;
-  if (!vidFrames.length) { status.textContent = t("vid_error"); return; }
+  if (!vidFrames.length) { status.textContent = wasAborted ? t("vid_cancel") : t("vid_limit"); return; }
   vidThumbs();
   status.textContent = t("vid_ready") + " " + vidFrames.length + "/" + n;
   exp.disabled = false;
   vidPlay(0);
+  window.__vidGenArgs = [full, w, h, seed, model, n];
 }
 window.vidGenerate = vidGenerate;
 
@@ -172,6 +190,12 @@ window.vidExport = vidExport;
 /* --- branchement du formulaire --- */
 (function vidInit() {
   const wire = () => {
+    const ti = vidQ("vid-token");
+    if (ti && !ti.dataset.vw) {
+      ti.dataset.vw = "1";
+      ti.value = localStorage.getItem("cmb_pol_token") || "";
+      ti.addEventListener("input", () => localStorage.setItem("cmb_pol_token", ti.value.trim()));
+    }
     const go = vidQ("vid-go");
     if (go && !go.dataset.vw) {
       go.dataset.vw = "1";
