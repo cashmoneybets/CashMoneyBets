@@ -75,7 +75,9 @@ async function vidGenerate() {
     for (let r = 0; r < backoff.length && !im; r++) {
       if (backoff[r]) { await sleep(backoff[r]); if (vidAbort) break; }
       status.textContent = (i + 1) + "/" + n + " " + t("vid_wait") + (r ? " (+" + r + ")" : "");
-      try { im = await vidLoadImg(vidPollUrl(full, w, h, seed + i * 7, model), 90000); }
+      const script = window.__vidScript;
+      const fp = script && script.length ? script[i % script.length] : full;
+      try { im = await vidLoadImg(vidPollUrl(fp, w, h, seed + i * 7, model), 90000); }
       catch (e) { im = null; }
       if (vidAbort) break;   // annule par un nouveau clic
     }
@@ -94,6 +96,7 @@ async function vidGenerate() {
   exp.disabled = false;
   vidPlay(0);
   window.__vidGenArgs = [full, w, h, seed, model, n];
+  window.__vidScript = null;   /* le prochain GENERATE manuel repart sur le prompt simple */
 }
 window.vidGenerate = vidGenerate;
 
@@ -187,6 +190,39 @@ async function vidExport() {
 }
 window.vidExport = vidExport;
 
+/* ============ v7.5 — IA DIRECTOR : le LLM ecrit le storyboard ============ */
+function vidDirector() {
+  const btn = vidQ("vid-director"), status = vidQ("vid-status");
+  if (!btn || !status) return;
+  const theme = ((vidQ("vid-prompt") || {}).value || "").trim();
+  if (!theme) { status.textContent = t("vid_need"); return; }
+  const n = parseInt(vidQ("vid-n").value, 10) || 6;
+  const style = vidQ("vid-style").value;
+  if (typeof cmbGemini !== "function" || !botLLMKey()) { status.textContent = t("dir_nolink"); return; }
+  vidBusy = true;
+  btn.disabled = true;
+  status.innerHTML = '<span class="vid-spin"></span> ' + t("dir_wait");
+  const sys = "You are a film director writing a consistent storyboard for an AI image generator. "
+    + "Return ONLY a raw JSON array of " + n + " strings (no markdown, no explanation). "
+    + "Each string is a detailed English image prompt (one scene shot), visually coherent: same subject, same style ('" 
+    + style + "'), evolving camera angles and action, building like a movie sequence. 15-30 words each.";
+  cmbGemini(sys, theme, 30000).then(txt => {
+    vidBusy = false;
+    btn.disabled = false;
+    if (!txt) { status.textContent = t("dir_fail"); return; }
+    let arr = null;
+    try {
+      const m = txt.replace(/```[a-z]*|```/g, "").trim();
+      arr = JSON.parse(m);
+    } catch (e) { arr = null; }
+    if (!Array.isArray(arr) || !arr.length) { status.textContent = t("dir_fail"); return; }
+    window.__vidScript = arr.map(x => String(x).slice(0, 300));
+    status.textContent = t("dir_done") + " " + window.__vidScript.length + ")";
+    vidGenerate();
+  });
+}
+window.vidDirector = vidDirector;
+
 /* --- branchement du formulaire --- */
 (function vidInit() {
   const wire = () => {
@@ -205,6 +241,11 @@ window.vidExport = vidExport;
     if (ex && !ex.dataset.vw) {
       ex.dataset.vw = "1";
       ex.addEventListener("click", vidExport);
+    }
+    const di = vidQ("vid-director");
+    if (di && !di.dataset.vw) {
+      di.dataset.vw = "1";
+      di.addEventListener("click", vidDirector);
     }
   };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", wire);

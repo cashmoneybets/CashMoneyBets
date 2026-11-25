@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=79" />
+  <link rel="stylesheet" href="styles.css?v=80" />
 </head>
 <body>
   <canvas id="scene"></canvas>
@@ -19,7 +19,7 @@
   <div class="scanlines"></div>
 
   <nav>
-    <a class="logo" href="#home" data-view="home">CASHMONEY<span class="logo-dot">·</span>BETS<sup class="ver">v7.4</sup></a>
+    <a class="logo" href="#home" data-view="home">CASHMONEY<span class="logo-dot">·</span>BETS<sup class="ver">v7.5</sup></a>
     <div class="nav-links">
       <a href="#live" data-view="live" data-i18n="nav_live"></a>
       <a href="#avenir" data-view="avenir" data-i18n="nav_upcoming"></a>
@@ -68,7 +68,7 @@
         </div>
       </div>
       <figure class="hero-stadium">
-        <img src="assets/stadium-hero.jpg?v=79" alt="Stadium" decoding="async">
+        <img src="assets/stadium-hero.jpg?v=80" alt="Stadium" decoding="async">
         <figcaption class="hs-brand"><span class="hs-title">CASH MONEY BETS</span><span class="hs-sub">⚽ SAFE SCORE ENGINE</span></figcaption>
       </figure>
     </header>
@@ -219,6 +219,11 @@
         <h2 class="section-title" data-i18n-html="bot_title"></h2>
       </div>
       <p class="section-sub" data-i18n="bot_sub"></p>
+      <div class="llm-row">
+        <label class="studio-lbl" data-i18n="llm_title"></label>
+        <input id="llm-key" class="studio-input studio-input-sm" type="password" autocomplete="off" spellcheck="false" data-i18n-ph="llm_key_ph">
+        <small class="vid-token-help"><span data-i18n="llm_help"></span> <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a></small>
+      </div>
       <div class="bot-shell">
         <div class="bot-chat" id="bot-chat"></div>
         <div class="bot-sugs" id="bot-sugs"></div>
@@ -301,6 +306,7 @@
         <div class="studio-actions">
           <button id="vid-go" class="studio-go" data-i18n="vid_generate"></button>
           <button id="vid-export" class="studio-export" data-i18n="vid_export" disabled></button>
+          <button id="vid-director" class="studio-ai" data-i18n="dir_btn"></button>
         </div>
         <div class="vid-status" id="vid-status"></div>
         <div class="vid-canvas-wrap"><canvas id="vid-canvas" width="1024" height="576"></canvas></div>
@@ -310,12 +316,12 @@
     </section>
   </main>
 
-  <script src="i18n.js?v=79"></script>
-  <script src="data.js?v=79"></script>
-  <script src="scene.js?v=79"></script>
-  <script src="live.js?v=79"></script>
-  <script src="app.js?v=79"></script>
-  <script src="bot.js?v=79"></script>
-  <script src="video.js?v=79"></script>
+  <script src="i18n.js?v=80"></script>
+  <script src="data.js?v=80"></script>
+  <script src="scene.js?v=80"></script>
+  <script src="live.js?v=80"></script>
+  <script src="app.js?v=80"></script>
+  <script src="bot.js?v=80"></script>
+  <script src="video.js?v=80"></script>
 </body>
 </html>

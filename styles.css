@@ -2821,3 +2821,9 @@ nav { border-bottom: none; clip-path: none; }
 .roll-ball, .roll-ball::after { display: none !important; animation: none !important; }
 .mkt-target, .card.visible .mkt-target { animation: none !important; }
 .pick-box.neon-green { animation: none; }
+/* ============ v7.5 — CLÉ LLM + IA DIRECTOR ============ */
+.llm-row { display: flex; flex-direction: column; gap: 5px; max-width: 860px; margin: 0 auto 16px; width: 100%; }
+#llm-key { width: 100%; box-sizing: border-box; }
+.studio-ai { cursor: pointer; font-family: var(--mono); font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 10px; padding: 12px 22px; transition: transform 0.15s ease, box-shadow 0.15s ease; border: 1px solid rgba(46, 163, 255, 0.5); background: rgba(46, 163, 255, 0.08); color: #7dc9ff; }
+.studio-ai:hover:not(:disabled) { box-shadow: 0 0 26px rgba(46, 163, 255, 0.35); transform: translateY(-2px); }
+.studio-ai:disabled { opacity: 0.4; cursor: wait; }

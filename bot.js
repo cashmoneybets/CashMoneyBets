@@ -184,6 +184,60 @@ function botAnswer(raw) {
   return `<p>${t("bot_notfound")}</p>`;
 }
 
+/* ============ v7.5 — clé LLM personnelle (Gemini direct, CORS OK) ============ */
+function botLLMKey() {
+  const el = document.getElementById("llm-key");
+  const v = el && el.value ? el.value.trim() : "";
+  if (v) { try { localStorage.setItem("cmb_llm_key", v); } catch (e) {} }
+  else { try { return localStorage.getItem("cmb_llm_key") || ""; } catch (e) { return ""; } }
+  return v;
+}
+try { window.llmKeyField && (document.getElementById("llm-key").value = localStorage.getItem("cmb_llm_key") || ""); } catch (e) {}
+
+function cmbGemini(system, user, timeoutMs) {
+  const key = botLLMKey();
+  if (!key) return Promise.resolve(null);
+  const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + encodeURIComponent(key);
+  const ctrl = new AbortController();
+  const to = setTimeout(() => ctrl.abort(), timeoutMs || 25000);
+  return fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      systemInstruction: { parts: [{ text: system }] },
+      contents: [{ role: "user", parts: [{ text: user }] }],
+      generationConfig: { temperature: 0.8, maxOutputTokens: 2048 },
+    }),
+    signal: ctrl.signal,
+  }).then(r => r.ok ? r.json() : null).then(d => {
+    if (!d || !d.candidates || !d.candidates[0] || !d.candidates[0].content || !d.candidates[0].content.parts) return null;
+    return d.candidates[0].content.parts.map(p => p.text || "").join("").trim() || null;
+  }).catch(() => null).finally(() => clearTimeout(to));
+}
+window.cmbGemini = cmbGemini;
+
+function botLLMSystem() {
+  return "You are the betting assistant bot of cashmoneybets.github.io/CashMoneyBets, a football safe-bets site. "
+    + "You receive real match data (odds, probabilities, live scores, TV). Answer in language code '" + LANG + "' "
+    + "(fr/en/de/sq), max 90 words, be concrete and fun, always base statements on the DATA below, never invent matches. "
+    + "Entertainment only: remind to gamble responsibly if giving a tip. Reply in plain text.";
+}
+
+window.llmKeyField = null;
+(function llmKeyInit() {
+  const wire = () => {
+    const inp = document.getElementById("llm-key");
+    if (inp && !inp.dataset.vw) {
+      inp.dataset.vw = "1";
+      try { inp.value = localStorage.getItem("cmb_llm_key") || ""; } catch (e) {}
+      inp.addEventListener("input", () => botLLMKey());
+      window.llmKeyField = inp;
+    }
+  };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", wire);
+  else wire();
+})();
+
 /* ============ v6.8 — LLM via proxy Cloudflare (optionnel) ============ */
 function botContextDigest() {
   const lines = mpool().map(m => {
@@ -277,6 +331,12 @@ function botAsk(raw) {
   if (BOT_LLM_URL) {
     const wait = new Promise(res => setTimeout(res, 2500 + Math.random() * 800));
     Promise.all([botLLM(raw.trim()).catch(() => null), wait]).then(([rep]) =>
+      finish(rep ? botFormatLLM(rep) : botAnswer(raw)));
+  } else if (botLLMKey()) {
+    /* v7.5 : LLM direct (clé perso Gemini), min 2.5 s neural core puis fallback regles */
+    const wait = new Promise(res => setTimeout(res, 2500 + Math.random() * 800));
+    const call = cmbGemini(botLLMSystem(), raw.trim() + "\n\nDATA:\n" + botContextDigest());
+    Promise.all([call.catch(() => null), wait]).then(([rep]) =>
       finish(rep ? botFormatLLM(rep) : botAnswer(raw)));
   } else {
     setTimeout(() => finish(botAnswer(raw)), 4800 + Math.random() * 600);
