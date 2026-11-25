@@ -275,11 +275,37 @@ function liveCard(m) {
   </article>`;
 }
 
+/* ============ v7.6 — HISTORIQUE LIVE (momentum des cotes) ============ */
+function pushHist(matches) {
+  const H = window.__oddsHist = window.__oddsHist || {};
+  const now = Date.now();
+  const amDec = v => {
+    if (!v) return null;
+    const x = parseInt(String(v).replace(/[^-\d]/g, ""), 10);
+    return isNaN(x) ? null : (x < 0 ? 1 + 100 / Math.abs(x) : 1 + x / 100);
+  };
+  const ids = new Set();
+  matches.forEach(m => {
+    ids.add(m.id);
+    const arr = (H[m.id] = H[m.id] || []);
+    const ml = (m.oddsRaw && m.oddsRaw.moneyline) || {};
+    arr.push({
+      t: now,
+      o1: amDec(ml.home && ml.home.close && ml.home.close.odds),
+      o2: amDec(ml.away && ml.away.close && ml.away.close.odds),
+    });
+    if (arr.length > 60) arr.shift();
+  });
+  Object.keys(H).forEach(id => { if (!ids.has(id)) delete H[id]; });
+}
+window.pushHist = pushHist;
+
 function renderLive(all) {
   /* v6.6 : uniquement les matchs reellement EN DIRECT — les terminés et les
      pas encore commences ne polluent plus la page Live */
   const matches = all.filter(m => m.state === "in");
   matches.sort((a, b) => a.id.localeCompare(b.id));
+  pushHist(matches);   /* v7.6 : historique pour les graphiques momentum */
   const shown = matches.slice(0, 15);
   if (shown.length === 0) {
     liveGrid.innerHTML = `<div class="live-loading">${t("live_none")}</div>`;

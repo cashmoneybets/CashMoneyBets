@@ -7,13 +7,14 @@ setInterval(tickClock, 1000);
 tickClock();
 
 /* ============ VIEW ROUTER (Accueil / LIVE / BUTS) ============ */
-const VIEWS = ["home", "live", "buts", "avenir", "acc", "bot", "video"];
+const VIEWS = ["home", "live", "buts", "avenir", "acc", "bot", "video", "graph"];
 function showView(name) {
   document.querySelectorAll(".view").forEach(v =>
     v.classList.toggle("active", v.id === "view-" + name));
   document.querySelectorAll("[data-view]").forEach(a =>
     a.classList.toggle("active", a.dataset.view === name));
   window.scrollTo(0, 0);
+  if (name === "graph" && typeof window.renderCharts === "function") requestAnimationFrame(window.renderCharts);
   positionFx();
   requestAnimationFrame(() => requestAnimationFrame(positionFx));
   observeReveals();

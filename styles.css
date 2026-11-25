@@ -2827,3 +2827,11 @@ nav { border-bottom: none; clip-path: none; }
 .studio-ai { cursor: pointer; font-family: var(--mono); font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 10px; padding: 12px 22px; transition: transform 0.15s ease, box-shadow 0.15s ease; border: 1px solid rgba(46, 163, 255, 0.5); background: rgba(46, 163, 255, 0.08); color: #7dc9ff; }
 .studio-ai:hover:not(:disabled) { box-shadow: 0 0 26px rgba(46, 163, 255, 0.35); transform: translateY(-2px); }
 .studio-ai:disabled { opacity: 0.4; cursor: wait; }
+
+/* ===== v7.6 GRAPHIQUES DYNAMIQUES ===== */
+.charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
+.chart-card { padding: 16px 18px; }
+.chart-card h4 { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.14em; color: var(--cyan); text-transform: uppercase; margin: 0 0 12px; }
+.chart-card canvas { display: block; width: 100%; }
+.ch-group { font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.2em; color: var(--magenta); margin: 26px 0 12px; text-transform: uppercase; }
+@media (prefers-reduced-motion: reduce) { .chart-card, .ch-group { transition: none !important; animation: none !important; } }
